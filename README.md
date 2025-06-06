@@ -1,6 +1,6 @@
-# fallingshapes
+# SmilyFormz
 
-This template should help get you started developing with Vue 3 in Vite.
+A game where you need to match shapes and colors while avoiding hitting the wrong ones.
 
 ## Recommended IDE Setup
 

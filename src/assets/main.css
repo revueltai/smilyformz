@@ -1,5 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@100..900&display=swap');
 @import 'tailwindcss';
 
+@theme {
+  --font-sans:
+    'Alexandria', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Tailwind Safelist */
+@source inline("stroke-{0,1,2,4,8,current}");
+@source inline("fill-current");
+
+@source inline("{hover:,}bg-lime-{50,{100..900..100},950}");
+@source inline("{hover:,}bg-rose-{50,{100..900..100},950}");
+
+@source inline("{hover:,}border-lime-{50,{100..900..100},950}");
+@source inline("{hover:,}border-rose-{50,{100..900..100},950}");
+
+@source inline("{hover:,}text-lime-{50,{100..900..100},950}");
+@source inline("{hover:,}text-rose-{50,{100..900..100},950}");
+
+* {
+  @apply select-none;
+}
+
+html,
 body {
-  @apply bg-blue-100;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  @apply h-full;
+}
+
+body {
+  /* @apply bg-blue-100 font-sans; */
+  @apply bg-white font-sans;
+}
+
+/* Animations */
+
+.fade-enter-active,
+.fade-leave-active {
+  @apply transition-opacity duration-300 ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  @apply opacity-0;
+}
+
+#__vue-devtools-container__ {
+  display: none !important;
 }

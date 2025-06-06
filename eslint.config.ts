@@ -14,13 +14,34 @@ export default defineConfigWithVueTs(
   {
     name: 'app/files-to-lint',
     files: ['**/*.{ts,mts,tsx,vue}'],
+    rules: {
+      curly: ['error', 'multi-line'],
+      'operator-linebreak': ['error', 'before'],
+      'no-lonely-if': 'error',
+      'keyword-spacing': [
+        'error',
+        {
+          before: true,
+          after: true,
+          overrides: {
+            catch: { after: true, before: true },
+          },
+        },
+      ],
+      'space-before-blocks': ['error', 'always'],
+      'brace-style': 'off',
+      'style/brace-style': ['error', '1tbs', { allowSingleLine: true }],
+
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unsafe-assignment': 'warn',
+    },
   },
 
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
 
   pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
-  
+
   {
     ...pluginVitest.configs.recommended,
     files: ['src/**/__tests__/*'],
