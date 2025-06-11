@@ -10,6 +10,7 @@
         "vue-router": "^4.5.0",
       },
       "devDependencies": {
+        "@pinia/testing": "^1.0.2",
         "@tailwindcss/vite": "^4.1.8",
         "@tsconfig/node22": "^22.0.1",
         "@types/jsdom": "^21.1.7",
@@ -233,6 +234,8 @@
     "@oxlint/win32-arm64": ["@oxlint/win32-arm64@0.16.12", "", { "os": "win32", "cpu": "arm64" }, "sha512-wcxq3IBJ7ZlONlXJxQM+7EMx+LX1nkz3ZS3R0EtDM76EOZaqe8BMkW5cXVhF8jarZTZC18oKAckW4Ng9d8adBg=="],
 
     "@oxlint/win32-x64": ["@oxlint/win32-x64@0.16.12", "", { "os": "win32", "cpu": "x64" }, "sha512-Ae1fx7wmAcMVqzS8rLINaFRpAdh29QzHh133bEYMHzfWBYyK/hLu9g4GLwC/lEIVQu9884b8qutGfdOk6Qia3w=="],
+
+    "@pinia/testing": ["@pinia/testing@1.0.2", "", { "peerDependencies": { "pinia": ">=3.0.3" } }, "sha512-yZVXJTKh677J0AT8kOPxGk5s1v7hMQIDT3tmeriwtR5LDu41DvXTEBQf0ql9SsHW1mCSDG38QDFzSSl5ucJqnQ=="],
 
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="],
 
