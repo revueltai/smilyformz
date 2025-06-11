@@ -40,5 +40,8 @@
   "enterValidNumber": "Please enter a valid number",
   "enterValidPhoneNumber": "Please enter a valid phone number",
   "invalidInput": "Invalid input",
-  "requiredField": "This field is required"
+  "requiredField": "This field is required",
+  "rememberMe": "Remember me",
+  "enterUsername": "Enter your username",
+  "enterConfirmPassword": "Confirm your password"
 }

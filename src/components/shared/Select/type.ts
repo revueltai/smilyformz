@@ -26,4 +26,7 @@ export interface SelectProps {
   showStaticField?: boolean
   showInputField?: boolean
   cssClassesField?: string
+  footnote?: string
+  footnoteColor?: Color
+  showEditIcon?: boolean
 }

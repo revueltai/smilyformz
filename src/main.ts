@@ -45,7 +45,4 @@ app.component('Icon', Icon)
 app.component('Button', Button)
 app.component('Modal', Modal)
 
-router.isReady().then(() => {
-  console.log(111)
-  app.mount('#app')
-})
+router.isReady().then(() => app.mount('#app'))

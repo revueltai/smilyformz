@@ -21,4 +21,5 @@ export interface InputProps {
   iconType?: IconType
   iconColor?: Color
   hasClickableIcon?: boolean
+  showEditIcon?: boolean
 }

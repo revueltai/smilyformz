@@ -3,6 +3,7 @@
   import { computed, ref } from 'vue'
   import type { InputProps } from './types'
   import { useI18n } from 'vue-i18n'
+  import Footnote from '../Footnote/index.vue'
 
   const props = withDefaults(defineProps<InputProps>(), {
     label: '',
@@ -21,6 +22,7 @@
     required: false,
     disabled: false,
     hasClickableIcon: false,
+    showEditIcon: true,
   })
 
   const emit = defineEmits(['update:modelValue', 'blur', 'clickIcon'])
@@ -39,44 +41,7 @@
 
   const isRequired = computed(() => props.required && isTouched.value)
 
-  const isInvalid = computed(() => {
-    return !validateInput(inputModel.value)
-  })
-
-  const getErrorMessage = computed(() => {
-    if (!inputModel.value || inputModel.value.trim() === '') {
-      return t('requiredField')
-    }
-
-    switch (props.type) {
-      case 'email':
-        return t('enterValidEmail')
-
-      case 'url':
-        return t('enterValidUrl')
-
-      case 'number':
-        return t('enterValidNumber')
-
-      case 'tel':
-        return t('enterValidPhoneNumber')
-
-      default:
-        return t('invalidInput')
-    }
-  })
-
-  const cssClasses = computed(() => {
-    const output = []
-
-    if (isRequired.value || isInvalid.value) {
-      output.push('border-rose-500')
-    }
-
-    return output
-  })
-
-  function validateInput(value: string | undefined) {
+  const validateInput = (value: string | undefined) => {
     if (!value || value.trim() === '') {
       return !props.required
     }
@@ -85,7 +50,6 @@
       case 'email':
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return emailRegex.test(value)
-
       case 'url':
         try {
           new URL(value)
@@ -93,17 +57,50 @@
         } catch {
           return false
         }
-
       case 'number':
         return !isNaN(Number(value))
-
       case 'tel':
+        // Basic phone validation - at least 10 digits
         return /^\+?[\d\s-]{10,}$/.test(value)
-
       default:
         return true
     }
   }
+
+  const isInvalid = computed(() => {
+    if (!isTouched.value) return false
+    return !validateInput(inputModel.value)
+  })
+
+  const getErrorMessage = computed(() => {
+    if (!isTouched.value) return ''
+    if (!inputModel.value || inputModel.value.trim() === '') {
+      return t('requiredField')
+    }
+
+    switch (props.type) {
+      case 'email':
+        return t('enterValidEmail')
+      case 'url':
+        return t('enterValidUrl')
+      case 'number':
+        return t('enterValidNumber')
+      case 'tel':
+        return t('enterValidPhoneNumber')
+      default:
+        return t('enterValidInput')
+    }
+  })
+
+  const cssClasses = computed(() => {
+    const output = []
+
+    if ((isRequired.value || isInvalid.value) && isTouched.value) {
+      output.push('border-rose-600')
+    }
+
+    return output
+  })
 
   function handleIconClick() {
     if (isPassword.value) {
@@ -154,7 +151,7 @@
       </div>
 
       <Icon
-        v-if="isEditable"
+        v-if="isEditable && showEditIcon"
         name="pencil"
         color="slate-700"
         class="cursor-pointer"
@@ -166,8 +163,10 @@
       class="flex items-center justify-between gap-3"
     >
       <div
-        :class="cssClasses"
-        class="input-wrapper w-full flex items-center gap-2 bg-white border border-t-2 border-slate-300 py-2 pl-3 pr-1.5 rounded-lg transition-colors hover:border-slate-400 invalid:text-rose-500 disabled:border-gray-300 disabled:cursor-not-allowed h-[44px]"
+        :class="[
+          'input-wrapper w-full flex items-center gap-2 bg-white border border-t-2 py-2 pl-3 pr-1.5 rounded-lg transition-colors disabled:border-gray-300 disabled:cursor-not-allowed h-[44px]',
+          isInvalid ? 'border-rose-600' : 'border-slate-300 hover:border-slate-400',
+        ]"
       >
         <Icon
           v-if="iconName || isPassword"
@@ -187,14 +186,19 @@
           :required="isRequired"
           :disabled="disabled"
           :maxlength="maxlength"
-          :class="{ invalid: isInvalid }"
-          class="w-full h-full bg-transparent outline-none text-base placeholder:text-slate-400 text-slate-700 disabled:text-gray-300 invalid:text-rose-500 transition-colors"
+          :class="[
+            'w-full h-full bg-transparent outline-none text-base placeholder:text-slate-400 disabled:text-gray-300 transition-colors',
+            isInvalid ? 'text-rose-600' : 'text-slate-700',
+          ]"
           @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
           @blur="handleBlur"
         />
       </div>
 
-      <div class="flex items-center gap-1">
+      <div
+        v-if="showEditIcon"
+        class="flex items-center gap-1"
+      >
         <Button
           size="xs"
           border-color="lime-600"
@@ -212,24 +216,11 @@
       </div>
     </div>
 
-    <div
-      v-if="footnote || isInvalid"
-      class="flex flex-col gap-0.5 text-xs"
-    >
-      <p
-        v-if="isInvalid"
-        class="text-rose-500"
-      >
-        {{ getErrorMessage }}
-      </p>
-
-      <p
-        v-if="footnote"
-        :class="`text-${footnoteColor}`"
-      >
-        {{ footnote }}
-      </p>
-    </div>
+    <Footnote
+      :footnote="footnote"
+      :footnote-color="footnoteColor"
+      :error="isInvalid ? getErrorMessage : undefined"
+    />
   </div>
 </template>
 
@@ -237,6 +228,6 @@
   .input-el:has(input:invalid) label,
   .input-wrapper:has(input:invalid),
   .input-wrapper:has(input.invalid) {
-    @reference border-rose-400 text-rose-500;
+    @reference border-rose-600 text-rose-600;
   }
 </style>
