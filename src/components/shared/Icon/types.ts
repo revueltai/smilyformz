@@ -6,6 +6,8 @@ export type IconStrokeWidth = '0' | '1' | '2' | '4' | '8' | 0 | 1 | 2 | 4 | 8
 export type IconName =
   | ''
   | 'none'
+  | 'eye'
+  | 'eye-off'
   | 'arrow-down'
   | 'arrow-left'
   | 'arrow-right'

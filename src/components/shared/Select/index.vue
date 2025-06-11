@@ -14,19 +14,17 @@
     required: false,
     disabled: false,
     hasClickableIcon: false,
+    isEditable: true,
+    showInputField: false,
+    showStaticField: false,
   })
 
   const emit = defineEmits(['update:modelValue', 'blur', 'clickIcon'])
   const selectModel = defineModel()
 
-  onMounted(() => {
-    if (props.options.length === 1) {
-      selectModel.value = props.options[0].value
-      emit('update:modelValue', props.options[0].value)
-    }
-  })
-
   const isTouched = ref(false)
+
+  const isEditing = ref(false)
 
   const isRequired = computed(() => props.required && isTouched.value)
 
@@ -46,10 +44,27 @@
     }
   }
 
+  function handleClickEdit() {
+    if (props.isEditable) {
+      isEditing.value = true
+    }
+  }
+
+  function handleClickUpdate() {
+    isEditing.value = false
+  }
+
   function handleChange(event: Event) {
     isTouched.value = true
     emit('update:modelValue', (event.target as HTMLSelectElement).value)
   }
+
+  onMounted(() => {
+    if (props.options.length === 1) {
+      selectModel.value = props.options[0].value
+      emit('update:modelValue', props.options[0].value)
+    }
+  })
 </script>
 
 <template>
@@ -63,44 +78,85 @@
     />
 
     <div
-      :class="cssClasses"
-      class="select-wrapper flex items-center gap-2 bg-white border border-t-2 border-slate-300 py-2 pl-3 pr-1.5 rounded-lg transition-colors hover:border-slate-400 invalid:text-rose-500 disabled:border-gray-300 disabled:cursor-not-allowed h-[44px]"
+      v-if="showStaticField && !isEditing"
+      class="flex items-center gap-2 w-full"
+      @click="handleClickEdit"
     >
-      <Icon
-        v-if="iconName"
-        :name="iconName"
-        :type="iconType"
-        :color="iconColor"
-        :size="isMobile() ? 'sm' : 'md'"
-        @click="handleIconClick"
-      />
-
-      <select
-        :id="name"
-        v-model="selectModel"
-        :name="name"
-        :required="isRequired"
-        :disabled="disabled"
-        class="w-full h-full bg-transparent outline-none text-base text-slate-700 disabled:text-gray-300 invalid:text-rose-500 transition-colors"
-        :class="showPlaceholderOption && !selectModel ? 'text-slate-400' : 'text-slate-700'"
-        @change="handleChange"
+      <div
+        :class="cssClassesField"
+        class="cursor-pointer truncate max-w-xs"
       >
-        <option
-          v-if="showPlaceholderOption"
-          value=""
-          disabled
-        >
-          {{ selectLabel }}
-        </option>
+        {{ options.find((option) => option.value === selectModel)?.label }}
+      </div>
 
-        <option
-          v-for="option in options"
-          :key="option.value"
-          :value="option.value"
+      <Icon
+        v-if="isEditable"
+        name="pencil"
+        color="slate-700"
+        class="cursor-pointer"
+      />
+    </div>
+
+    <div
+      v-if="showInputField || (isEditable && showStaticField && isEditing)"
+      class="flex items-center justify-between gap-3"
+    >
+      <div
+        :class="cssClasses"
+        class="select-wrapper flex items-center gap-2 bg-white border border-t-2 border-slate-300 py-2 pl-3 pr-1.5 rounded-lg transition-colors hover:border-slate-400 invalid:text-rose-500 disabled:border-gray-300 disabled:cursor-not-allowed w-full"
+      >
+        <Icon
+          v-if="iconName"
+          :name="iconName"
+          :type="iconType"
+          :color="iconColor"
+          :size="isMobile() ? 'sm' : 'md'"
+          @click="handleIconClick"
+        />
+
+        <select
+          :id="name"
+          v-model="selectModel"
+          :name="name"
+          :required="isRequired"
+          :disabled="disabled"
+          class="w-full h-full bg-transparent outline-none text-base text-slate-700 disabled:text-gray-300 invalid:text-rose-500 transition-colors"
+          :class="showPlaceholderOption && !selectModel ? 'text-slate-400' : 'text-slate-700'"
+          @change="handleChange"
         >
-          {{ option.label }}
-        </option>
-      </select>
+          <option
+            v-if="showPlaceholderOption"
+            value=""
+            disabled
+          >
+            {{ selectLabel }}
+          </option>
+
+          <option
+            v-for="option in options"
+            :key="option.value"
+            :value="option.value"
+          >
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-1">
+        <Button
+          size="xs"
+          border-color="lime-600"
+          border-color-hover="lime-400"
+          background-color="lime-50"
+          background-color-hover="lime-100"
+          @click="handleClickUpdate"
+        >
+          <Icon
+            name="check"
+            color="lime-800"
+          />
+        </Button>
+      </div>
     </div>
   </div>
 </template>

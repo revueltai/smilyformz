@@ -1,7 +1,7 @@
 import type { Color } from '@/types/theme'
 import type { IconName, IconType } from '../Icon/types'
 
-interface FormSelectOption {
+interface SelectOption {
   value: string | number
   label: string
   icon?: string
@@ -20,6 +20,10 @@ export interface SelectProps {
   iconName?: IconName
   iconType?: IconType
   iconColor?: Color
-  options?: FormSelectOption[]
+  options?: SelectOption[]
   hasClickableIcon?: boolean
+  isEditable?: boolean
+  showStaticField?: boolean
+  showInputField?: boolean
+  cssClassesField?: string
 }

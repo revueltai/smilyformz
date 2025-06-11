@@ -4,7 +4,20 @@
   import HeaderUser from '@/components/app/HeaderUser.vue'
   import SettingsSound from '@/components/app/SettingsSound.vue'
 
-  const email = ref('foo')
+  const countries = ref([
+    {
+      value: 'en',
+      label: 'English',
+    },
+    {
+      value: 'es',
+      label: 'Spanish',
+    },
+  ])
+
+  const email = ref('foo@foo.com')
+  const country = ref('en')
+  const password = ref('abc123')
 
   function handleLogout() {
     console.log('logout')
@@ -26,34 +39,35 @@
       <div class="mb-8">
         <Input
           v-model="email"
-          label="Email"
+          :label="$t('email')"
+          :placeholder="$t('enterEmail')"
           name="email"
+          type="email"
           show-static-field
+          required
+          class="border-b border-slate-300 pb-3 mb-3"
+        />
+
+        <Select
+          v-model="country"
+          :label="$t('country')"
+          :options="countries"
+          :placeholder="$t('selectCountry')"
+          name="country"
+          show-static-field
+          required
           class="border-b border-slate-300 pb-3 mb-3"
         />
 
         <Input
-          v-model="email"
-          label="Email"
-          name="email"
+          v-model="password"
+          :label="$t('password')"
+          name="password"
+          type="password"
+          :placeholder="$t('enterPassword')"
           show-static-field
+          required
           class="border-b border-slate-300 pb-3 mb-3"
-        />
-
-        <Input
-          v-model="email"
-          label="Email"
-          name="email"
-          show-static-field
-          class="border-b border-slate-300 pb-3 mb-3"
-        />
-
-        <Input
-          v-model="email"
-          label="Email"
-          name="email"
-          show-static-field
-          class="border-b border-slate-300 pb-3"
         />
       </div>
 
@@ -70,6 +84,7 @@
         background-color-hover="rose-100"
         border-color="rose-600"
         border-color-hover="rose-800"
+        text-color="rose-800"
         @click="handleDeleteAccount"
       >
         {{ $t('deleteAccount') }}

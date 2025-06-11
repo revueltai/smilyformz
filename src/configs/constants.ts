@@ -1,3 +1,8 @@
+export const MODALS = {
+  LOGIN: 'login',
+  CREATE_ACCOUNT: 'createAccount',
+  TUTORIAL: 'tutorial',
+}
 
 export const UI: {
   animationClasses: {

@@ -1,11 +1,25 @@
 <script setup lang="ts">
+  import { ref } from 'vue'
   import Page from '@/components/app/Page.vue'
+  import { useModalStore } from '@/stores/modal.store'
+  import ModalLogin from '@/components/app/ModalLogin.vue'
+  import ModalCreateAccount from '@/components/app/ModalCreateAccount.vue'
+  import { MODALS } from '@/configs/constants'
+
+  const activeModal = ref('')
+  const modalStore = useModalStore()
 
   function handleClickButtonPlay() {}
 
-  function handleClickButtonCreateAccount() {}
+  function handleClickButtonCreateAccount() {
+    activeModal.value = MODALS.CREATE_ACCOUNT
+    modalStore.openModal(activeModal.value)
+  }
 
-  function handleClickButtonLogin() {}
+  function handleClickButtonLogin() {
+    activeModal.value = MODALS.LOGIN
+    modalStore.openModal(activeModal.value)
+  }
 </script>
 
 <template>
@@ -62,5 +76,21 @@
         </Button>
       </div>
     </div>
+
+    <Modal
+      v-if="activeModal === MODALS.LOGIN"
+      :name="MODALS.LOGIN"
+      :heading="$t('loginToYourAccount')"
+    >
+      <ModalLogin />
+    </Modal>
+
+    <Modal
+      v-if="activeModal === MODALS.CREATE_ACCOUNT"
+      :name="MODALS.CREATE_ACCOUNT"
+      :heading="$t('createAnAccount')"
+    >
+      <ModalCreateAccount />
+    </Modal>
   </Page>
 </template>

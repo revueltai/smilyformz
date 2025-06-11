@@ -52,7 +52,7 @@
           <div class="w-full">
             <h3
               v-if="heading"
-              class="text-center w-full text-xl text-slate-700"
+              class="text-center font-semibold w-full text-xl text-slate-700"
             >
               {{ heading }}
             </h3>

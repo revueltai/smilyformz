@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { useModalStore } from '@/stores/modal.store'
-  import { useRouter } from 'vue-router'
   import ModalTutorial from './ModalTutorial.vue'
   import { computed } from 'vue'
 
@@ -19,7 +18,6 @@
     },
   )
 
-  const router = useRouter()
   const modalStore = useModalStore()
 
   const cssClasses = computed(() => ({
