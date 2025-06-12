@@ -43,5 +43,16 @@
   "requiredField": "This field is required",
   "rememberMe": "Remember me",
   "enterUsername": "Enter your username",
-  "enterConfirmPassword": "Confirm your password"
+  "enterConfirmPassword": "Confirm your password",
+  "share": "Share with your friends",
+  "resume": "Resume",
+  "gamePaused": "Game paused",
+  "createAvatar": "Create your avatar",
+  "save": "Save",
+  "youScored": "You scored",
+  "playAgain": "Play again",
+  "shareScoreText": "I just scored {score} points in Smily Formz!",
+  "shareRankingText": "I just got to the top 100 in Smily Formz!",
+  "shareScore": "Share score",
+  "shareRanking": "Share ranking"
 }

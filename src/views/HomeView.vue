@@ -1,14 +1,30 @@
 <script setup lang="ts">
+  import { ref } from 'vue'
   import Page from '@/components/app/Page.vue'
   import HeaderUser from '@/components/app/HeaderUser.vue'
+  import StatBlock from '@/components/app/StatBlock.vue'
+  import { MODALS } from '@/configs/constants'
+  import { useModalStore } from '@/stores/modal.store'
+  import ModalShare from '@/components/app/ModalShare.vue'
+  const modalStore = useModalStore()
+
+  const score = ref(2000)
+  const ranking = ref(120)
+  const activeShare = ref<'score' | 'ranking'>('score')
+
+  function isActiveShareScore() {
+    return activeShare.value === 'score'
+  }
 
   function handleShare(type: 'score' | 'ranking') {
     if (type === 'score') {
-      console.log('share score')
+      activeShare.value = 'score'
+      modalStore.openModal(MODALS.SHARE)
       return
     }
 
-    console.log('share ranking')
+    activeShare.value = 'ranking'
+    modalStore.openModal(MODALS.SHARE)
   }
 
   function handleClickPlay() {
@@ -32,49 +48,18 @@
     <HeaderUser />
 
     <div class="flex flex-col gap-4">
-      <div
-        class="flex justify-between items-center rounded-xl px-3 py-4 text-lime-900 bg-green-100"
-      >
-        <p class="text-sm">
-          {{ $t('lastScore') }}
-        </p>
+      <StatBlock
+        :label="$t('lastScore')"
+        :value="score"
+        variant="score"
+        @click="handleShare('score')"
+      />
 
-        <div class="flex items-center gap-2">
-          <p class="text-xs uppercase font-bold">2000 Pts</p>
-          <Button
-            size="sm"
-            @click="handleShare('score')"
-          >
-            <Icon
-              name="share-2"
-              size="sm"
-              color="slate-700"
-            />
-          </Button>
-        </div>
-      </div>
-
-      <div
-        class="flex justify-between items-center rounded-xl px-3 py-4 text-slate-900 bg-slate-100"
-      >
-        <p class="text-sm">
-          {{ $t('globalRanking') }}
-        </p>
-
-        <div class="flex items-center gap-2">
-          <p class="text-xs uppercase font-bold">123</p>
-          <Button
-            size="sm"
-            @click="handleShare('ranking')"
-          >
-            <Icon
-              name="share-2"
-              size="sm"
-              color="slate-700"
-            />
-          </Button>
-        </div>
-      </div>
+      <StatBlock
+        :label="$t('globalRanking')"
+        value="123"
+        @click="handleShare('ranking')"
+      />
     </div>
 
     <div class="w-full flex gap-4 items-end justify-center">
@@ -117,5 +102,18 @@
         />
       </Button>
     </div>
+
+    <Modal
+      :name="MODALS.SHARE"
+      :heading="isActiveShareScore() ? $t('shareScore') : $t('shareRanking')"
+    >
+      <ModalShare
+        :text="
+          !isActiveShareScore()
+            ? $t('shareScoreText', { score })
+            : $t('shareRankingText', { ranking })
+        "
+      />
+    </Modal>
   </Page>
 </template>

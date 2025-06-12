@@ -1,7 +1,8 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import Page from '@/components/app/Page.vue'
-  import RankingItem from '@/components/app/RankingItem.vue'
+  import RankingList from '@/components/app/RankingList.vue'
+  import { mockRankings } from '@/configs/mocks'
 
   const filter = ref('')
 </script>
@@ -27,24 +28,13 @@
         <Input
           v-model="filter"
           :placeholder="$t('filterByUsername')"
+          :show-edit-icon="false"
           iconName="search"
           show-input-field
           class="shrink-0"
         />
 
-        <ol class="flex flex-col py-3 px-0 bg-slate-100 rounded-xl overflow-y-auto min-h-0 flex-1">
-          <li
-            v-for="i in 100"
-            :key="i"
-          >
-            <RankingItem
-              :position="i"
-              username="John Doe foo bar bla bla bla"
-              score="30000"
-              country="en"
-            />
-          </li>
-        </ol>
+        <RankingList :list="mockRankings" />
 
         <div class="flex flex-col items-center gap-3 mt-2 shrink-0">
           <p class="text-center text-xs text-slate-400">
@@ -59,10 +49,12 @@
             border-color-hover="lime-400"
             background-color="lime-50"
             background-color-hover="lime-100"
+            text-color="lime-800"
           >
             <Icon
               name="play"
               size="sm"
+              color="lime-800"
             />
 
             {{ $t('playNow') }}

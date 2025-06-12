@@ -1,10 +1,8 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { default as tutorial1 } from '@/assets/images/tutorial1.svg'
-  import { default as tutorial2 } from '@/assets/images/tutorial2.svg'
-  import { default as tutorial3 } from '@/assets/images/tutorial3.svg'
 
   const totalPages = 3
+
   const page = ref(1)
 
   function handleClickPage(direction: 'prev' | 'next') {

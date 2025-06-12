@@ -1,8 +1,10 @@
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { MODALS } from '@/configs/constants'
   import Page from '@/components/app/Page.vue'
   import HeaderUser from '@/components/app/HeaderUser.vue'
   import SettingsSound from '@/components/app/SettingsSound.vue'
+  import ModalAvatar from '@/components/app/ModalAvatar.vue'
 
   const countries = ref([
     {
@@ -90,5 +92,12 @@
         {{ $t('deleteAccount') }}
       </Button>
     </div>
+
+    <Modal
+      :name="MODALS.AVATAR"
+      :heading="$t('createAvatar')"
+    >
+      <ModalAvatar />
+    </Modal>
   </Page>
 </template>

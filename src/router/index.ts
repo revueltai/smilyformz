@@ -59,7 +59,7 @@ export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
     {
       path: '/home',
       name: 'Home',
-      component: () => import('../views/DashboardView.vue'),
+      component: () => import('../views/HomeView.vue'),
     },
     {
       path: '/profile',
