@@ -1,11 +1,20 @@
-import { ref, onMounted, onUnmounted, computed, type Ref, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
+import type { Ref } from 'vue'
+import { useGameStore } from '@/stores/gameStore'
 
-const STEP_PX = 96
-
-export function useMovement(
+/**
+ * Handles the movement of the character on the board
+ *
+ * @param boardRef - The reference to the board element
+ * @param characterRef - The reference to the character element
+ * @param stepPx - The step size in pixels
+ */
+export function useMovementCharacter(
   boardRef?: Ref<HTMLElement | null>,
   characterRef?: Ref<HTMLElement | null>,
+  stepPx: number = 104,
 ) {
+  const gameStore = useGameStore()
   let boardObserver: ResizeObserver | null = null
   let charObserver: ResizeObserver | null = null
 
@@ -21,6 +30,7 @@ export function useMovement(
   function updateSizes() {
     boardWidth.value = boardRef?.value?.offsetWidth || 0
     characterWidth.value = characterRef?.value?.offsetWidth || 0
+    posX.value = clampX(posX.value)
   }
 
   /**
@@ -40,20 +50,12 @@ export function useMovement(
    */
   function observeSizes() {
     if (boardRef?.value) {
-      boardObserver = new ResizeObserver(() => {
-        updateSizes()
-        posX.value = clampX(posX.value)
-      })
-
+      boardObserver = new ResizeObserver(() => updateSizes())
       boardObserver.observe(boardRef.value)
     }
 
     if (characterRef?.value) {
-      charObserver = new ResizeObserver(() => {
-        updateSizes()
-        posX.value = clampX(posX.value)
-      })
-
+      charObserver = new ResizeObserver(() => updateSizes())
       charObserver.observe(characterRef.value)
     }
   }
@@ -72,18 +74,19 @@ export function useMovement(
   }
 
   function moveLeft() {
-    posX.value = clampX(posX.value - STEP_PX)
+    if (!gameStore.isGameStarted) return
+    posX.value = clampX(posX.value - stepPx)
   }
 
   function moveRight() {
-    posX.value = clampX(posX.value + STEP_PX)
+    if (!gameStore.isGameStarted) return
+    posX.value = clampX(posX.value + stepPx)
   }
 
   function handleKeyDown(e: KeyboardEvent) {
-    if (e.repeat) {
+    if (!gameStore.isGameStarted || e.repeat) {
       return
     }
-
     if (['ArrowLeft', 'a', 'A'].includes(e.key)) {
       moveLeft()
     } else if (['ArrowRight', 'd', 'D'].includes(e.key)) {
@@ -94,7 +97,6 @@ export function useMovement(
   onMounted(async () => {
     await nextTick()
     updateSizes()
-    posX.value = clampX(posX.value)
     observeSizes()
     window.addEventListener('keydown', handleKeyDown)
   })
@@ -109,5 +111,6 @@ export function useMovement(
     percent,
     moveLeft,
     moveRight,
+    updateSizes,
   }
 }

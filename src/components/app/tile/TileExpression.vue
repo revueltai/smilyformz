@@ -1,9 +1,6 @@
 <script setup lang="ts">
-  import { AVATAR_DEFAULTS } from '@/configs/constants'
-
-  export type TileExpression = 'exp1' | 'exp2' | 'exp3' | 'exp4' | 'exp5'
-
-  export type TileSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+  import { TILE_DEFAULTS } from '@/configs/constants'
+  import type { TileExpression, TileSize } from '@/components/app/tile/types'
 
   const props = withDefaults(
     defineProps<{
@@ -11,7 +8,7 @@
       size?: TileSize
     }>(),
     {
-      expression: AVATAR_DEFAULTS.expression as TileExpression,
+      expression: TILE_DEFAULTS.expression as TileExpression,
       size: 'xs',
     },
   )

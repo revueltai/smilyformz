@@ -1,24 +1,29 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { isMobile } from '@/utils'
-  import { useMovement } from '@/composables/useMovement'
-  import Tile from '@/components/app/Tile.vue'
+  import { useMovementCharacter } from '@/composables/useMovementCharacter'
+  import Tile from '@/components/app/tile/Tile.vue'
   import GameControls from '@/components/app/GameControls.vue'
+  import GameTiles from '@/components/app/GameTiles.vue'
+  import { useGameStore } from '@/stores/gameStore'
 
   defineProps<{
     activeTileColor: string
   }>()
 
+  const gameStore = useGameStore()
   const boardRef = ref<HTMLElement | null>(null)
   const characterRef = ref<HTMLElement | null>(null)
 
-  const { x, moveLeft, moveRight } = useMovement(boardRef, characterRef)
+  const { x, moveLeft, moveRight } = useMovementCharacter(boardRef, characterRef)
 
   function handleMoveLeft() {
+    if (!gameStore.isGameStarted) return
     moveLeft()
   }
 
   function handleMoveRight() {
+    if (!gameStore.isGameStarted) return
     moveRight()
   }
 </script>
@@ -27,14 +32,19 @@
   <div class="relative h-full w-full">
     <GameControls
       v-if="isMobile"
+      :disabled="!gameStore.isGameStarted"
       @move-left="handleMoveLeft"
       @move-right="handleMoveRight"
     />
 
     <div
       ref="boardRef"
-      class="relative h-full w-full"
+      class="relative h-full w-full overflow-hidden"
     >
+      <div class="absolute inset-0">
+        <GameTiles />
+      </div>
+
       <div
         id="character"
         ref="characterRef"

@@ -1,10 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { AVATAR_DEFAULTS } from '@/configs/constants'
-
-  export type TileShape = 'circle' | 'square' | 'triangle' | 'rhomb' | 'star'
-
-  export type TileSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+  import { TILE_DEFAULTS } from '@/configs/constants'
+  import type { TileShape, TileSize } from '@/components/app/tile/types'
 
   const props = withDefaults(
     defineProps<{
@@ -14,7 +11,7 @@
     }>(),
     {
       size: 'sm',
-      color: AVATAR_DEFAULTS.shapeColor,
+      color: TILE_DEFAULTS.shapeColor,
     },
   )
 

@@ -56,5 +56,11 @@
   "shareScore": "Share score",
   "shareRanking": "Share ranking",
   "time": "Time",
-  "score": "Score"
+  "score": "Score",
+  "ready": "Ready",
+  "go": "Go!",
+  "quitGameConfirmation": "Are you sure you want to quit the game?",
+  "cancel": "Cancel",
+  "quit": "Quit",
+  "quitGame": "Quit Game"
 }

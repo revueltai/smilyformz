@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import ColorPicker from '@/components/shared/ColorPicker/index.vue'
-  import Tile from '@/components/app/Tile.vue'
-  import type { TileShape } from '@/components/app/TileShape.vue'
-  import type { TileExpression } from '@/components/app/TileExpression.vue'
-  import { AVATAR_DEFAULTS } from '@/configs/constants'
+  import Tile from '@/components/app/tile/Tile.vue'
+  import type { TileShape } from '@/components/app/tile/types'
+  import type { TileExpression } from '@/components/app/tile/types'
+  import { TILE_DEFAULTS } from '@/configs/constants'
 
   const props = withDefaults(
     defineProps<{
@@ -13,10 +13,10 @@
       expression: TileExpression
     }>(),
     {
-      colorShape: AVATAR_DEFAULTS.shapeColor,
-      colorBackground: AVATAR_DEFAULTS.backgroundColor,
-      shape: AVATAR_DEFAULTS.shape as TileShape,
-      expression: AVATAR_DEFAULTS.expression as TileExpression,
+      colorShape: TILE_DEFAULTS.shapeColor,
+      colorBackground: TILE_DEFAULTS.backgroundColor,
+      shape: TILE_DEFAULTS.shape as TileShape,
+      expression: TILE_DEFAULTS.expression as TileExpression,
     },
   )
 </script>

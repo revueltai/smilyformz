@@ -1,18 +1,18 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { AVATAR_DEFAULTS } from '@/configs/constants'
+  import { TILE_DEFAULTS } from '@/configs/constants'
   import AvatarPreview from '@/components/app/AvatarPreview.vue'
   import AvatarCustomizer from '@/components/app/AvatarCustomizer.vue'
-  import type { TileShape } from '@/components/app/TileShape.vue'
-  import type { TileExpression } from '@/components/app/TileExpression.vue'
+  import type { TileShape } from '@/components/app/tile/types'
+  import type { TileExpression } from '@/components/app/tile/types'
 
-  const colorShape = ref(AVATAR_DEFAULTS.shapeColor)
+  const colorShape = ref(TILE_DEFAULTS.shapeColor)
 
-  const colorBackground = ref(AVATAR_DEFAULTS.backgroundColor)
+  const colorBackground = ref(TILE_DEFAULTS.backgroundColor)
 
-  const avatarShape = ref<TileShape>(AVATAR_DEFAULTS.shape as TileShape)
+  const avatarShape = ref<TileShape>(TILE_DEFAULTS.shape as TileShape)
 
-  const avatarExpression = ref<TileExpression>(AVATAR_DEFAULTS.expression as TileExpression)
+  const avatarExpression = ref<TileExpression>(TILE_DEFAULTS.expression as TileExpression)
 
   function handleSave() {
     console.log('save')

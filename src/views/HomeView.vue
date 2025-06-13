@@ -26,18 +26,6 @@
     activeShare.value = 'ranking'
     modalStore.openModal(MODALS.SHARE)
   }
-
-  function handleClickPlay() {
-    console.log('play')
-  }
-
-  function handleClickShowRanking() {
-    console.log('show ranking')
-  }
-
-  function handleClickShowSettings() {
-    console.log('show settings')
-  }
 </script>
 
 <template>
@@ -66,7 +54,6 @@
       <Button
         to="/ranking"
         size="base"
-        @click="handleClickShowRanking"
       >
         <Icon
           name="award"
@@ -76,12 +63,12 @@
       </Button>
 
       <Button
+        to="/game"
         size="2xl"
         border-color="lime-600"
         border-color-hover="lime-400"
         background-color="lime-50"
         background-color-hover="lime-100"
-        @click="handleClickPlay"
       >
         <Icon
           name="play"
@@ -93,7 +80,6 @@
       <Button
         to="/profile"
         size="base"
-        @click="handleClickShowSettings"
       >
         <Icon
           name="settings-2"

@@ -1,10 +1,10 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { AVATAR_SHAPES, AVATAR_EXPRESSIONS } from '@/configs/constants'
-  import type { TileShape } from '@/components/app/TileShape.vue'
-  import type { TileExpression } from '@/components/app/TileExpression.vue'
-  import Shape from '@/components/app/TileShape.vue'
-  import Expression from '@/components/app/TileExpression.vue'
+  import { TILE_SHAPES, TILE_EXPRESSIONS } from '@/configs/constants'
+  import type { TileShape } from '@/components/app/tile/types'
+  import type { TileExpression } from '@/components/app/tile/types'
+  import Shape from '@/components/app/tile/TileShape.vue'
+  import Expression from '@/components/app/tile/TileExpression.vue'
 
   type Tab = 'expression' | 'shape'
 
@@ -19,8 +19,8 @@
   })
 
   const tabs = ['expression', 'shape'] as Tab[]
-  const shapes = Object.values(AVATAR_SHAPES) as TileShape[]
-  const expressions = Object.values(AVATAR_EXPRESSIONS) as TileExpression[]
+  const shapes = Object.values(TILE_SHAPES) as TileShape[]
+  const expressions = Object.values(TILE_EXPRESSIONS) as TileExpression[]
 
   const currentTab = ref<Tab>('expression')
 
