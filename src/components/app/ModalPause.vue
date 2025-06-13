@@ -1,7 +1,9 @@
 <script setup lang="ts">
   import SettingsSound from '@/components/app/SettingsSound.vue'
-  import GameControls from '@/components/app/GameControls.vue'
+  import ModalControls from '@/components/app/ModalControls.vue'
   import { useRouter } from 'vue-router'
+
+  const emit = defineEmits(['resume'])
 
   const router = useRouter()
 
@@ -10,14 +12,14 @@
   }
 
   function handleResume() {
-    router.push('/game')
+    emit('resume')
   }
 </script>
 
 <template>
   <SettingsSound />
 
-  <GameControls
+  <ModalControls
     class="mt-4"
     @home="handleHome"
     @click="handleResume"

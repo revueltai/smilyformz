@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import StatBlock from '@/components/app/StatBlock.vue'
-  import GameControls from '@/components/app/GameControls.vue'
+  import ModalControls from '@/components/app/ModalControls.vue'
   import RankingList from '@/components/app/RankingList.vue'
   import { useRouter } from 'vue-router'
   import { mockRankings } from '@/configs/mocks'
@@ -32,7 +32,7 @@
 
     <RankingList :list="mockRankings" />
 
-    <GameControls
+    <ModalControls
       class="shrink-0"
       :cta-text="$t('playAgain')"
       @home="handleHome"

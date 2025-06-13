@@ -1,34 +1,29 @@
-<script setup lang="ts">
-  const props = withDefaults(
-    defineProps<{
-      ctaText?: string
-    }>(),
-    {
-      ctaText: '',
-    },
-  )
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="flex gap-4 justify-center w-full">
-    <Button @click="$emit('home')">
+  <div>
+    <Button
+      size="xl"
+      class="absolute left-2 bottom-6 z-20"
+      @click="$emit('move-left')"
+    >
       <Icon
-        name="house"
         size="md"
+        name="arrow-left"
         color="slate-700"
       />
     </Button>
 
     <Button
-      border-color="lime-600"
-      border-color-hover="lime-400"
-      background-color="lime-50"
-      background-color-hover="lime-100"
-      text-color="lime-800"
-      class="flex-1"
-      @click="$emit('click')"
+      size="xl"
+      class="absolute right-2 bottom-6 z-20"
+      @click="$emit('move-right')"
     >
-      {{ ctaText || $t('resume') }}
+      <Icon
+        size="md"
+        name="arrow-right"
+        color="slate-700"
+      />
     </Button>
   </div>
 </template>

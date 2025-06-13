@@ -54,5 +54,7 @@
   "shareScoreText": "I just scored {score} points in Smily Formz!",
   "shareRankingText": "I just got to the top 100 in Smily Formz!",
   "shareScore": "Share score",
-  "shareRanking": "Share ranking"
+  "shareRanking": "Share ranking",
+  "time": "Time",
+  "score": "Score"
 }
