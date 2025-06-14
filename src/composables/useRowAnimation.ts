@@ -1,5 +1,6 @@
+import { watch } from 'vue'
 import { Bus } from '@/services/Bus.service'
-import { ref } from 'vue'
+import { useGameStore } from '@/stores/gameStore'
 
 /**
  * Handles the animation of the tile rows in the board
@@ -7,8 +8,24 @@ import { ref } from 'vue'
  * @returns An object containing the animation state and functions to start and stop the animation
  */
 export function useRowAnimation() {
-  const isAnimating = ref(false)
+  const gameStore = useGameStore()
   let animationFrame: number
+  let activeRows = new Map<string, number>() // Store active rows and their speeds
+
+  /**
+   * Requests the next animation frame for a row
+   *
+   * @param row - The row element to animate
+   * @param speed - The speed of the animation in pixels per frame
+   */
+  function requestNextFrame(row: HTMLElement, speed: number) {
+    if (gameStore.isPaused) {
+      stopAnimation()
+      return
+    }
+
+    animationFrame = requestAnimationFrame(() => updatePosition(row, speed))
+  }
 
   /**
    * Updates the position of a row
@@ -26,7 +43,10 @@ export function useRowAnimation() {
     const currentY = matrix.m42
 
     const container = row.parentElement
-    if (!container) return
+    if (!container) {
+      return
+    }
+
     const containerHeight = container.offsetHeight
 
     let newY = currentY + speed
@@ -38,7 +58,7 @@ export function useRowAnimation() {
 
     row.style.transform = `translateY(${newY}px)`
 
-    animationFrame = requestAnimationFrame(() => updatePosition(row, speed))
+    requestNextFrame(row, speed)
   }
 
   /**
@@ -54,7 +74,8 @@ export function useRowAnimation() {
       return
     }
 
-    animationFrame = requestAnimationFrame(() => updatePosition(row, speed))
+    activeRows.set(rowId, speed)
+    requestNextFrame(row, speed)
   }
 
   /**
@@ -65,32 +86,27 @@ export function useRowAnimation() {
    * @param delay - The delay between each row animation in milliseconds (default: 6000)
    */
   function startAnimation(rowIds: string[], speed: number = 2, delay: number = 6000) {
-    if (isAnimating.value) {
-      return
-    }
-
-    isAnimating.value = true
-
-    rowIds.forEach((rowId, index) => {
-      setTimeout(() => animateRow(rowId, speed), index * delay)
-    })
+    activeRows.clear()
+    rowIds.forEach((rowId) => animateRow(rowId, speed))
   }
 
   /**
    * Stops the animation
    */
   function stopAnimation() {
-    if (!isAnimating.value) {
-      return
-    }
-
-    isAnimating.value = false
     cancelAnimationFrame(animationFrame)
   }
 
+  watch(
+    () => gameStore.isPaused,
+    (isPaused) => {
+      if (!isPaused && activeRows.size > 0) {
+        activeRows.forEach((speed, rowId) => animateRow(rowId, speed))
+      }
+    },
+  )
+
   return {
-    isAnimating,
     startAnimation,
-    stopAnimation,
   }
 }
