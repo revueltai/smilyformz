@@ -1,3 +1,4 @@
+import { Bus } from '@/services/Bus.service'
 import { ref } from 'vue'
 
 /**
@@ -32,6 +33,7 @@ export function useRowAnimation() {
 
     if (newY > containerHeight) {
       newY = -row.offsetHeight
+      Bus.emit('tileRowReset', { rowId: row.id })
     }
 
     row.style.transform = `translateY(${newY}px)`
@@ -56,19 +58,22 @@ export function useRowAnimation() {
   }
 
   /**
-   * Starts animating all rows
+   * Starts animating all rows with a delay between each row
    *
    * @param rowIds - Array of row IDs to animate
    * @param speed - The speed of the animation in pixels per frame
+   * @param delay - The delay between each row animation in milliseconds (default: 6000)
    */
-  function startAnimation(rowIds: string[], speed: number = 2) {
+  function startAnimation(rowIds: string[], speed: number = 2, delay: number = 6000) {
     if (isAnimating.value) {
       return
     }
 
     isAnimating.value = true
 
-    rowIds.forEach((rowId) => animateRow(rowId, speed))
+    rowIds.forEach((rowId, index) => {
+      setTimeout(() => animateRow(rowId, speed), index * delay)
+    })
   }
 
   /**
@@ -80,7 +85,6 @@ export function useRowAnimation() {
     }
 
     isAnimating.value = false
-
     cancelAnimationFrame(animationFrame)
   }
 

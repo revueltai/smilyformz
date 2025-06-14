@@ -14,10 +14,12 @@
         v-for="(tile, index) in tiles"
         :key="tile.id"
         :ref="tile.id"
+        :data-id="tile.id"
         :shape="tile.shape"
         :expression="tile.expression"
         :shape-color="tile.shapeColor"
         :background-color="tile.backgroundColor"
+        :check-for-collision="true"
       />
     </div>
   </div>

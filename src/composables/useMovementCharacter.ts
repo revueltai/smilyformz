@@ -1,20 +1,22 @@
 import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
 import type { Ref } from 'vue'
 import { useGameStore } from '@/stores/gameStore'
+import type { RefElement } from '@/components/shared/types'
 
 /**
  * Handles the movement of the character on the board
  *
- * @param boardRef - The reference to the board element
+ * @param boardEl - The board element
  * @param characterRef - The reference to the character element
  * @param stepPx - The step size in pixels
  */
 export function useMovementCharacter(
-  boardRef?: Ref<HTMLElement | null>,
-  characterRef?: Ref<HTMLElement | null>,
+  boardEl?: RefElement,
+  characterRef?: Ref<RefElement>,
   stepPx: number = 104,
 ) {
   const gameStore = useGameStore()
+
   let boardObserver: ResizeObserver | null = null
   let charObserver: ResizeObserver | null = null
 
@@ -28,7 +30,7 @@ export function useMovementCharacter(
    * Updates the board and character width
    */
   function updateSizes() {
-    boardWidth.value = boardRef?.value?.offsetWidth || 0
+    boardWidth.value = boardEl?.offsetWidth || 0
     characterWidth.value = characterRef?.value?.offsetWidth || 0
     posX.value = clampX(posX.value)
   }
@@ -49,9 +51,9 @@ export function useMovementCharacter(
    * Observes the board and character sizes
    */
   function observeSizes() {
-    if (boardRef?.value) {
+    if (boardEl) {
       boardObserver = new ResizeObserver(() => updateSizes())
-      boardObserver.observe(boardRef.value)
+      boardObserver.observe(boardEl)
     }
 
     if (characterRef?.value) {
@@ -64,7 +66,7 @@ export function useMovementCharacter(
    * Unobserves the board and character sizes
    */
   function unobserveSizes() {
-    if (boardObserver && boardRef?.value) {
+    if (boardObserver && boardEl) {
       boardObserver.disconnect()
     }
 
@@ -74,7 +76,10 @@ export function useMovementCharacter(
   }
 
   function moveLeft() {
-    if (!gameStore.isGameStarted) return
+    if (!gameStore.isGameStarted) {
+      return
+    }
+
     posX.value = clampX(posX.value - stepPx)
   }
 

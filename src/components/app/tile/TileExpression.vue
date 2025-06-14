@@ -24,11 +24,13 @@
 </script>
 
 <template>
-  <img
-    :src="`/images/character/expressions/${props.expression}.svg`"
-    :alt="props.expression"
-    :width="SIZES[props.size]"
-    :height="SIZES[props.size]"
-    class="object-contain"
-  />
+  <div>
+    <img
+      :src="`/images/character/expressions/${props.expression}.svg`"
+      :alt="props.expression"
+      :width="SIZES[props.size]"
+      :height="SIZES[props.size]"
+      class="object-contain"
+    />
+  </div>
 </template>
