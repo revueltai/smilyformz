@@ -34,7 +34,13 @@ export function useRowAnimation() {
    * @param speed - The speed of the animation in pixels per frame
    */
   function updatePosition(row: HTMLElement, speed: number) {
-    if (!row) {
+    if (!row) return
+
+    const startTime = Number(row.dataset.startTime || 0)
+    const currentTime = getCurrentTime()
+
+    if (currentTime < startTime) {
+      requestNextFrame(row, speed)
       return
     }
 
@@ -56,7 +62,8 @@ export function useRowAnimation() {
       Bus.emit('tileRowReset', { rowId: row.id })
     }
 
-    row.style.transform = `translateY(${newY}px)`
+    const existingStyles = row.style.cssText
+    row.style.cssText = `${existingStyles}; transform: translateY(${newY}px);`
 
     requestNextFrame(row, speed)
   }
@@ -66,14 +73,13 @@ export function useRowAnimation() {
    *
    * @param rowId - The ID of the row to animate
    * @param speed - The speed of the animation in pixels per frame
+   * @param delay - The delay before starting the animation in milliseconds (default: null)
    */
-  function animateRow(rowId: string, speed: number = 2) {
+  function animateRow(rowId: string, speed: number = 2, delay: number = 0) {
     const row = document.getElementById(rowId)
+    if (!row) return
 
-    if (!row) {
-      return
-    }
-
+    row.dataset.startTime = String(getCurrentTime() + delay)
     activeRows.set(rowId, speed)
     requestNextFrame(row, speed)
   }
@@ -83,11 +89,11 @@ export function useRowAnimation() {
    *
    * @param rowIds - Array of row IDs to animate
    * @param speed - The speed of the animation in pixels per frame
-   * @param delay - The delay between each row animation in milliseconds (default: 6000)
+   * @param delay - The delay between each row animation in milliseconds (default: 4000)
    */
-  function startAnimation(rowIds: string[], speed: number = 2, delay: number = 6000) {
+  function startAnimation(rowIds: string[], speed: number = 2, delay: number = 4000) {
     activeRows.clear()
-    rowIds.forEach((rowId) => animateRow(rowId, speed))
+    rowIds.forEach((rowId, index) => animateRow(rowId, speed, index * delay))
   }
 
   /**
@@ -95,6 +101,13 @@ export function useRowAnimation() {
    */
   function stopAnimation() {
     cancelAnimationFrame(animationFrame)
+  }
+
+  /**
+   * Gets the current time in milliseconds to use when starting animations.
+   */
+  function getCurrentTime(): number {
+    return Math.round(performance.now())
   }
 
   watch(
