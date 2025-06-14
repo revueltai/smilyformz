@@ -41,9 +41,7 @@
       ref="boardRef"
       class="relative h-full w-full overflow-hidden"
     >
-      <div class="absolute inset-0">
-        <GameTiles />
-      </div>
+      <GameTiles />
 
       <div
         id="character"

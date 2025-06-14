@@ -17,7 +17,7 @@
     setTimeout(() => {
       isVisible.value = false
       props.onComplete()
-    }, 4000)
+    }, 1000)
   })
 </script>
 

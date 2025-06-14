@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES } from '@/configs/constants'
-import type { TileShape, TileExpression, TileRowItem } from '@/components/app/tile/types'
+import type { TileShape, TileExpression, TileRowItem, TileRow } from '@/components/app/tile/types'
 import { useGameStore } from '@/stores/gameStore'
 
 const SHAPES = Object.values(TILE_SHAPES) as TileShape[]
@@ -16,10 +16,7 @@ export function getRandomItem<T>(array: T[]): T {
  */
 export function useTileGeneration() {
   const gameStore = useGameStore()
-
-  const rows = ref<TileRowItem[][]>([])
-
-  const currentRows = computed(() => rows.value)
+  const rows = ref<TileRow[]>([])
 
   /**
    * Creates a tile that matches the character color, shape or both
@@ -42,46 +39,73 @@ export function useTileGeneration() {
     }
   }
 
-  function generateNewRow(): TileRowItem[] {
-    const tiles = Array.from({ length: 3 }, () => {
+  /**
+   * Generates an array of tiles for a given row
+   *
+   * @param rowId - The id of the row
+   * @returns An array of tiles
+   */
+  function generateTiles(rowId: string): TileRowItem[] {
+    return Array.from({ length: 3 }, (_, tileIndex) => {
       const color = getRandomItem(COLORS)
+
       return {
-        type: 'tile',
+        id: `${rowId}-tile${tileIndex}`,
+        type: 'Tile',
         shape: getRandomItem(SHAPES),
         expression: getRandomItem(EXPRESSIONS),
         shapeColor: color.shapeColor,
         backgroundColor: color.backgroundColor,
       }
     })
+  }
+
+  /**
+   * Generates a new row of tiles
+   *
+   * @param index - The index of the row
+   * @returns The new row of tiles
+   */
+  function generateNewRow(index: number): TileRow {
+    const rowId = `row${index}`
+
+    const tiles: TileRowItem[] = generateTiles(rowId)
 
     const matchIndex = Math.floor(Math.random() * 3)
     tiles[matchIndex] = createMatchingTile(tiles[matchIndex])
 
-    return tiles
+    return {
+      id: rowId,
+      type: 'TileRow',
+      tiles,
+    }
   }
 
-  function addRow() {
-    rows.value.push(generateNewRow())
+  /**
+   * Initializes the position of the tile rows outside of the viewport
+   */
+  function initializeRowsPosition() {
+    for (const row of rows.value) {
+      const rowEl = document.getElementById(row.id)
+
+      if (rowEl) {
+        rowEl.style.transform = `translateY(-${rowEl.offsetHeight}px)`
+      }
+    }
   }
 
-  function removeRow() {
-    rows.value.shift()
-  }
-
-  function clearRows() {
-    rows.value = []
-  }
-
+  /**
+   * Initializes the rows of tiles
+   *
+   * @param count - The number of rows to initialize
+   */
   function initializeRows(count: number) {
-    rows.value = Array.from({ length: count }, () => generateNewRow())
+    rows.value = Array.from({ length: count }, (_, index) => generateNewRow(index))
   }
 
   return {
-    rows: currentRows,
-    generateNewRow,
-    addRow,
-    removeRow,
-    clearRows,
+    rows,
     initializeRows,
+    initializeRowsPosition,
   }
 }

@@ -9,8 +9,15 @@ export type TileColor = {
   backgroundColor: string
 }
 
+export type TileRow = {
+  id: string
+  type: 'TileRow'
+  tiles: TileRowItem[]
+}
+
 export type TileRowItem = {
-  type: string
+  id: string
+  type: 'Tile'
   shape: TileShape
   expression: TileExpression
   shapeColor: string

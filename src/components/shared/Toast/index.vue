@@ -3,8 +3,8 @@
   import { ToastService } from './service'
   import { computed, onMounted, onUnmounted, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import type { ToastType, ToastPayload } from './types'
-  import type { RefElement } from '../types'
+  import type { ToastType, ToastPayload } from '@/components/shared/Toast/types'
+  import type { RefElement } from '@/components/shared/types'
 
   const { t } = useI18n()
 
