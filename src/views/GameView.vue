@@ -48,6 +48,7 @@
     <Modal
       :name="MODALS.PAUSE"
       :heading="$t('gamePaused')"
+      @close="handleResume"
     >
       <ModalPause @resume="handleResume" />
     </Modal>

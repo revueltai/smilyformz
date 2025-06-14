@@ -43,10 +43,9 @@ export function useTileGeneration() {
   }
 
   function generateNewRow(): TileRowItem[] {
-    const tiles = Array.from({ length: 3 }, (_, index) => {
+    const tiles = Array.from({ length: 3 }, () => {
       const color = getRandomItem(COLORS)
       return {
-        id: index + 1,
         type: 'tile',
         shape: getRandomItem(SHAPES),
         expression: getRandomItem(EXPRESSIONS),
