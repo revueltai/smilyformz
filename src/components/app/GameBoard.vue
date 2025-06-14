@@ -6,6 +6,7 @@
 
   defineProps<{
     activeTileColor: string
+    isPaused?: boolean
   }>()
 
   const boardRef = ref<RefElement>(null)

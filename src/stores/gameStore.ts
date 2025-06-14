@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES } from '@/configs/constants'
-import type { TileShape, TileExpression, TileRowItem } from '@/components/app/tile/types'
+import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import { getRandomItem } from '@/composables/useTileGeneration'
 
 interface GameTime {
@@ -18,8 +18,9 @@ export const useGameStore = defineStore('game', () => {
     seconds: 0,
     minutes: 0,
   })
+  let timeInterval: number | null = null
 
-  const character = computed<TileRowItem>(() => {
+  const character = computed(() => {
     const color = getRandomItem(Object.values(TILE_COLORS))
 
     return {
@@ -35,8 +36,6 @@ export const useGameStore = defineStore('game', () => {
     const pad = (num: number) => num.toString().padStart(2, '0')
     return `${pad(time.value.minutes)}:${pad(time.value.seconds)}`
   })
-
-  let timeInterval: number | null = null
 
   function startTimeTracking() {
     if (timeInterval) return
@@ -71,12 +70,11 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  function updateCharacter() {
-    character.value
-  }
-
   function incrementScore(points: number = 1) {
-    if (isPaused.value || !isGameStarted.value) return
+    if (isPaused.value || !isGameStarted.value || isGameOver.value) {
+      return
+    }
+
     score.value += points
   }
 
@@ -86,13 +84,10 @@ export const useGameStore = defineStore('game', () => {
 
   function setGameOver(value: boolean) {
     isGameOver.value = value
+
     if (value) {
       stopTimeTracking()
     }
-  }
-
-  function togglePause() {
-    isPaused.value = !isPaused.value
   }
 
   function pause() {
@@ -115,7 +110,6 @@ export const useGameStore = defineStore('game', () => {
     setGameOver(false)
     isPaused.value = false
     isGameStarted.value = false
-    updateCharacter()
   }
 
   return {
@@ -126,7 +120,7 @@ export const useGameStore = defineStore('game', () => {
     isGameStarted,
     time,
     formattedTime,
-    updateCharacter,
+
     incrementScore,
     resetScore,
     setGameOver,

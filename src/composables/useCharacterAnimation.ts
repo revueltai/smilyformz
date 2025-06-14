@@ -76,7 +76,7 @@ export function useMovementCharacter(
   }
 
   function moveLeft() {
-    if (!gameStore.isGameStarted) {
+    if (!gameStore.isGameStarted || gameStore.isPaused) {
       return
     }
 
@@ -84,14 +84,18 @@ export function useMovementCharacter(
   }
 
   function moveRight() {
-    if (!gameStore.isGameStarted) return
+    if (!gameStore.isGameStarted || gameStore.isPaused) {
+      return
+    }
+
     posX.value = clampX(posX.value + stepPx)
   }
 
   function handleKeyDown(e: KeyboardEvent) {
-    if (!gameStore.isGameStarted || e.repeat) {
+    if (!gameStore.isGameStarted || gameStore.isPaused || e.repeat) {
       return
     }
+
     if (['ArrowLeft', 'a', 'A'].includes(e.key)) {
       moveLeft()
     } else if (['ArrowRight', 'd', 'D'].includes(e.key)) {

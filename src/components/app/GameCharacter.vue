@@ -2,12 +2,11 @@
   import { ref, nextTick, onMounted } from 'vue'
   import { useGameStore } from '@/stores/gameStore'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
-  import { useMovementCharacter } from '@/composables/useMovementCharacter'
+  import { useMovementCharacter } from '@/composables/useCharacterAnimation'
   import { isMobile } from '@/utils'
   import GameControls from '@/components/app/GameControls.vue'
   import Tile from '@/components/app/tile/Tile.vue'
   import type { RefElement } from '@/components/shared/types'
-  import type { Ref } from 'vue'
 
   const props = defineProps<{
     boardRef: RefElement
@@ -64,7 +63,7 @@
 
       <div
         ref="characterHitAreaRef"
-        class="w-8 h-8 bg-rose-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+        class="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
       />
     </div>
   </div>
