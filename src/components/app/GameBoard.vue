@@ -18,13 +18,13 @@
       ref="boardRef"
       class="relative h-full w-full overflow-hidden"
     >
+      <GameTiles />
+
       <GameCharacter
         v-if="boardRef"
         :boardRef="boardRef"
         :active-tile-color="activeTileColor"
       />
-
-      <GameTiles />
     </div>
   </div>
 </template>

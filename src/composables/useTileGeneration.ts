@@ -1,6 +1,12 @@
 import { ref } from 'vue'
 import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES } from '@/configs/constants'
-import type { TileShape, TileExpression, TileRowItem, TileRow } from '@/components/app/tile/types'
+import type {
+  TileShape,
+  TileExpression,
+  TileRowItem,
+  TileRow,
+  TileColor,
+} from '@/components/app/tile/types'
 import { useGameStore } from '@/stores/gameStore'
 
 const SHAPES = Object.values(TILE_SHAPES) as TileShape[]
@@ -11,6 +17,10 @@ export function getRandomItem<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)]
 }
 
+function getRandomBoolean(): boolean {
+  return Math.random() < 0.5
+}
+
 /**
  * Handles the generation of tiles on the board
  */
@@ -19,23 +29,43 @@ export function useTileGeneration() {
   const rows = ref<TileRow[]>([])
 
   /**
-   * Creates a tile that matches the character color, shape or both
+   *  Creates a tile that can optionally match the character color, shape, both or none
    *
-   * @param tile - The tile to match the character
-   * @returns The matching tile
+   * @param matchCharacter - Whether the tile should match the character
+   * @param rowId - The id of the row
+   * @param tileIndex - The index of the tile
+   * @param color - The color of the tile
+   * @returns The tile
    */
-  function createMatchingTile(tile: TileRowItem): TileRowItem {
-    // First, ensure we match at least one property
-    const shouldMatchShape = Math.random() < 0.5
-    const shouldMatchColor = !shouldMatchShape || Math.random() < 0.5
+  function createTile(
+    matchCharacter: boolean,
+    rowId: string,
+    tileIndex: number,
+    color: TileColor,
+  ): TileRowItem {
+    let shouldMatchShape = false
+    let shouldMatchColor = false
+
+    if (matchCharacter) {
+      shouldMatchShape = getRandomBoolean()
+      shouldMatchColor = !shouldMatchShape
+    }
+
+    // Get color pair - either from character or random
+    const colorPair = shouldMatchColor
+      ? {
+          shapeColor: gameStore.character.shapeColor,
+          backgroundColor: gameStore.character.backgroundColor,
+        }
+      : color
 
     return {
-      ...tile,
-      shape: shouldMatchShape ? gameStore.character.shape : tile.shape,
-      shapeColor: shouldMatchColor ? gameStore.character.shapeColor : tile.shapeColor,
-      backgroundColor: shouldMatchColor
-        ? gameStore.character.backgroundColor
-        : tile.backgroundColor,
+      id: `${rowId}-tile${tileIndex}`,
+      type: 'Tile',
+      shape: shouldMatchShape ? gameStore.character.shape : getRandomItem(SHAPES),
+      expression: getRandomItem(EXPRESSIONS),
+      shapeColor: colorPair.shapeColor,
+      backgroundColor: colorPair.backgroundColor,
     }
   }
 
@@ -46,17 +76,13 @@ export function useTileGeneration() {
    * @returns An array of tiles
    */
   function generateTiles(rowId: string): TileRowItem[] {
-    return Array.from({ length: 3 }, (_, tileIndex) => {
-      const color = getRandomItem(COLORS)
+    const totalRowsLength = 3
+    const matchIndex = Math.floor(Math.random() * totalRowsLength)
 
-      return {
-        id: `${rowId}-tile${tileIndex}`,
-        type: 'Tile',
-        shape: getRandomItem(SHAPES),
-        expression: getRandomItem(EXPRESSIONS),
-        shapeColor: color.shapeColor,
-        backgroundColor: color.backgroundColor,
-      }
+    return Array.from({ length: totalRowsLength }, (_, tileIndex) => {
+      const matchCharacter = tileIndex === matchIndex
+      const color = getRandomItem(COLORS)
+      return createTile(matchCharacter, rowId, tileIndex, color)
     })
   }
 
@@ -68,11 +94,7 @@ export function useTileGeneration() {
    */
   function generateNewRow(index: number): TileRow {
     const rowId = `row${index}`
-
     const tiles: TileRowItem[] = generateTiles(rowId)
-
-    const matchIndex = Math.floor(Math.random() * 3)
-    tiles[matchIndex] = createMatchingTile(tiles[matchIndex])
 
     return {
       id: rowId,

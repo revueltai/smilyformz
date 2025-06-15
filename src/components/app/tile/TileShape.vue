@@ -42,20 +42,22 @@
 </script>
 
 <template>
-  <svg
-    :width="currentSize"
-    :height="currentSize"
-    :viewBox="`0 0 ${currentSize} ${currentSize}`"
-    class="object-contain"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      :d="currentPath"
-      :fill="color"
-      class="shape-morph"
-    />
-  </svg>
+  <div class="relative">
+    <svg
+      :width="currentSize"
+      :height="currentSize"
+      :viewBox="`0 0 ${currentSize} ${currentSize}`"
+      class="object-contain"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        :d="currentPath"
+        :fill="color"
+        class="shape-morph"
+      />
+    </svg>
+  </div>
 </template>
 
 <style scoped>

@@ -1,14 +1,14 @@
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 import { Bus } from '@/services/Bus.service'
 import { useGameStore } from '@/stores/gameStore'
+import type { RefElement } from '@/components/shared/types'
 
 /**
- * Handles the animation of the tile rows in the board
- *
- * @returns An object containing the animation state and functions to start and stop the animation
+ * Composable for animating rows
  */
 export function useRowAnimation() {
   const gameStore = useGameStore()
+  const isAnimating = ref(false)
   let animationFrame: number
   let activeRows = new Map<string, number>() // Store active rows and their speeds
 
@@ -49,16 +49,18 @@ export function useRowAnimation() {
     const currentY = matrix.m42
 
     const container = row.parentElement
-    if (!container) {
-      return
-    }
+    if (!container) return
 
     const containerHeight = container.offsetHeight
-
     let newY = currentY + speed
 
     if (newY > containerHeight) {
+      const rowIndex = Number(row.dataset.index || 0)
+      const baseDelay = Number(row.dataset.baseDelay || 4000)
+
       newY = -row.offsetHeight
+      row.dataset.startTime = String(getCurrentTime() + rowIndex * baseDelay)
+
       Bus.emit('tileRowReset', { rowId: row.id })
     }
 
@@ -77,7 +79,10 @@ export function useRowAnimation() {
    */
   function animateRow(rowId: string, speed: number = 2, delay: number = 0) {
     const row = document.getElementById(rowId)
-    if (!row) return
+
+    if (!row) {
+      return
+    }
 
     row.dataset.startTime = String(getCurrentTime() + delay)
     activeRows.set(rowId, speed)
@@ -93,7 +98,16 @@ export function useRowAnimation() {
    */
   function startAnimation(rowIds: string[], speed: number = 2, delay: number = 4000) {
     activeRows.clear()
-    rowIds.forEach((rowId, index) => animateRow(rowId, speed, index * delay))
+    rowIds.forEach((rowId, index) => {
+      const row = document.getElementById(rowId)
+      if (!row) return
+
+      // Store index and base delay for future resets
+      row.dataset.index = String(index)
+      row.dataset.baseDelay = String(delay)
+
+      animateRow(rowId, speed, index * delay)
+    })
   }
 
   /**
@@ -120,6 +134,8 @@ export function useRowAnimation() {
   )
 
   return {
+    isAnimating,
     startAnimation,
+    stopAnimation,
   }
 }

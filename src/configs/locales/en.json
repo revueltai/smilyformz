@@ -47,6 +47,7 @@
   "share": "Share with your friends",
   "resume": "Resume",
   "gamePaused": "Game paused",
+  "gameOver": "Game over",
   "createAvatar": "Create your avatar",
   "save": "Save",
   "youScored": "You scored",
@@ -62,5 +63,7 @@
   "quitGameConfirmation": "Are you sure you want to quit the game?",
   "cancel": "Cancel",
   "quit": "Quit",
-  "quitGame": "Quit Game"
+  "quitGame": "Quit Game",
+  "points": "Pts",
+  "gameOverMessage": "Oops!"
 }

@@ -56,9 +56,10 @@
   >
     <div class="relative w-full h-full">
       <Tile
-        shape="circle"
-        expression="exp1"
-        :shape-color="activeTileColor"
+        :id="gameStore.character.id"
+        :shape="gameStore.character.shape"
+        :expression="gameStore.character.expression"
+        :shape-color="gameStore.character.shapeColor"
       />
 
       <div

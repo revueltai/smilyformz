@@ -1,15 +1,19 @@
 <script setup lang="ts">
+  import { watch, ref } from 'vue'
   import { useModalStore } from '@/stores/modal.store'
-  import { MODALS } from '@/configs/constants'
-  import GameHeader from '@/components/app/GameHeader.vue'
-  import ModalPause from '@/components/app/ModalPause.vue'
-  import ModalQuitConfirm from '@/components/app/ModalQuitConfirm.vue'
-  import GameBoard from '@/components/app/GameBoard.vue'
-  import GameCountdown from '@/components/app/GameCountdown.vue'
   import { useGameStore } from '@/stores/gameStore'
+  import { MODALS } from '@/configs/constants'
+  import ModalPause from '@/components/app/ModalPause.vue'
+  import ModalGameOver from '@/components/app/ModalGameOver.vue'
+  import ModalQuitConfirm from '@/components/app/ModalQuitConfirm.vue'
+  import GameHeader from '@/components/app/GameHeader.vue'
+  import GameBoard from '@/components/app/GameBoard.vue'
+  import GameStartCountdown from '@/components/app/GameStartCountdown.vue'
+  import GameOverCountdown from '@/components/app/GameOverCountdown.vue'
 
   const gameStore = useGameStore()
   const modalStore = useModalStore()
+  const showGameOverCountdown = ref(false)
 
   function handlePause() {
     gameStore.pause()
@@ -24,6 +28,19 @@
   function handleCountdownComplete() {
     gameStore.startGame()
   }
+
+  function handleGameOverCountdownComplete() {
+    modalStore.openModal(MODALS.GAME_OVER)
+  }
+
+  watch(
+    () => gameStore.isGameOver,
+    (isGameOver) => {
+      if (isGameOver) {
+        showGameOverCountdown.value = true
+      }
+    },
+  )
 </script>
 
 <template>
@@ -40,9 +57,14 @@
       :is-paused="gameStore.isPaused"
     />
 
-    <GameCountdown
+    <GameStartCountdown
       v-if="!gameStore.isGameStarted"
       :on-complete="handleCountdownComplete"
+    />
+
+    <GameOverCountdown
+      v-if="showGameOverCountdown"
+      :on-complete="handleGameOverCountdownComplete"
     />
 
     <Modal
@@ -59,6 +81,13 @@
       :has-close-button="false"
     >
       <ModalQuitConfirm />
+    </Modal>
+
+    <Modal
+      :name="MODALS.GAME_OVER"
+      :heading="$t('gameOver')"
+    >
+      <ModalGameOver />
     </Modal>
   </div>
 </template>

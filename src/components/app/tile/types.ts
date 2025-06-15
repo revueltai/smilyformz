@@ -23,3 +23,11 @@ export type TileRowItem = {
   shapeColor: string
   backgroundColor: string
 }
+
+export interface Character {
+  id: string
+  shape: TileShape
+  color: TileColor
+  x: number
+  y: number
+}

@@ -10,6 +10,7 @@ interface GameTime {
 }
 
 export const useGameStore = defineStore('game', () => {
+  const pointsPerMatch = ref(1)
   const score = ref(0)
   const isGameOver = ref(false)
   const isPaused = ref(false)
@@ -20,16 +21,13 @@ export const useGameStore = defineStore('game', () => {
   })
   let timeInterval: number | null = null
 
-  const character = computed(() => {
-    const color = getRandomItem(Object.values(TILE_COLORS))
-
-    return {
-      type: 'character',
-      shape: getRandomItem(Object.values(TILE_SHAPES) as TileShape[]),
-      shapeColor: color.shapeColor,
-      backgroundColor: color.backgroundColor,
-      expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
-    }
+  const character = ref({
+    id: 'character',
+    type: 'character',
+    shape: getRandomItem(Object.values(TILE_SHAPES) as TileShape[]),
+    shapeColor: getRandomItem(Object.values(TILE_COLORS)).shapeColor,
+    backgroundColor: getRandomItem(Object.values(TILE_COLORS)).backgroundColor,
+    expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
   })
 
   const formattedTime = computed(() => {
@@ -38,7 +36,9 @@ export const useGameStore = defineStore('game', () => {
   })
 
   function startTimeTracking() {
-    if (timeInterval) return
+    if (timeInterval) {
+      return
+    }
 
     timeInterval = window.setInterval(() => {
       if (!isPaused.value && isGameStarted.value) {
@@ -70,12 +70,22 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  function incrementScore(points: number = 1) {
+  function incrementScore(shapeMatch: boolean, colorMatch: boolean) {
     if (isPaused.value || !isGameStarted.value || isGameOver.value) {
       return
     }
 
-    score.value += points
+    let newPoints = 0
+
+    if (shapeMatch || colorMatch) {
+      newPoints += pointsPerMatch.value
+    }
+
+    if (shapeMatch && colorMatch) {
+      newPoints += pointsPerMatch.value
+    }
+
+    score.value += newPoints
   }
 
   function resetScore() {
@@ -112,8 +122,24 @@ export const useGameStore = defineStore('game', () => {
     isGameStarted.value = false
   }
 
+  function updateCharacterOnMatch(characterProps: {
+    shape: TileShape
+    shapeColor: string
+    backgroundColor: string
+  }) {
+    character.value = {
+      id: 'character',
+      type: 'character',
+      shape: characterProps.shape,
+      shapeColor: characterProps.shapeColor,
+      backgroundColor: characterProps.backgroundColor,
+      expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
+    }
+  }
+
   return {
     character,
+    pointsPerMatch,
     score,
     isGameOver,
     isPaused,
@@ -128,5 +154,6 @@ export const useGameStore = defineStore('game', () => {
     pause,
     resume,
     startGame,
+    updateCharacterOnMatch,
   }
 })

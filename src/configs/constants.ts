@@ -11,6 +11,7 @@ export const MODALS = {
   PAUSE: 'pause',
   SHARE: 'share',
   QUIT_CONFIRM: 'quitConfirm',
+  GAME_OVER: 'gameOver',
 }
 
 export const TILE_COLORS: Record<string, TileColor> = {

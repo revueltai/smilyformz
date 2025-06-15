@@ -2,6 +2,7 @@
   import { ref, onMounted, onUnmounted } from 'vue'
   import { TILE_DEFAULTS } from '@/configs/constants'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
+  import { useTileCollision } from '@/composables/useTileCollision'
   import Shape from '@/components/app/tile/TileShape.vue'
   import Expression from '@/components/app/tile/TileExpression.vue'
   import type { TileShape } from '@/components/app/tile/types'
@@ -10,6 +11,7 @@
 
   const props = withDefaults(
     defineProps<{
+      id: string
       shape: TileShape
       expression: TileExpression
       shapeColor: string
@@ -26,13 +28,17 @@
   )
 
   const { onCheckCollisionStart, onCheckCollisionEnd } = useCollisionDetection()
+  const { evaluateCollision } = useTileCollision()
 
   const tileRef = ref<RefElement>(null)
   const hasCollided = ref(false)
 
   function handleCollision() {
     hasCollided.value = true
-    console.log('Collision detected!', {
+
+    evaluateCollision({
+      id: props.id,
+      type: 'Tile',
       shape: props.shape,
       expression: props.expression,
       shapeColor: props.shapeColor,
@@ -57,13 +63,12 @@
   <div
     ref="tileRef"
     class="relative inline-flex items-center justify-center rounded-lg p-4 transition-all duration-300 ease-in-out"
-    :class="hasCollided ? 'opacity-50' : ''"
+    :class="[hasCollided ? 'animate-collision' : '', 'transform-gpu']"
     :style="{ backgroundColor: backgroundColor }"
   >
     <Shape
       :shape="shape"
       :color="shapeColor"
-      class="relative z-0"
     />
 
     <div class="absolute inset-0 z-10 flex items-center justify-center">
@@ -71,3 +76,36 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+  @keyframes collision {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    20% {
+      transform: scale(1.4);
+      opacity: 0.9;
+    }
+    40% {
+      transform: scale(0.6);
+      opacity: 0.8;
+    }
+    60% {
+      transform: scale(1.2);
+      opacity: 0.7;
+    }
+    80% {
+      transform: scale(0.8);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+  }
+
+  .animate-collision {
+    animation: collision 400ms cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+  }
+</style>

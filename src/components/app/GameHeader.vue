@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  const props = withDefaults(
+  withDefaults(
     defineProps<{
       time: string
       score: number
@@ -24,7 +24,7 @@
 
         <div>
           <div class="block text-slate-400 text-xs">{{ $t('score') }}</div>
-          <div class="text-blue-500">{{ score }}</div>
+          <div class="text-blue-500">{{ score }} {{ $t('points') }}</div>
         </div>
       </div>
 
