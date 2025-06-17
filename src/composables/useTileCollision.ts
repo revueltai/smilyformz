@@ -1,5 +1,6 @@
 import type { TileRowItem, TileShape } from '@/components/app/tile/types'
 import { useGameStore } from '@/stores/gameStore'
+import { useCollisionDetection } from './useCollisionDetection'
 
 interface CharacterUpdateProps {
   shape: TileShape
@@ -12,6 +13,7 @@ interface CharacterUpdateProps {
  */
 export function useTileCollision() {
   const gameStore = useGameStore()
+  const { disableCollidedRow } = useCollisionDetection()
 
   /**
    * Updates the character properties on match
@@ -45,6 +47,7 @@ export function useTileCollision() {
         backgroundColor: tile.backgroundColor,
       })
 
+      disableCollidedRow(tile.id)
       return
     }
 

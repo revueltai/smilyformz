@@ -2,10 +2,24 @@ import { ref, type Ref } from 'vue'
 import type { RefElement } from '@/components/shared/types'
 
 const characterHitAreaRef = ref<RefElement>(null)
+const collidedRows = ref<string[]>([])
 
 export function useCollisionDetection() {
   let collisionCheckInterval: number | null = null
-  let hasCollided = false
+  let isCollided = false
+
+  /**
+   * Disables collision for a specific row
+   *
+   * @param tileId - The id of the tile that has collided (which includes the row id)
+   */
+  function disableCollidedRow(tileId: string) {
+    const rowId = tileId.split('-')[0]
+
+    if (!collidedRows.value.includes(rowId)) {
+      collidedRows.value.push(rowId)
+    }
+  }
 
   /**
    * Sets the character's hit area reference.
@@ -22,7 +36,7 @@ export function useCollisionDetection() {
    * @param tileRef - The reference to the tile element.
    */
   function checkCollision(tileRef: Ref<RefElement>) {
-    if (!tileRef.value || !characterHitAreaRef.value || hasCollided) {
+    if (!tileRef.value || !characterHitAreaRef.value || isCollided) {
       return false
     }
 
@@ -35,7 +49,7 @@ export function useCollisionDetection() {
       characterHitArea.top < tileHitArea.bottom &&
       characterHitArea.bottom > tileHitArea.top
     ) {
-      hasCollided = true
+      isCollided = true
       onCheckCollisionEnd()
       return true
     }
@@ -75,6 +89,8 @@ export function useCollisionDetection() {
   }
 
   return {
+    collidedRows,
+    disableCollidedRow,
     setCharacterHitArea,
     onCheckCollisionStart,
     onCheckCollisionEnd,

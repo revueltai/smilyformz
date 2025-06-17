@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue'
+  import { ref, onMounted, onUnmounted, watch } from 'vue'
   import { TILE_DEFAULTS } from '@/configs/constants'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useTileCollision } from '@/composables/useTileCollision'
@@ -27,14 +27,15 @@
     },
   )
 
-  const { onCheckCollisionStart, onCheckCollisionEnd } = useCollisionDetection()
+  const { onCheckCollisionStart, onCheckCollisionEnd, collidedRows } = useCollisionDetection()
   const { evaluateCollision } = useTileCollision()
 
   const tileRef = ref<RefElement>(null)
-  const hasCollided = ref(false)
+  const isCollided = ref(false)
+  const isDisabled = ref(false)
 
   function handleCollision() {
-    hasCollided.value = true
+    isCollided.value = true
 
     evaluateCollision({
       id: props.id,
@@ -45,6 +46,22 @@
       backgroundColor: props.backgroundColor,
     })
   }
+
+  watch(
+    () => collidedRows.value,
+    (newVal) => {
+      const tileRowId = props.id.split('-')[0]
+
+      if (newVal.includes(tileRowId)) {
+        console.log('Tile collided with row', tileRowId)
+        isDisabled.value = true
+        onCheckCollisionEnd()
+      }
+    },
+    {
+      deep: true,
+    },
+  )
 
   onMounted(() => {
     if (props.checkForCollision) {
@@ -62,9 +79,9 @@
 <template>
   <div
     ref="tileRef"
-    class="relative inline-flex items-center justify-center rounded-lg p-4 transition-all duration-300 ease-in-out"
-    :class="[hasCollided ? 'animate-collision' : '', 'transform-gpu']"
-    :style="{ backgroundColor: backgroundColor }"
+    class="relative transform-gpu inline-flex items-center justify-center rounded-lg p-4 transition-all duration-300 ease-in-out"
+    :class="{ 'animate-collision': isCollided, 'opacity-30 grayscale-100': isDisabled }"
+    :style="{ backgroundColor }"
   >
     <Shape
       :shape="shape"

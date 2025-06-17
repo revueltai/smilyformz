@@ -14,6 +14,7 @@
         v-for="(tile, index) in tiles"
         :key="tile.id"
         :ref="tile.id"
+        :id="tile.id"
         :data-id="tile.id"
         :shape="tile.shape"
         :expression="tile.expression"
