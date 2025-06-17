@@ -1,6 +1,8 @@
 import type { TileRowItem, TileShape } from '@/components/app/tile/types'
 import { useGameStore } from '@/stores/gameStore'
 import { useCollisionDetection } from './useCollisionDetection'
+import { useTileGeneration } from './useTileGeneration'
+import { getTileRowId } from '@/utils'
 
 interface CharacterUpdateProps {
   shape: TileShape
@@ -14,6 +16,7 @@ interface CharacterUpdateProps {
 export function useTileCollision() {
   const gameStore = useGameStore()
   const { disableCollidedRow } = useCollisionDetection()
+  const { updateRowTilesToMatchCharacter } = useTileGeneration()
 
   /**
    * Updates the character properties on match
@@ -48,11 +51,13 @@ export function useTileCollision() {
       })
 
       disableCollidedRow(tile.id)
+      updateRowTilesToMatchCharacter(getTileRowId(tile.id))
+
       return
     }
 
-    gameStore.pause()
-    gameStore.setGameOver(true)
+    // gameStore.pause()
+    // gameStore.setGameOver(true)
   }
 
   return {

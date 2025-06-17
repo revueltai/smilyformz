@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { getRandomNumber } from '@/utils'
 
   const props = defineProps<{
     position: number
@@ -51,6 +52,6 @@
       <div class="truncate max-w-[150px]">{{ username }}</div>
     </div>
 
-    <span class="font-bold">{{ Math.floor(Math.random() * Number(score)) }} pts</span>
+    <span class="font-bold">{{ getRandomNumber(Number(score)) }} pts</span>
   </div>
 </template>

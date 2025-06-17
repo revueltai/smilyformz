@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES } from '@/configs/constants'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
-import { getRandomItem } from '@/composables/useTileGeneration'
+import { getRandomItem } from '@/utils'
 
 interface GameTime {
   seconds: number

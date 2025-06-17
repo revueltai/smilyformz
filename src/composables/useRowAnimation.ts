@@ -1,7 +1,6 @@
 import { ref, watch } from 'vue'
 import { Bus } from '@/services/Bus.service'
 import { useGameStore } from '@/stores/gameStore'
-import type { RefElement } from '@/components/shared/types'
 
 /**
  * Composable for animating rows

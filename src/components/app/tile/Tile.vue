@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted, watch } from 'vue'
+  import { getTileRowId } from '@/utils'
   import { TILE_DEFAULTS } from '@/configs/constants'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useTileCollision } from '@/composables/useTileCollision'
@@ -47,21 +48,16 @@
     })
   }
 
-  watch(
-    () => collidedRows.value,
-    (newVal) => {
-      const tileRowId = props.id.split('-')[0]
+  function handleCollidedRow(collidedRows: string[]) {
+    const tileRowId = getTileRowId(props.id)
 
-      if (newVal.includes(tileRowId)) {
-        console.log('Tile collided with row', tileRowId)
-        isDisabled.value = true
-        onCheckCollisionEnd()
-      }
-    },
-    {
-      deep: true,
-    },
-  )
+    if (collidedRows.includes(tileRowId)) {
+      isDisabled.value = true
+      onCheckCollisionEnd()
+    }
+  }
+
+  watch(() => collidedRows.value, handleCollidedRow, { deep: true })
 
   onMounted(() => {
     if (props.checkForCollision) {

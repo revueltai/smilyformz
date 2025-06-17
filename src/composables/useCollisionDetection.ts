@@ -1,5 +1,6 @@
 import { ref, type Ref } from 'vue'
 import type { RefElement } from '@/components/shared/types'
+import { getTileRowId } from '@/utils'
 
 const characterHitAreaRef = ref<RefElement>(null)
 const collidedRows = ref<string[]>([])
@@ -14,7 +15,7 @@ export function useCollisionDetection() {
    * @param tileId - The id of the tile that has collided (which includes the row id)
    */
   function disableCollidedRow(tileId: string) {
-    const rowId = tileId.split('-')[0]
+    const rowId = getTileRowId(tileId)
 
     if (!collidedRows.value.includes(rowId)) {
       collidedRows.value.push(rowId)

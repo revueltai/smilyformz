@@ -121,89 +121,32 @@ export function isNoneToken(input: string): boolean {
 }
 
 /**
- * Converts a number to its negative form.
- *
- * @param {number} num - The number to make negative.
- * @returns {number} The negative value of the number.
- */
-export function makeNegative(num: number): number {
-  return -Math.abs(num)
-}
-
-/**
- * Creates a random string of lowercase letters.
- *
- * @param {number} [length] - The length of the random string.
- * @returns {string} A random string of the specified length.
- */
-export function createRandomString(length: number = 4): string {
-  const chars = 'abcdefghijklmnopqrstuvwxyz'
-  return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
-}
-
-/**
- * Creates a unique identifier (UID).
- *
- * @param {string} [value] - An optional value to append to the UID.
- * @returns {string} A unique identifier string.
- */
-export function createUID(value: string = ''): string {
-  let sanitizedValue = createRandomString()
-
-  if (value) {
-    sanitizedValue = value.split(' ').join('-')
-  }
-
-  return `${Date.now()}-${sanitizedValue}`
-}
-
-/**
  * Returns a random number within the given range.
  *
  * @param {number} range - Range of numbers
  * @returns {number} - Random number
  */
-export function getRandomNum(range: number): number {
+export function getRandomNumber(range: number): number {
   return Math.floor(Math.random() * range)
 }
 
 /**
- * Returns the current timestamp in milliseconds.
+ * Returns a random boolean
  *
- * @returns {number} - Current timestamp
+ * @returns A random boolean
  */
-export function getTimestamp(): number {
-  return new Date().getTime()
+export function getRandomBoolean(): boolean {
+  return Math.random() < 0.5
 }
 
 /**
- * Returns the difference between two timestamps in minutes and seconds.
+ * Returns a random item from an array
  *
- * @param {number} timestamp1 - First timestamp
- * @param {number} timestamp2 - Second timestamp
- * @returns {RoundTimeDuration} - Time difference
+ * @param array - The array to get a random item from
+ * @returns A random item from the array
  */
-export function logTimeDifference(
-  timestamp1: number,
-  timestamp2: number,
-): { minutes: number; seconds: number } {
-  const timeDifference = timestamp2 - timestamp1
-
-  return {
-    minutes: Math.floor(timeDifference / (1000 * 60)),
-    seconds: Math.floor((timeDifference % (1000 * 60)) / 1000),
-  }
-}
-
-/**
- * Creates a time delay in milliseconds.
- * Returns a promise that resolves after a given time.
- *
- * @param {number} ms - Time in milliseconds
- * @returns {Promise<void>} - Resolved promise
- */
-export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+export function getRandomItem<T>(array: T[]): T {
+  return array[getRandomNumber(array.length)]
 }
 
 /**
@@ -225,100 +168,7 @@ export function delay(ms: number): Promise<void> {
  */
 export function createCssVar(name: string, value: string = '', wrapInVar: boolean = false): string {
   const varName = value ? `--${name}: ${value}` : `--${name}`
-
   return wrapInVar && !value ? `var(${varName})` : varName
-}
-
-/**
- * Capitalizes a string.
- *
- * @param {string} str - String to capitalize
- * @returns {string} - Capitalized String
- */
-export function capitalize(str: string): string {
-  if (!str) {
-    return str
-  }
-
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
-}
-
-/**
- * Converts a round percentage into an array of star indicators.
- *
- * @param roundPercentage - The percentage score of the round (0-100)
- * @returns An array of 3 strings, either 'StarFull' or 'StarEmpty', representing achievement levels:
- *          - First star is always full
- *          - Second star is full if percentage > 50
- *          - Third star is full if percentage > 80
- */
-export function getRoundStars(roundPercentage: number): ('StarFull' | 'StarEmpty')[] {
-  return [
-    'StarFull',
-    roundPercentage > 50 ? 'StarFull' : 'StarEmpty',
-    roundPercentage > 80 ? 'StarFull' : 'StarEmpty',
-  ]
-}
-
-/**
- *  Renders a plural word based on the count.
- *
- * @param {string} word - The word to pluralize.
- * @param {number} count - The count to determine if the word should be pluralized.
- * @returns {string} - The pluralized word if count is greater than 1, otherwise the original word.
- */
-export function renderPluralWord(word: string, count: number): string {
-  return count > 1 || count === 0 ? `${word}s` : word
-}
-
-/**
- * Ensures that the given route starts with a single leading slash (`/`).
- * If the route is missing a leading slash, one is added.
- *
- * @param {string} route - The route string to sanitize.
- * @returns {string} The sanitized route starting with `/`.
- */
-export function sanitizeRoute(route: string): string {
-  return route.replace(/^\/?/, '/')
-}
-
-/**
- * Returns Today's date
- *
- * @param {boolean} onlyDate - Wether to return just the date (e.g. "2025-04-11"). Otherwise, returns the full ISO string with time.
- * @returns {string} Today's date.
- */
-export function getToday(onlyDate: boolean = true): string {
-  return onlyDate ? new Date().toISOString().split('T')[0] : new Date().toISOString()
-}
-
-/**
- * Formats a given date string into an object containing the day, month, and year.
- *
- * @param {string} dateString - The ISO 8601 date string to format (e.g., '2025-04-08T21:58:22.587Z').
- * @returns {{ day: string, month: string, year: number }} The formatted date with day, month (in lowercase), and year.
- */
-export function formatDate(dateString: string): { day: string; month: string; year: number } {
-  const date = new Date(dateString)
-  const months = [
-    'january',
-    'february',
-    'march',
-    'april',
-    'may',
-    'june',
-    'july',
-    'august',
-    'september',
-    'october',
-    'november',
-    'december',
-  ]
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = months[date.getMonth()]
-  const year = date.getFullYear()
-
-  return { day, month, year }
 }
 
 /**
@@ -330,4 +180,14 @@ export function enterFullscreen() {
     //   console.error('Fullscreen request failed:', err)
     // })
   }
+}
+
+/**
+ * Extracts the row ID from a given tile ID.
+ *
+ * @param {string} tileId - The input string containing the row ID.
+ * @returns {string} The extracted row ID.
+ */
+export function getTileRowId(tileId: string): string {
+  return tileId.split('-')[0]
 }

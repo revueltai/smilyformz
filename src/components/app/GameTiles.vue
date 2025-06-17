@@ -1,11 +1,11 @@
 <script setup lang="ts">
   import { ref, onMounted, watch, nextTick } from 'vue'
+  import { isEmptyArray } from '@/utils'
+  import { useGameStore } from '@/stores/gameStore'
   import GameTilesRow from '@/components/app/GameTilesRow.vue'
   import { useTileGeneration } from '@/composables/useTileGeneration'
   import { useRowAnimation } from '@/composables/useRowAnimation'
   import type { RefElement } from '@/components/shared/types'
-  import { isEmptyArray } from '@/utils'
-  import { useGameStore } from '@/stores/gameStore'
 
   const gameStore = useGameStore()
   const rowsAreAnimated = ref(false)

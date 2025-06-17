@@ -8,25 +8,19 @@ import type {
   TileColor,
 } from '@/components/app/tile/types'
 import { useGameStore } from '@/stores/gameStore'
+import { getRandomNumber, getRandomItem, getRandomBoolean } from '@/utils'
 
 const SHAPES = Object.values(TILE_SHAPES) as TileShape[]
 const EXPRESSIONS = Object.values(TILE_EXPRESSIONS) as TileExpression[]
 const COLORS = Object.values(TILE_COLORS)
 
-export function getRandomItem<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)]
-}
-
-function getRandomBoolean(): boolean {
-  return Math.random() < 0.5
-}
+const rows = ref<TileRow[]>([])
 
 /**
  * Handles the generation of tiles on the board
  */
 export function useTileGeneration() {
   const gameStore = useGameStore()
-  const rows = ref<TileRow[]>([])
 
   /**
    *  Creates a tile that can optionally match the character color, shape, both or none
@@ -77,7 +71,7 @@ export function useTileGeneration() {
    */
   function generateTiles(rowId: string): TileRowItem[] {
     const totalRowsLength = 3
-    const matchIndex = Math.floor(Math.random() * totalRowsLength)
+    const matchIndex = getRandomNumber(totalRowsLength)
 
     return Array.from({ length: totalRowsLength }, (_, tileIndex) => {
       const matchCharacter = tileIndex === matchIndex
@@ -100,6 +94,50 @@ export function useTileGeneration() {
       id: rowId,
       type: 'TileRow',
       tiles,
+    }
+  }
+
+  /**
+   * Updates a row of tiles to match the character if it doesn't already
+   *
+   * @param rowId - The id of the row
+   */
+  function updateRowTilesToMatchCharacter(rowId: string) {
+    const rowIndex = Number(rowId.split('row')[1])
+    const nextRow = rows.value[rowIndex + 1]
+
+    if (nextRow) {
+      let rowTilesMatchCharacter = false
+
+      for (const tile of nextRow.tiles) {
+        if (
+          tile.shape === gameStore.character.shape ||
+          tile.shapeColor === gameStore.character.shapeColor
+        ) {
+          rowTilesMatchCharacter = true
+          break
+        }
+      }
+
+      if (!rowTilesMatchCharacter) {
+        const randomTile = getRandomItem(nextRow.tiles)
+        const randomMatch = getRandomItem(['shape', 'color', 'both'])
+
+        if (randomMatch === 'shape') {
+          randomTile.shape = gameStore.character.shape
+          return
+        }
+
+        if (randomMatch === 'color') {
+          randomTile.shapeColor = gameStore.character.shapeColor
+          randomTile.backgroundColor = gameStore.character.backgroundColor
+          return
+        }
+
+        randomTile.shape = gameStore.character.shape
+        randomTile.shapeColor = gameStore.character.shapeColor
+        randomTile.backgroundColor = gameStore.character.backgroundColor
+      }
     }
   }
 
@@ -127,6 +165,7 @@ export function useTileGeneration() {
 
   return {
     rows,
+    updateRowTilesToMatchCharacter,
     initializeRows,
     initializeRowsPosition,
   }
