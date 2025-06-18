@@ -56,11 +56,6 @@ export const useGameStore = defineStore('game', () => {
         gameSpeed.value = targetSpeed
         showSpeedIncreaseNotification.value = true
 
-        const minutes = Math.floor(milestoneSeconds / 60)
-        const seconds = milestoneSeconds % 60
-        const timeDisplay = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`
-        console.log(`Speed increased to ${targetSpeed} at ${timeDisplay}`)
-
         setTimeout(() => (showSpeedIncreaseNotification.value = false), 1500)
 
         break

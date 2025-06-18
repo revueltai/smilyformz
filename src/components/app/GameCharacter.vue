@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, nextTick, onMounted } from 'vue'
+  import { ref, nextTick, onMounted, computed } from 'vue'
   import { useGameStore } from '@/stores/gameStore'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useMovementCharacter } from '@/composables/useCharacterAnimation'
@@ -20,7 +20,19 @@
   const characterRef = ref<RefElement>(null)
   const characterHitAreaRef = ref<RefElement>(null)
 
-  const { x, moveLeft, moveRight } = useMovementCharacter(props.boardRef, characterRef)
+  // Calculate tile width: shape size (80px) + padding (32px) = 112px
+  const tileWidth = computed(() => {
+    const shapeSize = 80 // sm size from TileShape.vue
+    const padding = 32 // p-4 = 16px on each side
+    return shapeSize + padding
+  })
+
+  const tilesGap = 8
+  const { x, moveLeft, moveRight } = useMovementCharacter(
+    tileWidth.value + tilesGap,
+    props.boardRef,
+    characterRef,
+  )
 
   function handleMoveLeft() {
     if (!gameStore.isGameStarted) {

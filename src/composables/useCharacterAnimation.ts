@@ -6,14 +6,14 @@ import type { RefElement } from '@/components/shared/types'
 /**
  * Handles the movement of the character on the board
  *
+ * @param stepPx - The step size in pixels (should be full tile width including padding)
  * @param boardEl - The board element
  * @param characterRef - The reference to the character element
- * @param stepPx - The step size in pixels
  */
 export function useMovementCharacter(
+  stepPx: number,
   boardEl?: RefElement,
   characterRef?: Ref<RefElement>,
-  stepPx: number = 104,
 ) {
   const gameStore = useGameStore()
 
