@@ -2,6 +2,7 @@
   import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
   import { TILE_DEFAULTS, TILE_POWER_UP_TYPES, TILE_SHAPES } from '@/configs/constants'
   import type { TileShape, TileSize, TilePowerUpType } from '@/components/app/tile/types'
+  import { getRandomNumber } from '@/utils'
 
   const emit = defineEmits<{
     (e: 'updateShapeStatus', newShapeName: TileShape): void
@@ -68,13 +69,16 @@
   function startShapeAnimation() {
     if (props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE) {
       currentShapeIndex.value = availableShapes.indexOf(props.shape)
-      animationTimer.value = window.setInterval(() => {
-        cycleThroughShapes()
-        emit(
-          'updateShapeStatus',
-          Object.keys(TILE_SHAPES)[currentShapeIndex.value].toLocaleLowerCase() as TileShape,
-        )
-      }, 3000)
+      animationTimer.value = window.setInterval(
+        () => {
+          cycleThroughShapes()
+          emit(
+            'updateShapeStatus',
+            Object.keys(TILE_SHAPES)[currentShapeIndex.value].toLocaleLowerCase() as TileShape,
+          )
+        },
+        getRandomNumber(3000, 500),
+      )
     }
   }
 

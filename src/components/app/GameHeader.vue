@@ -28,9 +28,25 @@
         </div>
       </div>
 
-      <Button @click="$emit('pause')">
-        <Icon name="pause" />
-      </Button>
+      <div class="flex items-center justify-end gap-3">
+        <Button @click="$emit('tutorial')">
+          <Icon name="help" />
+        </Button>
+
+        <Button
+          border-color="blue-500"
+          border-color-hover="blue-400"
+          background-color="blue-50"
+          background-color-hover="blue-100"
+          color="white"
+          @click="$emit('pause')"
+        >
+          <Icon
+            name="pause"
+            color="blue-500"
+          />
+        </Button>
+      </div>
     </div>
   </div>
 </template>

@@ -5,11 +5,15 @@
   import ModalLogin from '@/components/app/ModalLogin.vue'
   import ModalCreateAccount from '@/components/app/ModalCreateAccount.vue'
   import { MODALS } from '@/configs/constants'
+  import { useRouter } from 'vue-router'
 
+  const router = useRouter()
   const activeModal = ref('')
   const modalStore = useModalStore()
 
-  function handleClickButtonPlay() {}
+  function handleClickButtonPlay() {
+    router.push('/game')
+  }
 
   function handleClickButtonCreateAccount() {
     activeModal.value = MODALS.CREATE_ACCOUNT

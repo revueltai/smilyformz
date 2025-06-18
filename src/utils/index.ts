@@ -123,11 +123,14 @@ export function isNoneToken(input: string): boolean {
 /**
  * Returns a random number within the given range.
  *
- * @param {number} range - Range of numbers
+ * @param {number} rangeEnd - Range of numbers
+ * @param {number} rangeStart - Range of numbers (optional)
  * @returns {number} - Random number
  */
-export function getRandomNumber(range: number): number {
-  return Math.floor(Math.random() * range)
+export function getRandomNumber(rangeEnd: number, rangeStart: number = 0): number {
+  return rangeStart
+    ? Math.floor(Math.random() * (rangeEnd - rangeStart + 1)) + rangeStart
+    : Math.floor(Math.random() * rangeEnd)
 }
 
 /**
