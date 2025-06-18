@@ -1,5 +1,10 @@
-import type { TileColor, TileShape } from '@/components/app/tile/types'
-import type { TileExpression } from '@/components/app/tile/types'
+import type {
+  TileColor,
+  TileShape,
+  TileExpression,
+  TileExpressionPowerDown,
+  TilePowerUpType,
+} from '@/components/app/tile/types'
 
 export type OverlayState = 'fadeIn' | 'fadeOut' | 'visible' | 'hidden'
 
@@ -28,7 +33,13 @@ export const TILE_EXPRESSIONS: Record<string, TileExpression> = {
   EXP2: 'exp2',
   EXP3: 'exp3',
   EXP4: 'exp4',
-  EXP5: 'exp5',
+}
+
+export const TILE_POWER_UP_TYPES: Record<string, TilePowerUpType> = {
+  NONE: 'none',
+  DOUBLE_POINTS: 'doublePoints',
+  ANY_SHAPE: 'anyShape',
+  ANY_COLOR: 'anyColor',
 }
 
 export const TILE_SHAPES: Record<string, TileShape> = {

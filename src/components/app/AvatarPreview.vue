@@ -41,6 +41,7 @@
     </div>
 
     <Tile
+      id="avatar-preview-tile"
       :shape="shape"
       :shape-color="colorShape"
       :expression="expression"

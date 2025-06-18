@@ -1,17 +1,25 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { TILE_DEFAULTS } from '@/configs/constants'
-  import type { TileShape, TileSize } from '@/components/app/tile/types'
+  import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
+  import { TILE_DEFAULTS, TILE_POWER_UP_TYPES, TILE_SHAPES } from '@/configs/constants'
+  import type { TileShape, TileSize, TilePowerUpType } from '@/components/app/tile/types'
+
+  const emit = defineEmits<{
+    (e: 'updateShapeStatus', newShapeName: TileShape): void
+  }>()
 
   const props = withDefaults(
     defineProps<{
       shape: TileShape
       size?: TileSize
       color?: string
+      powerUpType?: TilePowerUpType
+      isDisabled?: boolean
     }>(),
     {
       size: 'sm',
       color: TILE_DEFAULTS.shapeColor,
+      powerUpType: 'none',
+      isDisabled: false,
     },
   )
 
@@ -36,9 +44,63 @@
     star: 'M33.8388 3.68992C36.5892 -1.22998 43.4108 -1.22997 46.1612 3.68993L54.1696 18.0158C55.1771 19.8181 56.8653 21.096 58.8217 21.5375L74.3732 25.0462C79.7139 26.2512 81.822 33.0109 78.181 37.2566L67.579 49.6192C66.2453 51.1745 65.6004 53.2423 65.8021 55.3173L67.4049 71.8117C67.9554 77.4764 62.4365 81.6541 57.436 79.3582L42.8752 72.6728C41.0434 71.8318 38.9566 71.8318 37.1248 72.6728L22.564 79.3582C17.5635 81.6541 12.0446 77.4764 12.5951 71.8117L14.1979 55.3173C14.3996 53.2423 13.7547 51.1745 12.421 49.6192L1.81903 37.2566C-1.82196 33.0109 0.286059 26.2512 5.62684 25.0462L21.1783 21.5375C23.1347 21.096 24.8229 19.8181 25.8304 18.0158L33.8388 3.68992Z',
   }
 
-  const currentPath = computed(() => PATHS[props.shape])
+  const currentShapeIndex = ref(0)
+  const animationTimer = ref<number | null>(null)
+  const availableShapes = Object.values(TILE_SHAPES) as TileShape[]
+
+  const currentPath = computed(() => {
+    if (props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE) {
+      const animatedShape = availableShapes[currentShapeIndex.value]
+      return PATHS[animatedShape]
+    }
+
+    return PATHS[props.shape]
+  })
 
   const currentSize = computed(() => SIZES[props.size])
+
+  const clipPathId = computed(() => `tile-grad-${Math.random().toString(36).substr(2, 9)}`)
+
+  function cycleThroughShapes() {
+    currentShapeIndex.value = (currentShapeIndex.value + 1) % availableShapes.length
+  }
+
+  function startShapeAnimation() {
+    if (props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE) {
+      currentShapeIndex.value = availableShapes.indexOf(props.shape)
+      animationTimer.value = window.setInterval(() => {
+        cycleThroughShapes()
+        emit(
+          'updateShapeStatus',
+          Object.keys(TILE_SHAPES)[currentShapeIndex.value].toLocaleLowerCase() as TileShape,
+        )
+      }, 3000)
+    }
+  }
+
+  function stopShapeAnimation() {
+    if (animationTimer.value) {
+      clearInterval(animationTimer.value)
+      animationTimer.value = null
+    }
+  }
+
+  watch(
+    () => props.isDisabled,
+    (isDisabled) => {
+      if (isDisabled) {
+        stopShapeAnimation()
+      }
+    },
+  )
+
+  onMounted(() => {
+    if (props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE) {
+      startShapeAnimation()
+    }
+  })
+
+  onUnmounted(() => stopShapeAnimation())
 </script>
 
 <template>
@@ -51,7 +113,51 @@
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <g v-if="powerUpType === TILE_POWER_UP_TYPES.ANY_COLOR">
+        <g
+          :clip-path="`url(#${clipPathId})`"
+          data-figma-skip-parse="true"
+        >
+          <g transform="matrix(0.04 0 0 0.0388889 40 40)">
+            <foreignObject
+              x="-1054.29"
+              y="-1054.29"
+              width="2108.57"
+              height="2108.57"
+            >
+              <div
+                xmlns="http://www.w3.org/1999/xhtml"
+                style="
+                  background: conic-gradient(
+                    from 90deg,
+                    rgba(255, 125, 16, 1) 0deg,
+                    rgba(255, 32, 32, 1) 60.5769deg,
+                    rgba(51, 20, 255, 1) 135deg,
+                    rgba(24, 255, 204, 1) 266.538deg,
+                    rgba(255, 125, 16, 1) 360deg
+                  );
+                  height: 100%;
+                  width: 100%;
+                  opacity: 1;
+                "
+              />
+            </foreignObject>
+          </g>
+        </g>
+
+        <defs>
+          <clipPath :id="clipPathId">
+            <path
+              :d="currentPath"
+              :fill="color"
+              class="shape-morph"
+            />
+          </clipPath>
+        </defs>
+      </g>
+
       <path
+        v-else
         :d="currentPath"
         :fill="color"
         class="shape-morph"
@@ -60,7 +166,7 @@
   </div>
 </template>
 
-<style scoped>
+<style>
   .shape-morph {
     transition: d 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }

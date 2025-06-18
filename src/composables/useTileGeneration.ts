@@ -1,5 +1,10 @@
 import { ref } from 'vue'
-import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES } from '@/configs/constants'
+import {
+  TILE_EXPRESSIONS,
+  TILE_COLORS,
+  TILE_SHAPES,
+  TILE_POWER_UP_TYPES,
+} from '@/configs/constants'
 import type {
   TileShape,
   TileExpression,
@@ -37,12 +42,24 @@ export function useTileGeneration() {
     tileIndex: number,
     color: TileColor,
   ): TileRowItem {
+    let powerUpType = TILE_POWER_UP_TYPES.NONE
     let shouldMatchShape = false
     let shouldMatchColor = false
 
     if (matchCharacter) {
       shouldMatchShape = getRandomBoolean()
       shouldMatchColor = !shouldMatchShape
+    } else {
+      const powerChance = getRandomNumber(100)
+
+      if (powerChance < 75) {
+        // if (powerChance < 15) {
+        const powerUpTypes = Object.values(TILE_POWER_UP_TYPES).filter(
+          (type) => type !== TILE_POWER_UP_TYPES.NONE,
+        )
+
+        powerUpType = getRandomItem(powerUpTypes)
+      }
     }
 
     // Get color pair - either from character or random
@@ -60,6 +77,7 @@ export function useTileGeneration() {
       expression: getRandomItem(EXPRESSIONS),
       shapeColor: colorPair.shapeColor,
       backgroundColor: colorPair.backgroundColor,
+      powerUpType,
     }
   }
 

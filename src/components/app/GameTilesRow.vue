@@ -9,9 +9,9 @@
 
 <template>
   <div class="tile-row w-full">
-    <div class="grid grid-cols-3 gap-2 p-2 h-32">
+    <div class="grid grid-cols-3 gap-2 p-2 h-32 opacity-90">
       <Tile
-        v-for="(tile, index) in tiles"
+        v-for="tile in tiles"
         :key="tile.id"
         :ref="tile.id"
         :id="tile.id"
@@ -21,6 +21,7 @@
         :shape-color="tile.shapeColor"
         :background-color="tile.backgroundColor"
         :check-for-collision="true"
+        :power-up-type="tile.powerUpType"
       />
     </div>
   </div>

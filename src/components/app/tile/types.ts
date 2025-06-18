@@ -2,7 +2,11 @@ export type TileShape = 'circle' | 'square' | 'triangle' | 'rhomb' | 'star'
 
 export type TileSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
-export type TileExpression = 'exp1' | 'exp2' | 'exp3' | 'exp4' | 'exp5'
+export type TileExpression = 'exp1' | 'exp2' | 'exp3' | 'exp4'
+
+export type TileExpressionPowerDown = 'exp5' | 'exp6'
+
+export type TilePowerUpType = 'none' | 'doublePoints' | 'anyShape' | 'anyColor'
 
 export type TileColor = {
   shapeColor: string
@@ -19,9 +23,10 @@ export type TileRowItem = {
   id: string
   type: 'Tile'
   shape: TileShape
-  expression: TileExpression
+  expression: TileExpression | TileExpressionPowerDown
   shapeColor: string
   backgroundColor: string
+  powerUpType?: TilePowerUpType
 }
 
 export interface Character {

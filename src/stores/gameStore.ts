@@ -70,19 +70,23 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
-  function incrementScore(shapeMatch: boolean, colorMatch: boolean) {
+  function incrementScore(shapeMatch: boolean, colorMatch: boolean, doublePoints: boolean = false) {
     if (isPaused.value || !isGameStarted.value || isGameOver.value) {
       return
     }
 
     let newPoints = 0
 
-    if (shapeMatch || colorMatch) {
-      newPoints += pointsPerMatch.value
-    }
+    if (doublePoints) {
+      newPoints = pointsPerMatch.value * 4
+    } else {
+      if (shapeMatch || colorMatch) {
+        newPoints += pointsPerMatch.value
+      }
 
-    if (shapeMatch && colorMatch) {
-      newPoints += pointsPerMatch.value
+      if (shapeMatch && colorMatch) {
+        newPoints += pointsPerMatch.value
+      }
     }
 
     score.value += newPoints

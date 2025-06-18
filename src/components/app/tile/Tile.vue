@@ -1,30 +1,36 @@
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, watch } from 'vue'
-  import { getTileRowId } from '@/utils'
-  import { TILE_DEFAULTS } from '@/configs/constants'
+  import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+  import { getTileRowId, isNoneToken } from '@/utils'
+  import { TILE_DEFAULTS, TILE_POWER_UP_TYPES } from '@/configs/constants'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useTileCollision } from '@/composables/useTileCollision'
   import Shape from '@/components/app/tile/TileShape.vue'
   import Expression from '@/components/app/tile/TileExpression.vue'
-  import type { TileShape } from '@/components/app/tile/types'
-  import type { TileExpression } from '@/components/app/tile/types'
+  import type {
+    TileShape,
+    TileExpression,
+    TilePowerUpType,
+    TileExpressionPowerDown,
+  } from '@/components/app/tile/types'
   import type { RefElement } from '@/components/shared/types'
 
   const props = withDefaults(
     defineProps<{
       id: string
       shape: TileShape
-      expression: TileExpression
+      expression: TileExpression | TileExpressionPowerDown
       shapeColor: string
       backgroundColor?: string
       checkForCollision?: boolean
       checkCollisionInterval?: number
+      powerUpType?: TilePowerUpType
     }>(),
     {
       shapeColor: TILE_DEFAULTS.shapeColor,
       backgroundColor: '',
       checkForCollision: false,
       checkCollisionInterval: 100,
+      powerUpType: TILE_POWER_UP_TYPES.NONE,
     },
   )
 
@@ -34,6 +40,39 @@
   const tileRef = ref<RefElement>(null)
   const isCollided = ref(false)
   const isDisabled = ref(false)
+  const rotatingShape = ref<TileShape>(props.shape)
+
+  const cssClasses = computed(() => {
+    return {
+      'animate-collision': isCollided.value,
+      'opacity-30 grayscale-100': isDisabled.value,
+      'bg-slate-200 border-4 border-white border-dashed': !isNoneToken(props.powerUpType),
+    }
+  })
+
+  const cssStyles = computed(() => {
+    return {
+      backgroundColor: isNoneToken(props.powerUpType) ? props.backgroundColor : null,
+    }
+  })
+
+  const sanitizedShape = computed(() => {
+    if (props.powerUpType === 'anyShape') {
+      return rotatingShape.value
+    }
+
+    return props.shape
+  })
+
+  const sanitizedShapeColor = computed(() => {
+    return props.shapeColor
+  })
+
+  function handleShapeStatusUpdate(newShapeName: TileShape) {
+    if (props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE) {
+      rotatingShape.value = newShapeName
+    }
+  }
 
   function handleCollision() {
     isCollided.value = true
@@ -41,10 +80,11 @@
     evaluateCollision({
       id: props.id,
       type: 'Tile',
-      shape: props.shape,
       expression: props.expression,
-      shapeColor: props.shapeColor,
+      shape: sanitizedShape.value,
+      shapeColor: sanitizedShapeColor.value,
       backgroundColor: props.backgroundColor,
+      powerUpType: props.powerUpType,
     })
   }
 
@@ -76,16 +116,27 @@
   <div
     ref="tileRef"
     class="relative transform-gpu inline-flex items-center justify-center rounded-lg p-4 transition-all duration-300 ease-in-out"
-    :class="{ 'animate-collision': isCollided, 'opacity-30 grayscale-100': isDisabled }"
-    :style="{ backgroundColor }"
+    :class="cssClasses"
+    :style="cssStyles"
   >
     <Shape
-      :shape="shape"
-      :color="shapeColor"
+      :shape="sanitizedShape"
+      :color="sanitizedShapeColor"
+      :power-up-type="powerUpType"
+      :is-disabled="isDisabled"
+      @updateShapeStatus="handleShapeStatusUpdate"
     />
 
     <div class="absolute inset-0 z-10 flex items-center justify-center">
       <Expression :expression="expression" />
+    </div>
+
+    <div
+      v-if="powerUpType === 'doublePoints'"
+      class="absolute -top-2 -left-2 text-lg text-shadow-sm text-shadow-blue-600 w-12 h-12 flex items-center justify-center border-2 border-blue-950 shadow-sm rounded-full bg-blue-500 text-white z-20"
+    >
+      <span class="font-extrabold">+4</span>
+      <span class="text-xs lowercase font-normal">{{ $t('points') }}</span>
     </div>
   </div>
 </template>

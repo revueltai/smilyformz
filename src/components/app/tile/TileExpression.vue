@@ -1,10 +1,14 @@
 <script setup lang="ts">
   import { TILE_DEFAULTS } from '@/configs/constants'
-  import type { TileExpression, TileSize } from '@/components/app/tile/types'
+  import type {
+    TileExpression,
+    TileSize,
+    TileExpressionPowerDown,
+  } from '@/components/app/tile/types'
 
   const props = withDefaults(
     defineProps<{
-      expression: TileExpression
+      expression: TileExpression | TileExpressionPowerDown
       size?: TileSize
     }>(),
     {
