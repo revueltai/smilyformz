@@ -52,3 +52,25 @@ body {
 #__vue-devtools-container__ {
   display: none !important;
 }
+
+/* Animations */
+
+@keyframes bounceStrong {
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  40%,
+  43% {
+    transform: translate3d(0, -30px, 0) scale(1.1);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0) scale(1.05);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0) scale(1.02);
+  }
+}

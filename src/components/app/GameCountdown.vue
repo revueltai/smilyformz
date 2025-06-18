@@ -16,7 +16,7 @@
   >
     <div class="fixed inset-0 flex items-center justify-center bg-slate-900/50 z-50">
       <div
-        class="text-6xl font-bold text-shadow-lg animate-bounce uppercase"
+        class="text-6xl font-bold text-shadow-lg uppercase countdown-text"
         :class="textColor || 'text-white'"
       >
         {{ $t(message) }}
@@ -24,3 +24,9 @@
     </div>
   </Transition>
 </template>
+
+<style scoped>
+  .countdown-text {
+    animation: bounceStrong 1000ms infinite;
+  }
+</style>

@@ -60,10 +60,14 @@
   "score": "Score",
   "ready": "Ready",
   "go": "Go!",
+  "faster": "Faster!",
+  "speed": "Speed!",
   "quitGameConfirmation": "Are you sure you want to quit the game?",
   "cancel": "Cancel",
   "quit": "Quit",
   "quitGame": "Quit Game",
   "points": "Pts",
-  "gameOverMessage": "Oops!"
+  "gameOverMessage": "Oops!",
+  "gameOverMessage2": "Oh no!",
+  "gameOverMessage3": "Fin"
 }

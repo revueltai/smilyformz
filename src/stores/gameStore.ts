@@ -10,17 +10,29 @@ interface GameTime {
 }
 
 export const useGameStore = defineStore('game', () => {
+  let timeInterval: number | null = null
   const pointsPerMatch = ref(1)
   const score = ref(0)
-  const gameSpeed = ref(4)
+  const gameSpeed = ref(1)
   const isGameOver = ref(false)
   const isPaused = ref(false)
   const isGameStarted = ref(false)
+  const showSpeedIncreaseNotification = ref(false)
   const time = ref<GameTime>({
     seconds: 0,
     minutes: 0,
   })
-  let timeInterval: number | null = null
+
+  const speedMilestones = [
+    [10, 2],
+    [30, 2.5],
+    [60, 3],
+    [180, 3.5],
+    [360, 4],
+    [720, 5],
+    [1440, 6],
+    [2880, 7],
+  ]
 
   const character = ref({
     id: 'character',
@@ -35,6 +47,26 @@ export const useGameStore = defineStore('game', () => {
     const pad = (num: number) => num.toString().padStart(2, '0')
     return `${pad(time.value.minutes)}:${pad(time.value.seconds)}`
   })
+
+  function checkAndIncreaseSpeed() {
+    const totalSeconds = time.value.minutes * 60 + time.value.seconds
+
+    for (const [milestoneSeconds, targetSpeed] of speedMilestones) {
+      if (totalSeconds === milestoneSeconds && gameSpeed.value < targetSpeed) {
+        gameSpeed.value = targetSpeed
+        showSpeedIncreaseNotification.value = true
+
+        const minutes = Math.floor(milestoneSeconds / 60)
+        const seconds = milestoneSeconds % 60
+        const timeDisplay = minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`
+        console.log(`Speed increased to ${targetSpeed} at ${timeDisplay}`)
+
+        setTimeout(() => (showSpeedIncreaseNotification.value = false), 1500)
+
+        break
+      }
+    }
+  }
 
   function startTimeTracking() {
     if (timeInterval) {
@@ -62,6 +94,8 @@ export const useGameStore = defineStore('game', () => {
       time.value.seconds = 0
       time.value.minutes++
     }
+
+    checkAndIncreaseSpeed()
   }
 
   function resetTime() {
@@ -69,6 +103,11 @@ export const useGameStore = defineStore('game', () => {
       seconds: 0,
       minutes: 0,
     }
+  }
+
+  function resetSpeed() {
+    gameSpeed.value = 1
+    showSpeedIncreaseNotification.value = false
   }
 
   function incrementScore(shapeMatch: boolean, colorMatch: boolean, doublePoints: boolean = false) {
@@ -122,6 +161,7 @@ export const useGameStore = defineStore('game', () => {
     stopTimeTracking()
     resetScore()
     resetTime()
+    resetSpeed()
     setGameOver(false)
     isPaused.value = false
     isGameStarted.value = false
@@ -150,9 +190,9 @@ export const useGameStore = defineStore('game', () => {
     isGameOver,
     isPaused,
     isGameStarted,
+    showSpeedIncreaseNotification,
     time,
     formattedTime,
-
     incrementScore,
     resetScore,
     setGameOver,
@@ -161,5 +201,6 @@ export const useGameStore = defineStore('game', () => {
     resume,
     startGame,
     updateCharacterOnMatch,
+    resetSpeed,
   }
 })

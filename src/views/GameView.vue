@@ -10,11 +10,12 @@
   import GameHeader from '@/components/app/GameHeader.vue'
   import GameBoard from '@/components/app/GameBoard.vue'
   import GameStartCountdown from '@/components/app/GameStartCountdown.vue'
-  import GameOverCountdown from '@/components/app/GameOverCountdown.vue'
+  import GameEndCountdown from '@/components/app/GameEndCountdown.vue'
+  import SpeedIncreaseNotification from '@/components/app/SpeedIncreaseNotification.vue'
 
   const gameStore = useGameStore()
   const modalStore = useModalStore()
-  const showGameOverCountdown = ref(false)
+  const showGameEndCountdown = ref(false)
 
   function handlePause() {
     gameStore.pause()
@@ -30,7 +31,7 @@
     gameStore.startGame()
   }
 
-  function handleGameOverCountdownComplete() {
+  function handleGameEndCountdownComplete() {
     modalStore.openModal(MODALS.GAME_OVER)
   }
 
@@ -39,11 +40,16 @@
     modalStore.openModal('tutorial')
   }
 
+  function handleSpeedIncreaseComplete() {
+    // This function is called when the speed increase notification completes
+    // The gameStore already handles hiding the notification
+  }
+
   watch(
     () => gameStore.isGameOver,
     (isGameOver) => {
       if (isGameOver) {
-        showGameOverCountdown.value = true
+        showGameEndCountdown.value = true
       }
     },
   )
@@ -74,9 +80,14 @@
       :on-complete="handleCountdownComplete"
     />
 
-    <GameOverCountdown
-      v-if="showGameOverCountdown"
-      :on-complete="handleGameOverCountdownComplete"
+    <GameEndCountdown
+      v-if="showGameEndCountdown"
+      :on-complete="handleGameEndCountdownComplete"
+    />
+
+    <SpeedIncreaseNotification
+      v-if="gameStore.showSpeedIncreaseNotification"
+      :on-complete="handleSpeedIncreaseComplete"
     />
 
     <Modal

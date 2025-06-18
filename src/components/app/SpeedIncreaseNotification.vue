@@ -2,33 +2,24 @@
   import { ref, onMounted } from 'vue'
   import GameCountdown from './GameCountdown.vue'
 
-  type CountdownMessage = 'ready' | 'go'
-
   const props = defineProps<{
     onComplete: () => void
   }>()
 
-  const message = ref<CountdownMessage>('ready')
   const isVisible = ref(true)
-  const textColor = ref('text-white')
 
   onMounted(() => {
     setTimeout(() => {
-      message.value = 'go'
-      textColor.value = 'text-lime-200'
-    }, 2000)
-
-    setTimeout(() => {
       isVisible.value = false
       props.onComplete()
-    }, 3000)
+    }, 1500)
   })
 </script>
 
 <template>
   <GameCountdown
     v-if="isVisible"
-    :message="message"
-    :text-color="textColor"
+    message="faster"
+    text-color="text-blue-200"
   />
 </template>
