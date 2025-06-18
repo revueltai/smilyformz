@@ -84,6 +84,9 @@ export function useMovementCharacter(
     }
   }
 
+  /**
+   * Moves the character to the left
+   */
   function moveLeft() {
     if (!gameStore.isGameStarted || gameStore.isPaused) {
       return
@@ -92,6 +95,9 @@ export function useMovementCharacter(
     posX.value = clampX(posX.value - stepPx)
   }
 
+  /**
+   * Moves the character to the right
+   */
   function moveRight() {
     if (!gameStore.isGameStarted || gameStore.isPaused) {
       return
@@ -100,14 +106,19 @@ export function useMovementCharacter(
     posX.value = clampX(posX.value + stepPx)
   }
 
-  function handleKeyDown(e: KeyboardEvent) {
-    if (!gameStore.isGameStarted || gameStore.isPaused || e.repeat) {
+  /**
+   * Handles keyboard input for character movement
+   *
+   * @param event - The keyboard event
+   */
+  function handleKeyDown(event: KeyboardEvent) {
+    if (!gameStore.isGameStarted || gameStore.isPaused || event.repeat) {
       return
     }
 
-    if (['ArrowLeft', 'a', 'A'].includes(e.key)) {
+    if (['ArrowLeft', 'a', 'A'].includes(event.key)) {
       moveLeft()
-    } else if (['ArrowRight', 'd', 'D'].includes(e.key)) {
+    } else if (['ArrowRight', 'd', 'D'].includes(event.key)) {
       moveRight()
     }
   }

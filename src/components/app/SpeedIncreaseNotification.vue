@@ -20,6 +20,6 @@
   <GameCountdown
     v-if="isVisible"
     message="faster"
-    text-color="text-blue-200"
+    text-color="text-white"
   />
 </template>

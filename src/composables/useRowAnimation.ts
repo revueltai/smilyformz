@@ -5,7 +5,7 @@ import { useTileGeneration } from './useTileGeneration'
 import { useCollisionDetection } from './useCollisionDetection'
 
 /**
- * Composable for animating rows
+ * Handles the animation of rows
  */
 export function useRowAnimation() {
   const gameStore = useGameStore()

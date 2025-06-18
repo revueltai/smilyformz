@@ -5,6 +5,9 @@ import { getTileRowId } from '@/utils'
 const characterHitAreaRef = ref<RefElement>(null)
 const collidedRows = ref<string[]>([])
 
+/**
+ * Handles collision detection between the character and tiles
+ */
 export function useCollisionDetection() {
   let collisionCheckInterval: number | null = null
   let isCollided = false
