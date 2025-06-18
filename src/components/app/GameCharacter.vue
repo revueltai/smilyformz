@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, nextTick, onMounted, computed } from 'vue'
+  import { ref, nextTick, onMounted, computed, watch } from 'vue'
   import { useGameStore } from '@/stores/gameStore'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useMovementCharacter } from '@/composables/useCharacterAnimation'
@@ -19,16 +19,16 @@
 
   const characterRef = ref<RefElement>(null)
   const characterHitAreaRef = ref<RefElement>(null)
+  const isCharacterVisible = ref(false)
 
-  // Calculate tile width: shape size (80px) + padding (32px) = 112px
   const tileWidth = computed(() => {
-    const shapeSize = 80 // sm size from TileShape.vue
-    const padding = 32 // p-4 = 16px on each side
-    return shapeSize + padding
+    const shapeSize = 80
+    const paddingX = 16
+    return shapeSize + paddingX * 2
   })
 
   const tilesGap = 8
-  const { x, moveLeft, moveRight } = useMovementCharacter(
+  const { x, moveLeft, moveRight, centerCharacter } = useMovementCharacter(
     tileWidth.value + tilesGap,
     props.boardRef,
     characterRef,
@@ -50,6 +50,19 @@
     moveRight()
   }
 
+  function handleCharacterCenteringOnStart(isGameStarted: boolean) {
+    if (isGameStarted) {
+      nextTick(() => {
+        centerCharacter()
+        setTimeout(() => (isCharacterVisible.value = true), 100)
+      })
+    } else {
+      isCharacterVisible.value = false
+    }
+  }
+
+  watch(() => gameStore.isGameStarted, handleCharacterCenteringOnStart)
+
   onMounted(async () => await nextTick(() => setCharacterHitArea(characterHitAreaRef.value)))
 </script>
 
@@ -63,7 +76,8 @@
 
   <div
     ref="characterRef"
-    class="absolute bottom-24 left-0 transition-transform duration-100"
+    class="absolute bottom-24 left-0 transition-all duration-300 ease-in-out"
+    :class="{ 'opacity-0': !isCharacterVisible, 'opacity-100': isCharacterVisible }"
     :style="{ transform: `translateX(${x}px)` }"
   >
     <div class="relative w-full h-full">

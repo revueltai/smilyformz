@@ -13,7 +13,7 @@ export const useGameStore = defineStore('game', () => {
   let timeInterval: number | null = null
   const pointsPerMatch = ref(1)
   const score = ref(0)
-  const gameSpeed = ref(1)
+  const gameSpeed = ref(2)
   const isGameOver = ref(false)
   const isPaused = ref(false)
   const isGameStarted = ref(false)
@@ -24,8 +24,8 @@ export const useGameStore = defineStore('game', () => {
   })
 
   const speedMilestones = [
-    [10, 2],
-    [30, 2.5],
+    [15, 2.5],
+    [30, 2.8],
     [60, 3],
     [180, 3.5],
     [360, 4],

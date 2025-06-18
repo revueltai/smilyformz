@@ -36,6 +36,15 @@ export function useMovementCharacter(
   }
 
   /**
+   * Centers the character horizontally on the board
+   */
+  function centerCharacter() {
+    if (boardWidth.value && characterWidth.value) {
+      posX.value = clampX((boardWidth.value - characterWidth.value) / 2)
+    }
+  }
+
+  /**
    * Clamps character to stay fully visible on the board
    *
    * @param val - The current position of the character
@@ -121,5 +130,6 @@ export function useMovementCharacter(
     moveLeft,
     moveRight,
     updateSizes,
+    centerCharacter,
   }
 }
