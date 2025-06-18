@@ -52,8 +52,7 @@ export function useTileGeneration() {
     } else {
       const powerChance = getRandomNumber(100)
 
-      if (powerChance < 75) {
-        // if (powerChance < 15) {
+      if (powerChance < 25) {
         const powerUpTypes = Object.values(TILE_POWER_UP_TYPES).filter(
           (type) => type !== TILE_POWER_UP_TYPES.NONE,
         )
