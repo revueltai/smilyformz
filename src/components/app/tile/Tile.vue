@@ -17,6 +17,7 @@
   const props = withDefaults(
     defineProps<{
       id: string
+
       shape: TileShape
       expression: TileExpression | TileExpressionPowerDown
       shapeColor: string

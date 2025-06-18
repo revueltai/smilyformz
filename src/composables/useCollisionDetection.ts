@@ -23,6 +23,19 @@ export function useCollisionDetection() {
   }
 
   /**
+   * Removes a row from collidedRows
+   *
+   * @param rowId - The id of the row to remove
+   */
+  function removeFromCollidedRows(rowId: string) {
+    const index = collidedRows.value.indexOf(rowId)
+
+    if (index > -1) {
+      collidedRows.value.splice(index, 1)
+    }
+  }
+
+  /**
    * Sets the character's hit area reference.
    *
    * @param hitArea - The reference to the character's hit area element.
@@ -92,6 +105,7 @@ export function useCollisionDetection() {
   return {
     collidedRows,
     disableCollidedRow,
+    removeFromCollidedRows,
     setCharacterHitArea,
     onCheckCollisionStart,
     onCheckCollisionEnd,

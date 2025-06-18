@@ -8,7 +8,7 @@
 </script>
 
 <template>
-  <div class="tile-row w-full">
+  <div class="tile-row w-full absolute">
     <div class="grid grid-cols-3 gap-2 p-2 h-32 opacity-90">
       <Tile
         v-for="tile in tiles"

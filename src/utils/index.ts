@@ -194,3 +194,13 @@ export function enterFullscreen() {
 export function getTileRowId(tileId: string): string {
   return tileId.split('-')[0]
 }
+
+/**
+ * Extracts the row index from a given row ID.
+ *
+ * @param {string} rowId - The input string containing the row ID.
+ * @returns {number} The extracted row index.
+ */
+export function getRowIndex(rowId: string): number {
+  return Number(rowId.split('row')[1])
+}

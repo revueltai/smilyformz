@@ -13,13 +13,14 @@ import type {
   TileColor,
 } from '@/components/app/tile/types'
 import { useGameStore } from '@/stores/gameStore'
-import { getRandomNumber, getRandomItem, getRandomBoolean } from '@/utils'
+import { getRandomNumber, getRandomItem, getRandomBoolean, getRowIndex } from '@/utils'
 
 const SHAPES = Object.values(TILE_SHAPES) as TileShape[]
 const EXPRESSIONS = Object.values(TILE_EXPRESSIONS) as TileExpression[]
 const COLORS = Object.values(TILE_COLORS)
 
 const rows = ref<TileRow[]>([])
+const rowResetKeys = ref<Record<string, number>>({})
 
 /**
  * Handles the generation of tiles on the board
@@ -34,6 +35,7 @@ export function useTileGeneration() {
    * @param rowId - The id of the row
    * @param tileIndex - The index of the tile
    * @param color - The color of the tile
+   * @param resetKey - The reset key to force component recreation
    * @returns The tile
    */
   function createTile(
@@ -41,6 +43,7 @@ export function useTileGeneration() {
     rowId: string,
     tileIndex: number,
     color: TileColor,
+    resetKey: number = 0,
   ): TileRowItem {
     let powerUpType = TILE_POWER_UP_TYPES.NONE
     let shouldMatchShape = false
@@ -70,7 +73,7 @@ export function useTileGeneration() {
       : color
 
     return {
-      id: `${rowId}-tile${tileIndex}`,
+      id: `${rowId}-tile${tileIndex}-${resetKey}`,
       type: 'Tile',
       shape: shouldMatchShape ? gameStore.character.shape : getRandomItem(SHAPES),
       expression: getRandomItem(EXPRESSIONS),
@@ -89,11 +92,12 @@ export function useTileGeneration() {
   function generateTiles(rowId: string): TileRowItem[] {
     const totalRowsLength = 3
     const matchIndex = getRandomNumber(totalRowsLength)
+    const resetKey = rowResetKeys.value[rowId] || 0
 
     return Array.from({ length: totalRowsLength }, (_, tileIndex) => {
       const matchCharacter = tileIndex === matchIndex
       const color = getRandomItem(COLORS)
-      return createTile(matchCharacter, rowId, tileIndex, color)
+      return createTile(matchCharacter, rowId, tileIndex, color, resetKey)
     })
   }
 
@@ -115,12 +119,26 @@ export function useTileGeneration() {
   }
 
   /**
+   * Updates/Refreshes the tiles on a row that has been reset
+   *
+   * @param rowId - The id of the row
+   */
+  function updateTilesOnRowReset(rowId: string) {
+    const rowIndex = getRowIndex(rowId)
+
+    if (rowIndex >= 0 && rowIndex < rows.value.length) {
+      rowResetKeys.value[rowId] = (rowResetKeys.value[rowId] || 0) + 1
+      rows.value[rowIndex].tiles = generateTiles(rowId)
+    }
+  }
+
+  /**
    * Updates a row of tiles to match the character if it doesn't already
    *
    * @param rowId - The id of the row
    */
   function updateRowTilesToMatchCharacter(rowId: string) {
-    const rowIndex = Number(rowId.split('row')[1])
+    const rowIndex = getRowIndex(rowId)
     const nextRow = rows.value[rowIndex + 1]
 
     if (nextRow) {
@@ -183,6 +201,7 @@ export function useTileGeneration() {
   return {
     rows,
     updateRowTilesToMatchCharacter,
+    updateTilesOnRowReset,
     initializeRows,
     initializeRowsPosition,
   }

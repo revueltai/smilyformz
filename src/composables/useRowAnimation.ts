@@ -1,12 +1,17 @@
 import { ref, watch } from 'vue'
 import { Bus } from '@/services/Bus.service'
 import { useGameStore } from '@/stores/gameStore'
+import { useTileGeneration } from './useTileGeneration'
+import { useCollisionDetection } from './useCollisionDetection'
 
 /**
  * Composable for animating rows
  */
 export function useRowAnimation() {
   const gameStore = useGameStore()
+  const { updateTilesOnRowReset } = useTileGeneration()
+  const { removeFromCollidedRows } = useCollisionDetection()
+
   const isAnimating = ref(false)
   let animationFrame: number
   let activeRows = new Map<string, number>() // Store active rows and their speeds
@@ -69,6 +74,8 @@ export function useRowAnimation() {
       row.dataset.startTime = String(newStartTime)
 
       Bus.emit('tileRowReset', { rowId: row.id })
+      updateTilesOnRowReset(row.id)
+      removeFromCollidedRows(row.id)
     }
 
     const existingStyles = row.style.cssText

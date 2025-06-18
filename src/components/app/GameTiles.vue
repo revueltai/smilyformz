@@ -48,7 +48,6 @@
         :ref="row.id"
         :id="row.id"
         :tiles="row.tiles"
-        class="absolute"
       />
     </div>
   </div>
