@@ -56,9 +56,17 @@ export function useRowAnimation() {
     if (newY > containerHeight) {
       const rowIndex = Number(row.dataset.index || 0)
       const baseDelay = Number(row.dataset.baseDelay || 4000)
+      const totalRows = activeRows.size
+
+      const cycleDuration = totalRows * baseDelay
+      const firstRowStartTime = Number(row.dataset.firstRowStartTime || startTime)
+      const timeSinceFirstRow = currentTime - firstRowStartTime
+      const currentCycle = Math.floor(timeSinceFirstRow / cycleDuration)
+      const nextCycleStartTime = firstRowStartTime + (currentCycle + 1) * cycleDuration
+      const newStartTime = nextCycleStartTime + rowIndex * baseDelay
 
       newY = -row.offsetHeight
-      row.dataset.startTime = String(getCurrentTime() + rowIndex * baseDelay)
+      row.dataset.startTime = String(newStartTime)
 
       Bus.emit('tileRowReset', { rowId: row.id })
     }
@@ -83,7 +91,10 @@ export function useRowAnimation() {
       return
     }
 
-    row.dataset.startTime = String(getCurrentTime() + delay)
+    if (!row.dataset.startTime) {
+      row.dataset.startTime = String(getCurrentTime() + delay)
+    }
+
     activeRows.set(rowId, speed)
     requestNextFrame(row, speed)
   }
@@ -97,6 +108,8 @@ export function useRowAnimation() {
    */
   function startAnimation(rowIds: string[], speed: number = 2, delay: number = 4000) {
     activeRows.clear()
+    const firstRowStartTime = getCurrentTime()
+
     rowIds.forEach((rowId, index) => {
       const row = document.getElementById(rowId)
       if (!row) return
@@ -104,6 +117,7 @@ export function useRowAnimation() {
       // Store index and base delay for future resets
       row.dataset.index = String(index)
       row.dataset.baseDelay = String(delay)
+      row.dataset.firstRowStartTime = String(firstRowStartTime)
 
       animateRow(rowId, speed, index * delay)
     })
@@ -123,11 +137,23 @@ export function useRowAnimation() {
     return Math.round(performance.now())
   }
 
+  /**
+   * Resumes the animation of all rows with their current timing
+   */
+  function resumeRows() {
+    activeRows.forEach((speed, rowId) => {
+      const row = document.getElementById(rowId)
+      if (row) {
+        requestNextFrame(row, speed)
+      }
+    })
+  }
+
   watch(
     () => gameStore.isPaused,
     (isPaused) => {
       if (!isPaused && activeRows.size > 0) {
-        activeRows.forEach((speed, rowId) => animateRow(rowId, speed))
+        resumeRows()
       }
     },
   )
