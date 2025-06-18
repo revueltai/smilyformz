@@ -12,6 +12,7 @@ interface GameTime {
 export const useGameStore = defineStore('game', () => {
   const pointsPerMatch = ref(1)
   const score = ref(0)
+  const gameSpeed = ref(4)
   const isGameOver = ref(false)
   const isPaused = ref(false)
   const isGameStarted = ref(false)
@@ -145,6 +146,7 @@ export const useGameStore = defineStore('game', () => {
     character,
     pointsPerMatch,
     score,
+    gameSpeed,
     isGameOver,
     isPaused,
     isGameStarted,

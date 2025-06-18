@@ -20,31 +20,29 @@ export function useRowAnimation() {
    * Requests the next animation frame for a row
    *
    * @param row - The row element to animate
-   * @param speed - The speed of the animation in pixels per frame
    */
-  function requestNextFrame(row: HTMLElement, speed: number) {
+  function requestNextFrame(row: HTMLElement) {
     if (gameStore.isPaused) {
       stopAnimation()
       return
     }
 
-    animationFrame = requestAnimationFrame(() => updatePosition(row, speed))
+    animationFrame = requestAnimationFrame(() => updatePosition(row))
   }
 
   /**
    * Updates the position of a row
    *
    * @param row - The row element to update
-   * @param speed - The speed of the animation in pixels per frame
    */
-  function updatePosition(row: HTMLElement, speed: number) {
+  function updatePosition(row: HTMLElement) {
     if (!row) return
 
     const startTime = Number(row.dataset.startTime || 0)
     const currentTime = getCurrentTime()
 
     if (currentTime < startTime) {
-      requestNextFrame(row, speed)
+      requestNextFrame(row)
       return
     }
 
@@ -56,7 +54,7 @@ export function useRowAnimation() {
     if (!container) return
 
     const containerHeight = container.offsetHeight
-    let newY = currentY + speed
+    let newY = currentY + gameStore.gameSpeed
 
     if (newY > containerHeight) {
       const rowIndex = Number(row.dataset.index || 0)
@@ -81,17 +79,16 @@ export function useRowAnimation() {
     const existingStyles = row.style.cssText
     row.style.cssText = `${existingStyles}; transform: translateY(${newY}px);`
 
-    requestNextFrame(row, speed)
+    requestNextFrame(row)
   }
 
   /**
    * Animates a row from top to bottom
    *
    * @param rowId - The ID of the row to animate
-   * @param speed - The speed of the animation in pixels per frame
    * @param delay - The delay before starting the animation in milliseconds (default: null)
    */
-  function animateRow(rowId: string, speed: number = 2, delay: number = 0) {
+  function animateRow(rowId: string, delay: number = 0) {
     const row = document.getElementById(rowId)
 
     if (!row) {
@@ -102,18 +99,17 @@ export function useRowAnimation() {
       row.dataset.startTime = String(getCurrentTime() + delay)
     }
 
-    activeRows.set(rowId, speed)
-    requestNextFrame(row, speed)
+    activeRows.set(rowId, gameStore.gameSpeed)
+    requestNextFrame(row)
   }
 
   /**
    * Starts animating all rows with a delay between each row
    *
    * @param rowIds - Array of row IDs to animate
-   * @param speed - The speed of the animation in pixels per frame
    * @param delay - The delay between each row animation in milliseconds (default: 4000)
    */
-  function startAnimation(rowIds: string[], speed: number = 2, delay: number = 4000) {
+  function startAnimation(rowIds: string[], delay: number = 4000) {
     activeRows.clear()
     const firstRowStartTime = getCurrentTime()
 
@@ -126,7 +122,7 @@ export function useRowAnimation() {
       row.dataset.baseDelay = String(delay)
       row.dataset.firstRowStartTime = String(firstRowStartTime)
 
-      animateRow(rowId, speed, index * delay)
+      animateRow(rowId, index * delay)
     })
   }
 
@@ -148,10 +144,10 @@ export function useRowAnimation() {
    * Resumes the animation of all rows with their current timing
    */
   function resumeRows() {
-    activeRows.forEach((speed, rowId) => {
+    activeRows.forEach((_, rowId) => {
       const row = document.getElementById(rowId)
       if (row) {
-        requestNextFrame(row, speed)
+        requestNextFrame(row)
       }
     })
   }
