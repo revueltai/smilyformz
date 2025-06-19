@@ -175,6 +175,17 @@ export function createCssVar(name: string, value: string = '', wrapInVar: boolea
 }
 
 /**
+ * Checks if the app is running from the home screen (PWA mode)
+ */
+export function isStandalone(): boolean {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    (window.navigator as any).standalone === true ||
+    document.referrer.includes('android-app://')
+  )
+}
+
+/**
  * Enters fullscreen in the browser
  */
 export function enterFullscreen() {

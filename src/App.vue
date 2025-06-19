@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue'
   import { RouterView } from 'vue-router'
-  import { isMobile, enterFullscreen, isFullscreen } from '@/utils'
+  import { isMobile, enterFullscreen, isFullscreen, isStandalone } from '@/utils'
   import ModalContainer from '@/components/shared/Modal/Container.vue'
   import Toast from '@/components/shared/Toast/index.vue'
 
@@ -20,9 +20,17 @@
   }
 
   onMounted(() => {
-    events.forEach((event) => {
-      document.addEventListener(event, handleFirstInteraction, { once: true })
-    })
+    // If running from home screen, enter fullscreen immediately
+    if (isMobile() && isStandalone() && !isFullscreen()) {
+      enterFullscreen()
+    }
+
+    // For browser mode, wait for first user interaction
+    if (isMobile() && !isStandalone()) {
+      events.forEach((event) => {
+        document.addEventListener(event, handleFirstInteraction, { once: true })
+      })
+    }
 
     document.addEventListener('fullscreenchange', handleFullscreenChange)
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
