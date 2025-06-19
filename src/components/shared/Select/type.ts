@@ -23,8 +23,8 @@ export interface SelectProps {
   options?: SelectOption[]
   hasClickableIcon?: boolean
   isEditable?: boolean
+  showSelectField?: boolean
   showStaticField?: boolean
-  showInputField?: boolean
   cssClassesField?: string
   footnote?: string
   footnoteColor?: Color

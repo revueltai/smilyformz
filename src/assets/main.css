@@ -75,6 +75,21 @@ body {
   }
 }
 
+@keyframes slideInOutTop {
+  0% {
+    transform: translateY(-100%);
+  }
+  15% {
+    transform: translateY(0);
+  }
+  85% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
 /* Fullscreen mode styles */
 .fullscreen-mode {
   position: fixed;

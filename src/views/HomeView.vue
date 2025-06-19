@@ -6,6 +6,7 @@
   import { MODALS } from '@/configs/constants'
   import { useModalStore } from '@/stores/modal.store'
   import ModalShare from '@/components/app/ModalShare.vue'
+
   const modalStore = useModalStore()
 
   const score = ref(2000)

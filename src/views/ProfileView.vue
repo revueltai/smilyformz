@@ -1,32 +1,64 @@
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
   import { MODALS } from '@/configs/constants'
+  import { getCountriesForSelect } from '@/configs/countries'
+  import { supabase } from '@/services/Supabase.service'
+  import { ToastService } from '@/components/shared/Toast/service'
   import Page from '@/components/app/Page.vue'
   import HeaderUser from '@/components/app/HeaderUser.vue'
   import SettingsSound from '@/components/app/SettingsSound.vue'
   import ModalAvatar from '@/components/app/ModalAvatar.vue'
 
-  const countries = ref([
-    {
-      value: 'en',
-      label: 'English',
-    },
-    {
-      value: 'es',
-      label: 'Spanish',
-    },
-  ])
+  const router = useRouter()
+  const { t } = useI18n()
+  const countries = getCountriesForSelect()
 
   const email = ref('foo@foo.com')
   const country = ref('en')
   const password = ref('abc123')
+  const isLoading = ref(false)
+  const isDeletingAccount = ref(false)
+  const showDeleteConfirmation = ref(false)
 
-  function handleLogout() {
-    console.log('logout')
+  async function handleLogout() {
+    isLoading.value = true
+
+    try {
+      await supabase.signOut()
+      ToastService.emitToast(t('logoutSuccess'), 'success')
+      router.push('/')
+    } catch (error) {
+      console.error('Logout error:', error)
+      ToastService.emitToast(t('logoutFailed'), 'error')
+    } finally {
+      isLoading.value = false
+    }
   }
 
   function handleDeleteAccount() {
-    console.log('show modal delete account')
+    showDeleteConfirmation.value = true
+  }
+
+  async function confirmDeleteAccount() {
+    isDeletingAccount.value = true
+
+    try {
+      await supabase.deleteAccount()
+      ToastService.emitToast(t('accountDeleted'), 'success')
+      router.push('/')
+    } catch (error) {
+      console.error('Delete account error:', error)
+      ToastService.emitToast(t('accountDeletionFailed'), 'error')
+    } finally {
+      isDeletingAccount.value = false
+      showDeleteConfirmation.value = false
+    }
+  }
+
+  function cancelDeleteAccount() {
+    showDeleteConfirmation.value = false
   }
 </script>
 
@@ -77,11 +109,15 @@
     </form>
 
     <div class="flex flex-col gap-4">
-      <Button @click="handleLogout">
-        {{ $t('logout') }}
+      <Button
+        :disabled="isLoading"
+        @click="handleLogout"
+      >
+        {{ isLoading ? $t('loggingOut') : $t('logout') }}
       </Button>
 
       <Button
+        :disabled="isDeletingAccount"
         background-color="rose-50"
         background-color-hover="rose-100"
         border-color="rose-600"
@@ -89,7 +125,7 @@
         text-color="rose-800"
         @click="handleDeleteAccount"
       >
-        {{ $t('deleteAccount') }}
+        {{ isDeletingAccount ? $t('deletingAccount') : $t('deleteAccount') }}
       </Button>
     </div>
 
@@ -98,6 +134,39 @@
       :heading="$t('createAvatar')"
     >
       <ModalAvatar />
+    </Modal>
+
+    <!-- Delete Account Confirmation Modal -->
+    <Modal
+      v-if="showDeleteConfirmation"
+      :name="'deleteAccountConfirmation'"
+      :heading="$t('deleteAccountConfirmation')"
+    >
+      <div class="flex flex-col gap-4">
+        <p class="text-slate-600">{{ $t('deleteAccountWarning') }}</p>
+
+        <div class="flex gap-3">
+          <Button
+            class="flex-1"
+            @click="cancelDeleteAccount"
+          >
+            {{ $t('cancel') }}
+          </Button>
+
+          <Button
+            class="flex-1"
+            :disabled="isDeletingAccount"
+            background-color="rose-50"
+            background-color-hover="rose-100"
+            border-color="rose-600"
+            border-color-hover="rose-800"
+            text-color="rose-800"
+            @click="confirmDeleteAccount"
+          >
+            {{ isDeletingAccount ? $t('deletingAccount') : $t('confirmDelete') }}
+          </Button>
+        </div>
+      </div>
     </Modal>
   </Page>
 </template>

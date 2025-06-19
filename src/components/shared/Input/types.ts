@@ -12,6 +12,7 @@ export interface InputProps {
   maxlength?: number
   cssClassesField?: string
   required?: boolean
+  requiredMessage?: string
   disabled?: boolean
   isEditable?: boolean
   showStaticField?: boolean
@@ -22,4 +23,6 @@ export interface InputProps {
   iconColor?: Color
   hasClickableIcon?: boolean
   showEditIcon?: boolean
+  externalError?: string
+  forceInvalid?: boolean
 }

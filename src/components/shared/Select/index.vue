@@ -19,7 +19,7 @@
     disabled: false,
     hasClickableIcon: false,
     isEditable: true,
-    showInputField: false,
+    showSelectField: false,
     showStaticField: false,
     showEditIcon: true,
   })
@@ -36,35 +36,33 @@
 
   const isRequired = computed(() => props.required && isTouched.value)
 
-  const validateInput = (value: string | number | undefined) => {
-    if (!value || value === '') {
-      return !props.required
-    }
-    return true
-  }
-
   const isInvalid = computed(() => {
-    if (!isTouched.value) return false
+    if (!isTouched.value) {
+      return false
+    }
+
     return !validateInput(selectModel.value)
   })
 
   const getErrorMessage = computed(() => {
-    if (!isTouched.value) return ''
+    if (!isTouched.value) {
+      return ''
+    }
+
     if (!selectModel.value || selectModel.value === '') {
       return t('requiredField')
     }
+
     return t('invalidInput')
   })
 
-  const cssClasses = computed(() => {
-    const output = []
-
-    if ((isRequired.value || isInvalid.value) && isTouched.value) {
-      output.push('border-rose-600')
+  function validateInput(value: string | number | undefined) {
+    if (!value || value === '') {
+      return !props.required
     }
 
-    return output
-  })
+    return true
+  }
 
   function handleIconClick() {
     if (props.hasClickableIcon) {
@@ -127,7 +125,7 @@
     </div>
 
     <div
-      v-if="showInputField || (isEditable && showStaticField && isEditing)"
+      v-if="showSelectField || (isEditable && showStaticField && isEditing)"
       class="flex items-center justify-between gap-3"
     >
       <div

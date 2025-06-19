@@ -5,7 +5,7 @@
   import type { TileExpression } from '@/components/app/tile/types'
   import { TILE_DEFAULTS } from '@/configs/constants'
 
-  const props = withDefaults(
+  withDefaults(
     defineProps<{
       colorShape: string
       colorBackground: string

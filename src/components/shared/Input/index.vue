@@ -20,9 +20,12 @@
     type: 'text',
     iconType: 'stroke',
     required: false,
+    requiredMessage: 'requiredField',
     disabled: false,
     hasClickableIcon: false,
     showEditIcon: true,
+    externalError: '',
+    forceInvalid: false,
   })
 
   const emit = defineEmits(['update:modelValue', 'blur', 'clickIcon'])
@@ -41,7 +44,50 @@
 
   const isRequired = computed(() => props.required && isTouched.value)
 
-  const validateInput = (value: string | undefined) => {
+  const isInvalid = computed(() => {
+    if (props.forceInvalid) {
+      return true
+    }
+
+    if (!isTouched.value) {
+      return false
+    }
+
+    return !validateInput(inputModel.value)
+  })
+
+  const getErrorMessage = computed(() => {
+    if (props.externalError) {
+      return t(props.externalError)
+    }
+
+    if (!isTouched.value) {
+      return ''
+    }
+
+    if (!inputModel.value || inputModel.value.trim() === '') {
+      return t(props.requiredMessage)
+    }
+
+    switch (props.type) {
+      case 'email':
+        return t('enterValidEmail')
+
+      case 'url':
+        return t('enterValidUrl')
+
+      case 'number':
+        return t('enterValidNumber')
+
+      case 'tel':
+        return t('enterValidPhoneNumber')
+
+      default:
+        return t('enterValidInput')
+    }
+  })
+
+  function validateInput(value: string | undefined) {
     if (!value || value.trim() === '') {
       return !props.required
     }
@@ -50,6 +96,7 @@
       case 'email':
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         return emailRegex.test(value)
+
       case 'url':
         try {
           new URL(value)
@@ -57,50 +104,17 @@
         } catch {
           return false
         }
+
       case 'number':
         return !isNaN(Number(value))
+
       case 'tel':
-        // Basic phone validation - at least 10 digits
         return /^\+?[\d\s-]{10,}$/.test(value)
+
       default:
         return true
     }
   }
-
-  const isInvalid = computed(() => {
-    if (!isTouched.value) return false
-    return !validateInput(inputModel.value)
-  })
-
-  const getErrorMessage = computed(() => {
-    if (!isTouched.value) return ''
-    if (!inputModel.value || inputModel.value.trim() === '') {
-      return t('requiredField')
-    }
-
-    switch (props.type) {
-      case 'email':
-        return t('enterValidEmail')
-      case 'url':
-        return t('enterValidUrl')
-      case 'number':
-        return t('enterValidNumber')
-      case 'tel':
-        return t('enterValidPhoneNumber')
-      default:
-        return t('enterValidInput')
-    }
-  })
-
-  const cssClasses = computed(() => {
-    const output = []
-
-    if ((isRequired.value || isInvalid.value) && isTouched.value) {
-      output.push('border-rose-600')
-    }
-
-    return output
-  })
 
   function handleIconClick() {
     if (isPassword.value) {

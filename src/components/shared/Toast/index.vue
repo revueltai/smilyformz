@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { UI } from '@/configs/constants'
   import { ToastService } from './service'
   import { computed, onMounted, onUnmounted, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
@@ -15,9 +14,9 @@
 
   const cssClasses = computed(() => {
     return {
-      'blue-300': type.value === 'info',
-      'lime-300': type.value === 'success',
-      'rose-300': type.value === 'error',
+      'bg-blue-300': type.value === 'info',
+      'bg-lime-300': type.value === 'success',
+      'bg-rose-300': type.value === 'error',
     }
   })
 
@@ -25,7 +24,7 @@
     event.stopPropagation()
 
     const targetEl = event.target as HTMLElement
-    targetEl.classList.remove(UI.animationClasses.timed.slideInOutTop)
+    targetEl.classList.remove('slideInOutTop')
     isVisible.value = false
     message.value = ''
   }
@@ -38,7 +37,7 @@
 
       if (toastRef.value) {
         toastRef.value.addEventListener('animationend', handleAnimationEnd)
-        toastRef.value.classList.add(UI.animationClasses.timed.slideInOutTop)
+        toastRef.value.classList.add('slideInOutTop')
       }
     }
   }
@@ -58,13 +57,19 @@
   <div
     v-show="isVisible"
     ref="toastRef"
-    class="absolute top-0 left-0 w-full z-50 overflow-hidden"
+    class="absolute top-0 left-0 w-full z-50 px-2"
   >
     <div
-      class="min-w-40 text-center shadow-lg top-0 px-8 py-4 rounded-b-2xl text-slate-700 text-md sm:text-xl"
+      class="min-w-40 text-center shadow-md top-0 px-8 py-4 rounded-b-3xl text-slate-700 text-sm sm:text-base"
       :class="cssClasses"
     >
       {{ message }}
     </div>
   </div>
 </template>
+
+<style scoped>
+  .slideInOutTop {
+    animation: slideInOutTop 1800ms ease-in-out;
+  }
+</style>
