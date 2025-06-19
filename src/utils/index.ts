@@ -179,10 +179,54 @@ export function createCssVar(name: string, value: string = '', wrapInVar: boolea
  */
 export function enterFullscreen() {
   if (isMobile()) {
-    // document.documentElement.requestFullscreen().catch((err) => {
-    //   console.error('Fullscreen request failed:', err)
-    // })
+    // Try to enter fullscreen mode
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch((err: Error) => {
+        console.error('Fullscreen request failed:', err)
+      })
+    }
+
+    // Try to lock orientation to portrait on mobile
+    if (screen.orientation && (screen.orientation as any).lock) {
+      ;(screen.orientation as any).lock('portrait').catch((err: Error) => {
+        console.error('Orientation lock failed:', err)
+      })
+    }
+
+    document.body.classList.add('fullscreen-mode')
   }
+}
+
+/**
+ * Exits fullscreen mode
+ */
+export function exitFullscreen() {
+  if (isMobile()) {
+    // Exit fullscreen mode
+    if (document.exitFullscreen) {
+      document.exitFullscreen().catch((err: Error) => {
+        console.error('Exit fullscreen failed:', err)
+      })
+    }
+
+    // Unlock orientation
+    if (screen.orientation && (screen.orientation as any).unlock) {
+      ;(screen.orientation as any).unlock()
+    }
+
+    document.body.classList.remove('fullscreen-mode')
+  }
+}
+
+/**
+ * Checks if the app is currently in fullscreen mode
+ */
+export function isFullscreen(): boolean {
+  return !!(
+    document.fullscreenElement ||
+    (document as any).webkitFullscreenElement ||
+    (document as any).mozFullScreenElement
+  )
 }
 
 /**

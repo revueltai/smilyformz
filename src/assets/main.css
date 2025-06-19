@@ -74,3 +74,32 @@ body {
     transform: translate3d(0, -4px, 0) scale(1.02);
   }
 }
+
+/* Fullscreen mode styles */
+.fullscreen-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.fullscreen-mode #app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Prevent browser UI from covering game controls on mobile */
+@media (max-width: 768px) {
+  body {
+    /* Prevent viewport issues on mobile */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  html {
+    height: -webkit-fill-available;
+  }
+}

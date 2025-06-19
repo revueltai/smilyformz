@@ -8,7 +8,7 @@
   <div>
     <Button
       size="xl"
-      class="absolute left-2 bottom-6 z-20"
+      class="absolute left-2 bottom-12 z-20"
       :disabled="disabled"
       @click="$emit('move-left')"
     >
@@ -21,7 +21,7 @@
 
     <Button
       size="xl"
-      class="absolute right-2 bottom-6 z-20"
+      class="absolute right-2 bottom-12 z-20"
       :disabled="disabled"
       @click="$emit('move-right')"
     >
