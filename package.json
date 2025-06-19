@@ -1,11 +1,34 @@
 {
-  "name": "fallingshapes",
+  "name": "smilyformz",
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "description": "SmilyFormz is a game about matching falling shapes",
+  "author": "Ignacio 'Nacho' Revuelta - iamnacho.com",
+  "license": "MIT",
+  "homepage": "https://smilyformz.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/revueltai/smilyformz"
+  },
+  "keywords": [
+    "game",
+    "matching",
+    "falling",
+    "shapes",
+    "smilyformz",
+    "typescript",
+    "vue"
+  ],
+  "maintainers": [
+    {
+      "name": "Ignacio Revuelta",
+      "web": "https://iamnacho.com"
+    }
+  ],
   "scripts": {
     "dev": "bunx --bun vite",
-    "build": "bunx --bun run-p type-check \"build-only {@}\" --",
+    "build": "bunx --bun vite build",
     "preview": "bunx --bun vite preview",
     "test:unit": "bunx --bun vitest",
     "test:unit:ui": "bunx --bun vitest --ui",
