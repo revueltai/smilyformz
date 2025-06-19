@@ -45,6 +45,15 @@ export function useMovementCharacter(
   }
 
   /**
+   * Resets the character animation system for a new game
+   */
+  function resetCharacterAnimation() {
+    posX.value = 0
+    updateSizes()
+    centerCharacter()
+  }
+
+  /**
    * Clamps character to stay fully visible on the board
    *
    * @param val - The current position of the character
@@ -142,5 +151,6 @@ export function useMovementCharacter(
     moveRight,
     updateSizes,
     centerCharacter,
+    resetCharacterAnimation,
   }
 }

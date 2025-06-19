@@ -134,6 +134,15 @@ export function useRowAnimation() {
   }
 
   /**
+   * Resets the row animation system for a new game
+   */
+  function resetRowAnimation() {
+    stopAnimation()
+    activeRows.clear()
+    isAnimating.value = false
+  }
+
+  /**
    * Gets the current time in milliseconds to use when starting animations.
    */
   function getCurrentTime(): number {
@@ -165,5 +174,6 @@ export function useRowAnimation() {
     isAnimating,
     startAnimation,
     stopAnimation,
+    resetRowAnimation,
   }
 }

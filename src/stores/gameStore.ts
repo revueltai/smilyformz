@@ -160,6 +160,16 @@ export const useGameStore = defineStore('game', () => {
     setGameOver(false)
     isPaused.value = false
     isGameStarted.value = false
+
+    // Reset character to a new random state
+    character.value = {
+      id: 'character',
+      type: 'character',
+      shape: getRandomItem(Object.values(TILE_SHAPES) as TileShape[]),
+      shapeColor: getRandomItem(Object.values(TILE_COLORS)).shapeColor,
+      backgroundColor: getRandomItem(Object.values(TILE_COLORS)).backgroundColor,
+      expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
+    }
   }
 
   function updateCharacterOnMatch(characterProps: {

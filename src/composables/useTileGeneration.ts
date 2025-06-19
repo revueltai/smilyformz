@@ -198,11 +198,20 @@ export function useTileGeneration() {
     rows.value = Array.from({ length: count }, (_, index) => generateNewRow(index))
   }
 
+  /**
+   * Resets the tile generation system for a new game
+   */
+  function resetTileGeneration() {
+    rows.value = []
+    rowResetKeys.value = {}
+  }
+
   return {
     rows,
     updateRowTilesToMatchCharacter,
     updateTilesOnRowReset,
     initializeRows,
     initializeRowsPosition,
+    resetTileGeneration,
   }
 }

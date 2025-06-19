@@ -28,7 +28,7 @@
   })
 
   const tilesGap = 8
-  const { x, moveLeft, moveRight, centerCharacter } = useMovementCharacter(
+  const { x, moveLeft, moveRight, centerCharacter, resetCharacterAnimation } = useMovementCharacter(
     tileWidth.value + tilesGap,
     props.boardRef,
     characterRef,
@@ -61,7 +61,19 @@
     }
   }
 
-  watch(() => gameStore.isGameStarted, handleCharacterCenteringOnStart)
+  function handleCharacterReset(isGameStarted: boolean) {
+    if (!isGameStarted) {
+      resetCharacterAnimation()
+    }
+  }
+
+  watch(
+    () => gameStore.isGameStarted,
+    (isGameStarted) => {
+      handleCharacterCenteringOnStart(isGameStarted)
+      handleCharacterReset(isGameStarted)
+    },
+  )
 
   onMounted(async () => await nextTick(() => setCharacterHitArea(characterHitAreaRef.value)))
 </script>

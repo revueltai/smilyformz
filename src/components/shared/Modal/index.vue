@@ -2,7 +2,7 @@
   import { useModalStore } from '@/stores/modal.store'
   import type { ModalProps } from './types'
 
-  withDefaults(defineProps<ModalProps>(), {
+  const props = withDefaults(defineProps<ModalProps>(), {
     containerEl: 'modal',
     hasCloseButton: true,
   })
@@ -11,8 +11,10 @@
   const modalStore = useModalStore()
 
   function handleClose() {
-    modalStore.closeModal()
-    emit('close')
+    if (props.hasCloseButton) {
+      modalStore.closeModal()
+      emit('close')
+    }
   }
 </script>
 

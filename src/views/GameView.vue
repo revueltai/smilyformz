@@ -2,6 +2,7 @@
   import { watch, ref, onMounted } from 'vue'
   import { useModalStore } from '@/stores/modal.store'
   import { useGameStore } from '@/stores/gameStore'
+  import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { MODALS } from '@/configs/constants'
   import ModalPause from '@/components/app/ModalPause.vue'
   import ModalGameOver from '@/components/app/ModalGameOver.vue'
@@ -15,6 +16,7 @@
 
   const gameStore = useGameStore()
   const modalStore = useModalStore()
+  const { resetCollisionDetection } = useCollisionDetection()
   const showGameEndCountdown = ref(false)
 
   function handlePause() {
@@ -54,9 +56,18 @@
     },
   )
 
+  watch(
+    () => gameStore.isGameStarted,
+    (isGameStarted) => {
+      if (!isGameStarted) {
+        showGameEndCountdown.value = false
+      }
+    },
+  )
+
   onMounted(() => {
-    // reset game to start fresh
-    // gameStore.resetGame()
+    gameStore.resetGame()
+    resetCollisionDetection()
   })
 </script>
 

@@ -3,10 +3,12 @@
   import ModalControls from '@/components/app/ModalControls.vue'
   import RankingList from '@/components/app/RankingList.vue'
   import { useRouter } from 'vue-router'
+  import { useModalStore } from '@/stores/modal.store'
   import { mockRankings } from '@/configs/mocks'
   import { useGameStore } from '@/stores/gameStore'
 
   const router = useRouter()
+  const modalStore = useModalStore()
   const gameStore = useGameStore()
 
   function handleShareScore() {
@@ -14,11 +16,13 @@
   }
 
   function handleHome() {
+    modalStore.closeModal()
     router.push('/home')
   }
 
   function handlePlayAgain() {
-    console.log('play again')
+    modalStore.closeModal()
+    gameStore.resetGame()
   }
 </script>
 

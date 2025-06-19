@@ -105,6 +105,15 @@ export function useCollisionDetection() {
     }
   }
 
+  /**
+   * Resets the collision detection system for a new game
+   */
+  function resetCollisionDetection() {
+    onCheckCollisionEnd()
+    collidedRows.value = []
+    isCollided = false
+  }
+
   return {
     collidedRows,
     disableCollidedRow,
@@ -112,5 +121,6 @@ export function useCollisionDetection() {
     setCharacterHitArea,
     onCheckCollisionStart,
     onCheckCollisionEnd,
+    resetCollisionDetection,
   }
 }
