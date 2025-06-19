@@ -13,6 +13,7 @@
   import GameStartCountdown from '@/components/app/GameStartCountdown.vue'
   import GameEndCountdown from '@/components/app/GameEndCountdown.vue'
   import SpeedIncreaseNotification from '@/components/app/SpeedIncreaseNotification.vue'
+  import CharacterMessageContainer from '@/components/app/CharacterMessage/Container.vue'
 
   const gameStore = useGameStore()
   const modalStore = useModalStore()
@@ -40,11 +41,6 @@
   function handleTutorial() {
     gameStore.pause()
     modalStore.openModal('tutorial')
-  }
-
-  function handleSpeedIncreaseComplete() {
-    // This function is called when the speed increase notification completes
-    // The gameStore already handles hiding the notification
   }
 
   watch(
@@ -96,10 +92,9 @@
       :on-complete="handleGameEndCountdownComplete"
     />
 
-    <SpeedIncreaseNotification
-      v-if="gameStore.showSpeedIncreaseNotification"
-      :on-complete="handleSpeedIncreaseComplete"
-    />
+    <SpeedIncreaseNotification v-if="gameStore.showSpeedIncreaseNotification" />
+
+    <CharacterMessageContainer />
 
     <Modal
       :name="MODALS.PAUSE"

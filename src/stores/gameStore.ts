@@ -181,14 +181,6 @@ export const useGameStore = defineStore('game', () => {
     shapeColor: string
     backgroundColor: string
   }) {
-    console.log('=== CHARACTER UPDATE ===')
-    console.log('Previous character:', {
-      shape: character.value.shape,
-      shapeColor: character.value.shapeColor,
-      backgroundColor: character.value.backgroundColor,
-    })
-    console.log('New character props:', characterProps)
-
     character.value = {
       id: 'character',
       type: 'character',
@@ -197,13 +189,6 @@ export const useGameStore = defineStore('game', () => {
       backgroundColor: characterProps.backgroundColor,
       expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
     }
-
-    console.log('Updated character:', {
-      shape: character.value.shape,
-      shapeColor: character.value.shapeColor,
-      backgroundColor: character.value.backgroundColor,
-    })
-    console.log('=== END CHARACTER UPDATE ===')
   }
 
   return {

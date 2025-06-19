@@ -131,13 +131,6 @@
       <Expression :expression="expression" />
     </div>
 
-    <!-- Row ID display for debugging -->
-    <div
-      class="absolute -top-1 -right-1 text-xs font-bold text-white bg-red-500 px-1 py-0.5 rounded z-30"
-    >
-      {{ getTileRowId(id) }}
-    </div>
-
     <div
       v-if="powerUpType === 'doublePoints'"
       class="absolute -top-2 -left-2 text-lg text-shadow-sm text-shadow-blue-600 w-12 h-12 flex items-center justify-center border-2 border-blue-950 shadow-sm rounded-full bg-blue-500 text-white z-20"

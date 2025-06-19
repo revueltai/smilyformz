@@ -3,7 +3,7 @@
   import GameCountdown from './GameCountdown.vue'
 
   const props = defineProps<{
-    onComplete: () => void
+    onComplete?: () => void
   }>()
 
   const isVisible = ref(true)
@@ -11,7 +11,10 @@
   onMounted(() => {
     setTimeout(() => {
       isVisible.value = false
-      props.onComplete()
+
+      if (props.onComplete) {
+        props.onComplete()
+      }
     }, 1500)
   })
 </script>

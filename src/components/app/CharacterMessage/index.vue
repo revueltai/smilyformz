@@ -1,0 +1,104 @@
+<script setup lang="ts">
+  import { ref, onMounted } from 'vue'
+
+  const props = defineProps<{
+    message: string
+    onComplete?: () => void
+  }>()
+
+  const isVisible = ref(true)
+
+  const messages = [
+    'characterMessage1',
+    'characterMessage2',
+    'characterMessage3',
+    'characterMessage4',
+    'characterMessage5',
+    'characterMessage6',
+    'characterMessage7',
+  ]
+
+  const randomMessage = ref(props.message || messages[Math.floor(Math.random() * messages.length)])
+
+  onMounted(() => {
+    setTimeout(() => {
+      isVisible.value = false
+
+      if (props.onComplete) {
+        props.onComplete()
+      }
+    }, 1000)
+  })
+</script>
+
+<template>
+  <Transition
+    enter-active-class="transition duration-300 ease-out"
+    enter-from-class="transform scale-0 opacity-0 translate-y-4"
+    enter-to-class="transform scale-100 opacity-100 translate-y-0"
+    leave-active-class="transition duration-300 ease-in"
+    leave-from-class="transform scale-100 opacity-100 translate-y-0"
+    leave-to-class="transform scale-0 opacity-0 translate-y-4"
+  >
+    <div
+      v-if="isVisible"
+      class="fixed inset-0 flex items-center justify-center pointer-events-none z-40"
+    >
+      <svg
+        width="100%"
+        height="80"
+        viewBox="0 0 100 80"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="animate-bounce w-full"
+      >
+        <text
+          class="fill-blue-600 stroke-blue-600 font-sans text-[40px] tracking-[0px]"
+          x="50"
+          y="57.208"
+          text-anchor="middle"
+          stroke-width="12"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        >
+          {{ $t(randomMessage) }}
+        </text>
+
+        <text
+          class="fill-white font-sans text-[40px] tracking-[0px]"
+          x="50"
+          y="57.208"
+          text-anchor="middle"
+        >
+          {{ $t(randomMessage) }}
+        </text>
+      </svg>
+    </div>
+  </Transition>
+</template>
+
+<style scoped>
+  .animate-bounce {
+    animation: bounce 600ms ease-in-out;
+  }
+
+  @keyframes bounce {
+    0%,
+    20%,
+    53%,
+    80%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    40%,
+    43% {
+      transform: translate3d(0, -30px, 0);
+    }
+    70% {
+      transform: translate3d(0, -15px, 0);
+    }
+    90% {
+      transform: translate3d(0, -4px, 0);
+    }
+  }
+</style>

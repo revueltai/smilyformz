@@ -3,6 +3,7 @@ import { useGameStore } from '@/stores/gameStore'
 import { useCollisionDetection } from './useCollisionDetection'
 import { useTileGeneration } from './useTileGeneration'
 import { getTileRowId, isNoneToken } from '@/utils'
+import { Bus } from '@/services/Bus.service'
 
 interface CharacterUpdateProps {
   shape: TileShape
@@ -121,6 +122,9 @@ export function useTileCollision() {
 
       disableCollidedRow(tile.id)
       updateRowTilesToMatchCharacter(getTileRowId(tile.id))
+
+      // Show character message when tile is matched
+      Bus.emit('characterMessage', {})
 
       return
     }

@@ -69,5 +69,12 @@
   "points": "Pts",
   "gameOverMessage": "Oops!",
   "gameOverMessage2": "Oh no!",
-  "gameOverMessage3": "Fin"
+  "gameOverMessage3": "Fin",
+  "characterMessage1": "Yumm",
+  "characterMessage2": "Yeah",
+  "characterMessage3": "Cool",
+  "characterMessage4": "Nice",
+  "characterMessage5": "Awesome",
+  "characterMessage6": "Sweet",
+  "characterMessage7": "Great"
 }
