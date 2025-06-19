@@ -9,11 +9,15 @@ interface GameTime {
   minutes: number
 }
 
+const GAME_INITIAL_SPEED = 2.5
+const GAME_INITIAL_ROW_SPACING = 400
+
 export const useGameStore = defineStore('game', () => {
   let timeInterval: number | null = null
   const pointsPerMatch = ref(1)
   const score = ref(0)
-  const gameSpeed = ref(2)
+  const initialRowSpacing = ref(GAME_INITIAL_ROW_SPACING)
+  const gameSpeed = ref(GAME_INITIAL_SPEED)
   const isGameOver = ref(false)
   const isPaused = ref(false)
   const isGameStarted = ref(false)
@@ -24,9 +28,9 @@ export const useGameStore = defineStore('game', () => {
   })
 
   const speedMilestones = [
-    [15, 2.5],
-    [30, 2.8],
-    [60, 3],
+    [15, 2.7],
+    [30, 2.9],
+    [60, 3.3],
     [180, 3.5],
     [360, 4],
     [720, 5],
@@ -101,7 +105,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   function resetSpeed() {
-    gameSpeed.value = 1
+    gameSpeed.value = GAME_INITIAL_SPEED
     showSpeedIncreaseNotification.value = false
   }
 
@@ -177,6 +181,14 @@ export const useGameStore = defineStore('game', () => {
     shapeColor: string
     backgroundColor: string
   }) {
+    console.log('=== CHARACTER UPDATE ===')
+    console.log('Previous character:', {
+      shape: character.value.shape,
+      shapeColor: character.value.shapeColor,
+      backgroundColor: character.value.backgroundColor,
+    })
+    console.log('New character props:', characterProps)
+
     character.value = {
       id: 'character',
       type: 'character',
@@ -185,6 +197,13 @@ export const useGameStore = defineStore('game', () => {
       backgroundColor: characterProps.backgroundColor,
       expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
     }
+
+    console.log('Updated character:', {
+      shape: character.value.shape,
+      shapeColor: character.value.shapeColor,
+      backgroundColor: character.value.backgroundColor,
+    })
+    console.log('=== END CHARACTER UPDATE ===')
   }
 
   return {
@@ -198,6 +217,7 @@ export const useGameStore = defineStore('game', () => {
     showSpeedIncreaseNotification,
     time,
     formattedTime,
+    initialRowSpacing,
     incrementScore,
     resetScore,
     setGameOver,

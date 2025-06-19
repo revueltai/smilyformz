@@ -29,7 +29,83 @@ export function useTileGeneration() {
   const gameStore = useGameStore()
 
   /**
-   *  Creates a tile that can optionally match the character color, shape, both or none
+   * Determines whether a tile should match the character's shape or color
+   *
+   * @param matchCharacter - Whether the tile should match the character
+   * @returns Object with shouldMatchShape and shouldMatchColor flags
+   */
+  function determineMatchStrategy(matchCharacter: boolean): {
+    shouldMatchShape: boolean
+    shouldMatchColor: boolean
+  } {
+    if (matchCharacter) {
+      const shouldMatchShape = getRandomBoolean()
+
+      return {
+        shouldMatchShape,
+        shouldMatchColor: !shouldMatchShape,
+      }
+    }
+
+    return {
+      shouldMatchShape: false,
+      shouldMatchColor: false,
+    }
+  }
+
+  /**
+   * Determines the power-up type for a tile and its spawn chance.
+   * Spawn chance is 25% for each tile.
+   *
+   * @param matchCharacter - Whether the tile should match the character
+   * @returns The power-up type
+   */
+  function determinePowerUpType(matchCharacter: boolean) {
+    if (matchCharacter) {
+      return TILE_POWER_UP_TYPES.NONE
+    }
+
+    const spawnChance = getRandomNumber(100)
+    if (spawnChance < 25) {
+      const powerUpTypes = Object.values(TILE_POWER_UP_TYPES).filter(
+        (type) => type !== TILE_POWER_UP_TYPES.NONE,
+      )
+
+      return getRandomItem(powerUpTypes)
+    }
+
+    return TILE_POWER_UP_TYPES.NONE
+  }
+
+  /**
+   * Determines the color pair for a tile
+   *
+   * @param shouldMatchColor - Whether the tile should match character color
+   * @param color - The random color to use if not matching character
+   * @returns The color pair object
+   */
+  function determineColorPair(shouldMatchColor: boolean, color: TileColor) {
+    if (shouldMatchColor) {
+      return {
+        shapeColor: gameStore.character.shapeColor,
+        backgroundColor: gameStore.character.backgroundColor,
+      }
+    }
+    return color
+  }
+
+  /**
+   * Determines the shape for a tile
+   *
+   * @param shouldMatchShape - Whether the tile should match character shape
+   * @returns The shape to use
+   */
+  function determineShape(shouldMatchShape: boolean): TileShape {
+    return shouldMatchShape ? gameStore.character.shape : getRandomItem(SHAPES)
+  }
+
+  /**
+   * Creates a tile that can optionally match the character color, shape, both or none
    *
    * @param matchCharacter - Whether the tile should match the character
    * @param rowId - The id of the row
@@ -45,37 +121,15 @@ export function useTileGeneration() {
     color: TileColor,
     resetKey: number = 0,
   ): TileRowItem {
-    let powerUpType = TILE_POWER_UP_TYPES.NONE
-    let shouldMatchShape = false
-    let shouldMatchColor = false
-
-    if (matchCharacter) {
-      shouldMatchShape = getRandomBoolean()
-      shouldMatchColor = !shouldMatchShape
-    } else {
-      const powerChance = getRandomNumber(100)
-
-      if (powerChance < 25) {
-        const powerUpTypes = Object.values(TILE_POWER_UP_TYPES).filter(
-          (type) => type !== TILE_POWER_UP_TYPES.NONE,
-        )
-
-        powerUpType = getRandomItem(powerUpTypes)
-      }
-    }
-
-    // Get color pair - either from character or random
-    const colorPair = shouldMatchColor
-      ? {
-          shapeColor: gameStore.character.shapeColor,
-          backgroundColor: gameStore.character.backgroundColor,
-        }
-      : color
+    const { shouldMatchShape, shouldMatchColor } = determineMatchStrategy(matchCharacter)
+    const powerUpType = determinePowerUpType(matchCharacter)
+    const colorPair = determineColorPair(shouldMatchColor, color)
+    const shape = determineShape(shouldMatchShape)
 
     return {
       id: `${rowId}-tile${tileIndex}-${resetKey}`,
       type: 'Tile',
-      shape: shouldMatchShape ? gameStore.character.shape : getRandomItem(SHAPES),
+      shape,
       expression: getRandomItem(EXPRESSIONS),
       shapeColor: colorPair.shapeColor,
       backgroundColor: colorPair.backgroundColor,
@@ -133,59 +187,92 @@ export function useTileGeneration() {
   }
 
   /**
+   * Checks if any tile in a row matches the character's shape or color
+   *
+   * @param row - The row to check
+   * @returns True if any tile matches the character
+   */
+  function doesRowMatchCharacter(row: TileRow): boolean {
+    for (const tile of row.tiles) {
+      if (
+        tile.shape === gameStore.character.shape ||
+        tile.shapeColor === gameStore.character.shapeColor
+      ) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  /**
+   * Updates a random tile to match the character's shape
+   *
+   * @param tiles - Array of tiles to update
+   */
+  function updateRandomTileShape(tiles: TileRowItem[]) {
+    const randomTile = getRandomItem(tiles)
+    randomTile.shape = gameStore.character.shape
+  }
+
+  /**
+   * Updates a random tile to match the character's color
+   *
+   * @param tiles - Array of tiles to update
+   */
+  function updateRandomTileColor(tiles: TileRowItem[]) {
+    const randomTile = getRandomItem(tiles)
+    randomTile.shapeColor = gameStore.character.shapeColor
+    randomTile.backgroundColor = gameStore.character.backgroundColor
+  }
+
+  /**
+   * Updates a random tile to match both character's shape and color
+   *
+   * @param tiles - Array of tiles to update
+   */
+  function updateRandomTileShapeAndColor(tiles: TileRowItem[]) {
+    const randomTile = getRandomItem(tiles)
+    randomTile.shape = gameStore.character.shape
+    randomTile.shapeColor = gameStore.character.shapeColor
+    randomTile.backgroundColor = gameStore.character.backgroundColor
+  }
+
+  /**
    * Updates a row of tiles to match the character if it doesn't already
    *
    * @param rowId - The id of the row
    */
   function updateRowTilesToMatchCharacter(rowId: string) {
     const rowIndex = getRowIndex(rowId)
-    const nextRow = rows.value[rowIndex + 1]
+    const totalRows = rows.value.length
 
-    if (nextRow) {
-      let rowTilesMatchCharacter = false
+    // Calculate the next row index with wraparound
+    const nextRowIndex = (rowIndex + 1) % totalRows
+    const nextRow = rows.value[nextRowIndex]
 
-      for (const tile of nextRow.tiles) {
-        if (
-          tile.shape === gameStore.character.shape ||
-          tile.shapeColor === gameStore.character.shapeColor
-        ) {
-          rowTilesMatchCharacter = true
-          break
-        }
-      }
-
-      if (!rowTilesMatchCharacter) {
-        const randomTile = getRandomItem(nextRow.tiles)
-        const randomMatch = getRandomItem(['shape', 'color', 'both'])
-
-        if (randomMatch === 'shape') {
-          randomTile.shape = gameStore.character.shape
-          return
-        }
-
-        if (randomMatch === 'color') {
-          randomTile.shapeColor = gameStore.character.shapeColor
-          randomTile.backgroundColor = gameStore.character.backgroundColor
-          return
-        }
-
-        randomTile.shape = gameStore.character.shape
-        randomTile.shapeColor = gameStore.character.shapeColor
-        randomTile.backgroundColor = gameStore.character.backgroundColor
-      }
+    if (!nextRow) {
+      return
     }
-  }
 
-  /**
-   * Initializes the position of the tile rows outside of the viewport
-   */
-  function initializeRowsPosition() {
-    for (const row of rows.value) {
-      const rowEl = document.getElementById(row.id)
+    if (doesRowMatchCharacter(nextRow)) {
+      return
+    }
 
-      if (rowEl) {
-        rowEl.style.transform = `translateY(-${rowEl.offsetHeight}px)`
-      }
+    const randomMatch = getRandomItem(['shape', 'color', 'both'])
+
+    switch (randomMatch) {
+      case 'shape':
+        updateRandomTileShape(nextRow.tiles)
+        break
+
+      case 'color':
+        updateRandomTileColor(nextRow.tiles)
+        break
+
+      case 'both':
+        updateRandomTileShapeAndColor(nextRow.tiles)
+        break
     }
   }
 
@@ -211,7 +298,6 @@ export function useTileGeneration() {
     updateRowTilesToMatchCharacter,
     updateTilesOnRowReset,
     initializeRows,
-    initializeRowsPosition,
     resetTileGeneration,
   }
 }

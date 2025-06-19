@@ -13,8 +13,126 @@ export function useRowAnimation() {
   const { removeFromCollidedRows } = useCollisionDetection()
 
   const isAnimating = ref(false)
+  const rowSpacing = ref(gameStore.initialRowSpacing)
+
   let animationFrame: number
-  let activeRows = new Map<string, number>() // Store active rows and their speeds
+  let activeRows = new Map<string, number>()
+
+  /**
+   * Gets a row element by ID with validation
+   */
+  function getRowElement(rowId: string): HTMLElement | null {
+    const row = document.getElementById(rowId)
+    return row || null
+  }
+
+  /**
+   * Calculates the offset position for a row based on its index
+   */
+  function calculateRowOffset(rowIndex: number): number {
+    return -(rowIndex + 1) * rowSpacing.value
+  }
+
+  /**
+   * Sets the position and dataset properties for a row
+   */
+  function setRowPosition(row: HTMLElement, rowIndex: number, offset: number): void {
+    row.dataset.rowIndex = String(rowIndex)
+    row.dataset.rowOffset = String(offset)
+    row.style.transform = `translateY(${offset}px)`
+  }
+
+  /**
+   * Positions a single row at its calculated offset
+   */
+  function positionRow(rowId: string, rowIndex: number): void {
+    const row = getRowElement(rowId)
+    if (!row) return
+
+    const offset = calculateRowOffset(rowIndex)
+    setRowPosition(row, rowIndex, offset)
+  }
+
+  /**
+   * Gets the current Y position of a row from its transform
+   */
+  function getCurrentRowYPosition(row: HTMLElement): number {
+    const currentTransform = window.getComputedStyle(row).transform
+    const matrix = new DOMMatrix(currentTransform)
+    return matrix.m42
+  }
+
+  /**
+   * Calculates the new Y position for a row based on current position and game speed
+   */
+  function calculateNewRowPosition(currentY: number): number {
+    return currentY + gameStore.gameSpeed
+  }
+
+  /**
+   * Checks if a row has reached the bottom of its container
+   */
+  function hasRowReachedBottom(row: HTMLElement, newY: number): boolean {
+    const container = row.parentElement
+    if (!container) return false
+
+    const containerHeight = container.offsetHeight
+    return newY > containerHeight
+  }
+
+  /**
+   * Gets the position of the row that's highest in the sequence (lowest Y position)
+   */
+  function getHighestRowInSequence(): number {
+    let highestInSequence = Infinity
+
+    activeRows.forEach((_, rowId) => {
+      const row = getRowElement(rowId)
+      if (row) {
+        const currentY = getCurrentRowYPosition(row)
+        if (currentY < highestInSequence) {
+          highestInSequence = currentY
+        }
+      }
+    })
+
+    return highestInSequence
+  }
+
+  /**
+   * Resets a row to maintain proper spacing with other rows
+   */
+  function resetRowToTop(row: HTMLElement): number {
+    // Emit events and update game state
+    Bus.emit('tileRowReset', { rowId: row.id })
+    updateTilesOnRowReset(row.id)
+    removeFromCollidedRows(row.id)
+
+    // Get the position of the row that's highest in the sequence
+    const highestInSequence = getHighestRowInSequence()
+
+    // If no other rows are active, use the original offset
+    if (highestInSequence === Infinity) {
+      const rowOffset = Number(row.dataset.rowOffset || 0)
+      return rowOffset
+    }
+
+    // Position the reset row above the highest row in sequence with proper spacing
+    const newPosition = highestInSequence - rowSpacing.value
+
+    // Update the row's stored offset
+    row.dataset.rowOffset = String(newPosition)
+
+    return newPosition
+  }
+
+  /**
+   * Applies the new Y position to a row's transform
+   */
+  function applyRowTransform(row: HTMLElement, newY: number): void {
+    const existingStyles = row.style.cssText
+    row.style.cssText = `${existingStyles}; transform: translateY(${newY}px);`
+  }
 
   /**
    * Requests the next animation frame for a row
@@ -38,65 +156,29 @@ export function useRowAnimation() {
   function updatePosition(row: HTMLElement) {
     if (!row) return
 
-    const startTime = Number(row.dataset.startTime || 0)
-    const currentTime = getCurrentTime()
+    const currentY = getCurrentRowYPosition(row)
+    let newY = calculateNewRowPosition(currentY)
 
-    if (currentTime < startTime) {
-      requestNextFrame(row)
-      return
+    if (hasRowReachedBottom(row, newY)) {
+      newY = resetRowToTop(row)
     }
 
-    const currentTransform = window.getComputedStyle(row).transform
-    const matrix = new DOMMatrix(currentTransform)
-    const currentY = matrix.m42
-
-    const container = row.parentElement
-    if (!container) return
-
-    const containerHeight = container.offsetHeight
-    let newY = currentY + gameStore.gameSpeed
-
-    if (newY > containerHeight) {
-      const rowIndex = Number(row.dataset.index || 0)
-      const baseDelay = Number(row.dataset.baseDelay || 4000)
-      const totalRows = activeRows.size
-
-      const cycleDuration = totalRows * baseDelay
-      const firstRowStartTime = Number(row.dataset.firstRowStartTime || startTime)
-      const timeSinceFirstRow = currentTime - firstRowStartTime
-      const currentCycle = Math.floor(timeSinceFirstRow / cycleDuration)
-      const nextCycleStartTime = firstRowStartTime + (currentCycle + 1) * cycleDuration
-      const newStartTime = nextCycleStartTime + rowIndex * baseDelay
-
-      newY = -row.offsetHeight
-      row.dataset.startTime = String(newStartTime)
-
-      Bus.emit('tileRowReset', { rowId: row.id })
-      updateTilesOnRowReset(row.id)
-      removeFromCollidedRows(row.id)
-    }
-
-    const existingStyles = row.style.cssText
-    row.style.cssText = `${existingStyles}; transform: translateY(${newY}px);`
-
+    applyRowTransform(row, newY)
     requestNextFrame(row)
   }
 
   /**
-   * Animates a row from top to bottom
+   * Animates a row from its offset position to bottom
    *
    * @param rowId - The ID of the row to animate
-   * @param delay - The delay before starting the animation in milliseconds (default: null)
    */
-  function animateRow(rowId: string, delay: number = 0) {
-    const row = document.getElementById(rowId)
+  function animateRow(rowId: string) {
+    const row = getRowElement(rowId)
+    if (!row) return
 
-    if (!row) {
-      return
-    }
-
-    if (!row.dataset.startTime) {
-      row.dataset.startTime = String(getCurrentTime() + delay)
+    if (!row.dataset.rowOffset) {
+      const rowIndex = Number(row.dataset.rowIndex || 0)
+      positionRow(rowId, rowIndex)
     }
 
     activeRows.set(rowId, gameStore.gameSpeed)
@@ -104,25 +186,47 @@ export function useRowAnimation() {
   }
 
   /**
-   * Starts animating all rows with a delay between each row
+   * Positions all rows at their offset positions without starting animation
+   * This is used to hide rows before the game starts
+   *
+   * @param rowIds - Array of row IDs to position
+   */
+  function positionRows(rowIds: string[]) {
+    rowIds.forEach((rowId, index) => {
+      positionRow(rowId, index)
+    })
+  }
+
+  /**
+   * Starts animating all rows with position-based spacing
    *
    * @param rowIds - Array of row IDs to animate
-   * @param delay - The delay between each row animation in milliseconds (default: 4000)
    */
-  function startAnimation(rowIds: string[], delay: number = 4000) {
+  function startAnimation(rowIds: string[]) {
     activeRows.clear()
-    const firstRowStartTime = getCurrentTime()
 
     rowIds.forEach((rowId, index) => {
-      const row = document.getElementById(rowId)
-      if (!row) return
+      positionRow(rowId, index)
+      animateRow(rowId)
+    })
+  }
 
-      // Store index and base delay for future resets
-      row.dataset.index = String(index)
-      row.dataset.baseDelay = String(delay)
-      row.dataset.firstRowStartTime = String(firstRowStartTime)
+  /**
+   * Updates the row spacing and repositions all active rows
+   *
+   * @param newSpacing - The new spacing value in pixels
+   */
+  function updateRowSpacing(newSpacing: number) {
+    rowSpacing.value = newSpacing
 
-      animateRow(rowId, index * delay)
+    // Reposition all active rows with the new spacing
+    activeRows.forEach((_, rowId) => {
+      const row = getRowElement(rowId)
+      if (row) {
+        const rowIndex = Number(row.dataset.rowIndex || 0)
+        const newOffset = calculateRowOffset(rowIndex)
+        setRowPosition(row, rowIndex, newOffset)
+      }
     })
   }
 
@@ -143,18 +247,11 @@ export function useRowAnimation() {
   }
 
   /**
-   * Gets the current time in milliseconds to use when starting animations.
-   */
-  function getCurrentTime(): number {
-    return Math.round(performance.now())
-  }
-
-  /**
    * Resumes the animation of all rows with their current timing
    */
   function resumeRows() {
     activeRows.forEach((_, rowId) => {
-      const row = document.getElementById(rowId)
+      const row = getRowElement(rowId)
       if (row) {
         requestNextFrame(row)
       }
@@ -172,8 +269,11 @@ export function useRowAnimation() {
 
   return {
     isAnimating,
+    rowSpacing,
     startAnimation,
     stopAnimation,
     resetRowAnimation,
+    updateRowSpacing,
+    positionRows,
   }
 }

@@ -17,7 +17,6 @@
   const props = withDefaults(
     defineProps<{
       id: string
-
       shape: TileShape
       expression: TileExpression | TileExpressionPowerDown
       shapeColor: string
@@ -130,6 +129,13 @@
 
     <div class="absolute inset-0 z-10 flex items-center justify-center">
       <Expression :expression="expression" />
+    </div>
+
+    <!-- Row ID display for debugging -->
+    <div
+      class="absolute -top-1 -right-1 text-xs font-bold text-white bg-red-500 px-1 py-0.5 rounded z-30"
+    >
+      {{ getTileRowId(id) }}
     </div>
 
     <div

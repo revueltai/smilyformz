@@ -10,8 +10,8 @@
   const gameStore = useGameStore()
   const rowsAreAnimated = ref(false)
   const container = ref<RefElement>(null)
-  const { rows, initializeRows, initializeRowsPosition, resetTileGeneration } = useTileGeneration()
-  const { startAnimation, resetRowAnimation } = useRowAnimation()
+  const { rows, initializeRows, resetTileGeneration } = useTileGeneration()
+  const { startAnimation, resetRowAnimation, positionRows } = useRowAnimation()
 
   function animateRows() {
     rowsAreAnimated.value = true
@@ -25,24 +25,31 @@
     resetRowAnimation()
   }
 
-  function reinitializeGameTiles() {
+  async function reinitializeGameTiles() {
     if (container.value) {
       initializeRows(5)
-      nextTick(() => initializeRowsPosition())
+      await updateRowPositioning()
     }
+  }
+
+  async function updateRowPositioning() {
+    await nextTick()
+    // Position rows immediately after creation to hide them before game starts
+    const rowIds = rows.value.map((row) => row.id)
+    positionRows(rowIds)
   }
 
   watch(
     () => gameStore.isGameStarted,
-    (isGameStarted) => {
+    async (isGameStarted) => {
       if (isGameStarted) {
         if (isEmptyArray(rows.value)) {
-          reinitializeGameTiles()
-          nextTick(() => {
-            if (!isEmptyArray(rows.value) && !rowsAreAnimated.value) {
-              animateRows()
-            }
-          })
+          await reinitializeGameTiles()
+          await nextTick()
+
+          if (!isEmptyArray(rows.value) && !rowsAreAnimated.value) {
+            animateRows()
+          }
         } else if (!rowsAreAnimated.value) {
           animateRows()
         }
@@ -56,12 +63,7 @@
     },
   )
 
-  onMounted(async () => {
-    if (container.value) {
-      initializeRows(5)
-      nextTick(() => initializeRowsPosition())
-    }
-  })
+  onMounted(() => reinitializeGameTiles())
 </script>
 
 <template>
