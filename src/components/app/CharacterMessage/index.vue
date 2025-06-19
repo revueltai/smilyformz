@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { getRandomNumber } from '@/utils'
   import { ref, onMounted } from 'vue'
 
   const props = defineProps<{
@@ -6,19 +7,9 @@
     onComplete?: () => void
   }>()
 
+  const totalMessages = 15
   const isVisible = ref(true)
-
-  const messages = [
-    'characterMessage1',
-    'characterMessage2',
-    'characterMessage3',
-    'characterMessage4',
-    'characterMessage5',
-    'characterMessage6',
-    'characterMessage7',
-  ]
-
-  const randomMessage = ref(props.message || messages[Math.floor(Math.random() * messages.length)])
+  const randomMessage = ref(props.message || `motivationMessage${getRandomNumber(totalMessages)}`)
 
   onMounted(() => {
     setTimeout(() => {

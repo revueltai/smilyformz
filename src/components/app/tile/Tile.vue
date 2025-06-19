@@ -133,7 +133,7 @@
 
     <div
       v-if="powerUpType === 'doublePoints'"
-      class="absolute -top-2 -left-2 text-lg text-shadow-sm text-shadow-blue-600 w-12 h-12 flex items-center justify-center border-2 border-blue-950 shadow-sm rounded-full bg-blue-500 text-white z-20"
+      class="absolute -top-2 -left-2 text-lg text-shadow-sm text-shadow-blue-600 w-12 h-12 flex items-center justify-center border-2 border-blue-950 shadow-sm rounded-full bg-blue-500 text-white z-20 animate-bounce"
     >
       <span class="font-extrabold">+4</span>
       <span class="text-xs lowercase font-normal">{{ $t('points') }}</span>
