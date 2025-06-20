@@ -6,6 +6,7 @@
   import { useFormValidation } from '@/composables/useFormValidation'
   import { useUserStore } from '@/stores/user.store'
   import { ToastService } from '../shared/Toast/service'
+  import { useModalStore } from '@/stores/modal.store'
 
   const { validateUsername, validateEmail, validatePassword, validateConfirmPassword } =
     useFormValidation()
@@ -13,6 +14,7 @@
   const router = useRouter()
   const { t } = useI18n()
   const userStore = useUserStore()
+  const modalStore = useModalStore()
 
   const countryOptions = getCountriesForSelect()
 
@@ -183,6 +185,7 @@
       }
 
       ToastService.emitToast(t('accountCreated'), 'success')
+      modalStore.closeModal()
       router.push('/home')
     } catch (error) {
       ToastService.emitToast(t('accountCreationFailed'), 'error')

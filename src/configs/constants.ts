@@ -15,6 +15,7 @@ export const MODALS = {
   SHARE: 'share',
   QUIT_CONFIRM: 'quitConfirm',
   GAME_OVER: 'gameOver',
+  GAME_OVER_GUEST: 'gameOverGuest',
   DELETE_ACCOUNT_CONFIRM: 'deleteAccountConfirm',
 }
 

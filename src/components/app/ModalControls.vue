@@ -2,16 +2,21 @@
   const props = withDefaults(
     defineProps<{
       ctaText?: string
+      hasHomeButton?: boolean
     }>(),
     {
       ctaText: '',
+      hasHomeButton: true,
     },
   )
 </script>
 
 <template>
   <div class="flex gap-4 justify-center w-full">
-    <Button @click="$emit('home')">
+    <Button
+      v-if="hasHomeButton"
+      @click="$emit('home')"
+    >
       <Icon
         name="house"
         size="md"
