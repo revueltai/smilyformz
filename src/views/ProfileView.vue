@@ -4,8 +4,8 @@
   import { useI18n } from 'vue-i18n'
   import { MODALS } from '@/configs/constants'
   import { getCountriesForSelect } from '@/configs/countries'
-  import { useUserStore } from '@/stores/user.store'
   import { useModalStore } from '@/stores/modal.store'
+  import { useUserStore } from '@/stores/user.store'
   import { ToastService } from '@/components/shared/Toast/service'
   import Page from '@/components/app/Page.vue'
   import HeaderUser from '@/components/app/HeaderUser.vue'
@@ -19,9 +19,7 @@
   const modalStore = useModalStore()
   const countries = getCountriesForSelect()
 
-  const email = ref('foo@foo.com')
-  const country = ref('en')
-  const password = ref('abc123')
+  const password = ref('')
   const isLoading = ref(false)
   const isDeletingAccount = ref(false)
   const showDeleteConfirmation = ref(false)
@@ -62,8 +60,16 @@
     showDeleteConfirmation.value = false
   }
 
-  function handleEditUsername() {
-    // TODO: Implement
+  async function handleUpdateDisplayName(newDisplayName: string) {
+    if (newDisplayName && newDisplayName.trim() && newDisplayName !== userStore.displayName) {
+      try {
+        await userStore.updateDisplayName(newDisplayName.trim())
+        ToastService.emitToast(t('displayNameUpdated'), 'success')
+      } catch (error) {
+        console.error('Error updating display name:', error)
+        ToastService.emitToast(t('displayNameUpdateFailed'), 'error')
+      }
+    }
   }
 
   function handleEditAvatar() {
@@ -77,9 +83,13 @@
     content-classes="flex flex-col justify-between gap-6"
   >
     <HeaderUser
-      :user-name="userStore.displayName"
-      has-edit-options
-      @edit-username="handleEditUsername"
+      :display-name="userStore.displayName"
+      :has-edit-options="true"
+      :avatar-shape="userStore.profile?.avatar.shape"
+      :avatar-shape-color="userStore.profile?.avatar.shape_color"
+      :avatar-background-color="userStore.profile?.avatar.background_color"
+      :avatar-expression="userStore.profile?.avatar.expression"
+      @update:display-name="handleUpdateDisplayName"
       @edit-avatar="handleEditAvatar"
     />
 

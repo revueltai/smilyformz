@@ -28,7 +28,7 @@
     forceInvalid: false,
   })
 
-  const emit = defineEmits(['update:modelValue', 'blur', 'clickIcon'])
+  const emit = defineEmits(['update:modelValue', 'blur', 'clickIcon', 'update'])
 
   const { t } = useI18n()
 
@@ -134,6 +134,7 @@
 
   function handleClickUpdate() {
     isEditing.value = false
+    emit('update', inputModel.value)
   }
 
   function handleBlur(event: Event) {

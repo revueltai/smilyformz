@@ -199,6 +199,36 @@ export const useUserStore = defineStore('user', () => {
   }
 
   /**
+   * Updates the user's display name specifically
+   * This uses a different approach than other metadata updates
+   */
+  async function updateDisplayName(displayName: string) {
+    if (!user.value) return
+
+    try {
+      const { data, error } = await supabase.getClient().auth.updateUser({
+        data: { display_name: displayName },
+      })
+
+      if (error) {
+        throw error
+      }
+
+      if (data.user) {
+        user.value = data.user
+
+        // Update local profile
+        if (profile.value) {
+          profile.value.display_name = displayName
+        }
+      }
+    } catch (error) {
+      console.error('Error updating display name:', error)
+      throw error
+    }
+  }
+
+  /**
    * Updates user settings in the auth user metadata
    *
    * @example
@@ -209,11 +239,6 @@ export const useUserStore = defineStore('user', () => {
    *   sound: true,
    *   language: 'es'
    * })
-   *
-   * // Update individual settings
-   * await userStore.updateCountry('fr')
-   * await userStore.updateMusic(false)
-   * await userStore.updateSound(true)
    */
   async function updateUserSettings(settings: {
     country?: string
@@ -280,27 +305,6 @@ export const useUserStore = defineStore('user', () => {
   }
 
   /**
-   * Updates the user's country
-   */
-  async function updateCountry(country: string) {
-    await updateUserSettings({ country })
-  }
-
-  /**
-   * Updates the user's music setting
-   */
-  async function updateMusic(music: boolean) {
-    await updateUserSettings({ music })
-  }
-
-  /**
-   * Updates the user's sound setting
-   */
-  async function updateSound(sound: boolean) {
-    await updateUserSettings({ sound })
-  }
-
-  /**
    * Sets up an auth state change listener to update the user store when the auth state changes.
    */
   function setupAuthListener() {
@@ -341,8 +345,6 @@ export const useUserStore = defineStore('user', () => {
     deleteAccount,
     setupAuthListener,
     updateUserSettings,
-    updateCountry,
-    updateMusic,
-    updateSound,
+    updateDisplayName,
   }
 })

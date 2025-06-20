@@ -113,5 +113,8 @@
   "motivationMessage13": "Super",
   "motivationMessage14": "Wonderful",
   "motivationMessage15": "Outstanding",
-  "avatarUpdated": "Avatar updated successfully"
+  "avatarUpdated": "Avatar updated successfully",
+  "enterNewDisplayName": "Enter your new username",
+  "displayNameUpdated": "Username updated successfully",
+  "displayNameUpdateFailed": "Failed to update username"
 }

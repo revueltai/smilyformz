@@ -36,7 +36,7 @@
     has-tutorial-button
     content-classes="flex flex-col justify-between"
   >
-    <HeaderUser :user-name="userStore.displayName" />
+    <HeaderUser :display-name="userStore.displayName" />
 
     <div class="flex flex-col gap-4">
       <StatBlock
