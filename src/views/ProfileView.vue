@@ -12,6 +12,7 @@
   import SettingsSound from '@/components/app/SettingsSound.vue'
   import ModalAvatar from '@/components/app/ModalAvatar.vue'
   import ModalDeleteAccount from '@/components/app/ModalDeleteAccount.vue'
+  import { useFormValidation } from '@/composables/useFormValidation'
 
   const router = useRouter()
   const { t } = useI18n()
@@ -58,11 +59,20 @@
 
   function cancelDeleteAccount() {
     showDeleteConfirmation.value = false
+    modalStore.closeModal()
   }
 
   async function handleUpdateDisplayName(newDisplayName: string) {
     if (newDisplayName && newDisplayName.trim() && newDisplayName !== userStore.displayName) {
       try {
+        const { validateUsername } = useFormValidation()
+        const validation = await validateUsername(newDisplayName.trim())
+
+        if (!validation.isValid) {
+          ToastService.emitToast(t(validation.message), 'error')
+          return
+        }
+
         await userStore.updateDisplayName(newDisplayName.trim())
         ToastService.emitToast(t('displayNameUpdated'), 'success')
       } catch (error) {
