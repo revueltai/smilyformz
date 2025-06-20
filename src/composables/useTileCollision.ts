@@ -1,5 +1,5 @@
 import type { TilePowerUpType, TileRowItem, TileShape } from '@/components/app/tile/types'
-import { useGameStore } from '@/stores/gameStore'
+import { useGameStore } from '@/stores/game.store'
 import { useCollisionDetection } from './useCollisionDetection'
 import { useTileGeneration } from './useTileGeneration'
 import { getTileRowId, isNoneToken } from '@/utils'

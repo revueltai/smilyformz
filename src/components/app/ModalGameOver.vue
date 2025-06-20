@@ -5,7 +5,7 @@
   import { useRouter } from 'vue-router'
   import { useModalStore } from '@/stores/modal.store'
   import { mockRankings } from '@/configs/mocks'
-  import { useGameStore } from '@/stores/gameStore'
+  import { useGameStore } from '@/stores/game.store'
 
   const router = useRouter()
   const modalStore = useModalStore()

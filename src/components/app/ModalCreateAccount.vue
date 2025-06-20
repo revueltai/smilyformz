@@ -4,7 +4,7 @@
   import { useI18n } from 'vue-i18n'
   import { getCountriesForSelect } from '@/configs/countries'
   import { useFormValidation } from '@/composables/useFormValidation'
-  import { supabase } from '@/services/Supabase.service'
+  import { useUserStore } from '@/stores/user.store'
   import { ToastService } from '../shared/Toast/service'
 
   const { validateUsername, validateEmail, validatePassword, validateConfirmPassword } =
@@ -12,6 +12,7 @@
 
   const router = useRouter()
   const { t } = useI18n()
+  const userStore = useUserStore()
 
   const countryOptions = getCountriesForSelect()
 
@@ -169,7 +170,7 @@
     isLoading.value = true
 
     try {
-      const { error } = await supabase.signUp({
+      const { error } = await userStore.signUp({
         display_name: displayName.value.trim(),
         email: email.value.trim(),
         password: password.value,

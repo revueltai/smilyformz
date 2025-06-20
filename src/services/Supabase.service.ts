@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
+import { DEFAULT_LANGUAGE, TILE_DEFAULTS } from '@/configs/constants'
 
 interface UserPayload {
   display_name: string
@@ -138,6 +139,13 @@ export class SupabaseService {
         data: {
           display_name,
           country,
+          language: DEFAULT_LANGUAGE,
+          music: false,
+          sound: false,
+          avatar_shape: TILE_DEFAULTS.shape,
+          avatar_color: TILE_DEFAULTS.shapeColor,
+          avatar_background_color: TILE_DEFAULTS.backgroundColor,
+          avatar_expression: TILE_DEFAULTS.expression,
         },
       },
     })
@@ -233,7 +241,7 @@ export class SupabaseService {
    * @param payload - The data to insert
    * @returns The inserted record
    */
-  private async insertRecord<T>(table: string, payload: Record<string, any>): Promise<T> {
+  public async insertRecord<T>(table: string, payload: Record<string, any>): Promise<T> {
     const { data, error } = await this.client.from(table).insert(payload).select().single()
 
     if (error) {
@@ -256,7 +264,7 @@ export class SupabaseService {
    * @param idField - The field to use as the id
    * @returns The updated record
    */
-  private async updateRecord<T>(
+  public async updateRecord<T>(
     table: string,
     id: string,
     payload: Record<string, any>,
@@ -288,7 +296,7 @@ export class SupabaseService {
    * @param options - Optional parameters
    * @returns True if the record was deleted, false otherwise
    */
-  private async deleteRecord(
+  public async deleteRecord(
     table: string,
     id: string,
     options?: { fkField?: string },

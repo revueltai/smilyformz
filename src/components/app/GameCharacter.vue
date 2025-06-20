@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, nextTick, onMounted, computed, watch } from 'vue'
-  import { useGameStore } from '@/stores/gameStore'
+  import { useGameStore } from '@/stores/game.store'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useMovementCharacter } from '@/composables/useCharacterAnimation'
   import { isMobile } from '@/utils'

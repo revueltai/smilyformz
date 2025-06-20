@@ -1,6 +1,6 @@
 # Supabase Setup Guide
 
-## Deploying the check_user_exists Function
+## Deploying the Database Functions
 
 ### Option 1: Using Supabase Dashboard (Recommended)
 
@@ -39,9 +39,9 @@
    supabase db push
    ```
 
-### Function Details
+## Function Details
 
-The `check_user_exists` function:
+### check_user_exists Function
 
 - **Parameters**:
 
@@ -54,7 +54,23 @@ The `check_user_exists` function:
 
 - **Permissions**: Granted to both `authenticated` and `anon` roles
 
-### Usage in Your Application
+## User Data Management
+
+User preferences and settings are now stored directly in the auth user metadata instead of a separate `user_data` table. This approach provides:
+
+- **Simplified architecture**: No need for additional database tables or triggers
+- **Automatic synchronization**: User metadata is always available with the auth session
+- **Reduced complexity**: Fewer database operations and API calls
+- **Better performance**: No additional queries needed to load user preferences
+
+## How It Works
+
+1. **User signs up**: User account is created with metadata including country, language, and avatar defaults
+2. **User confirms email**: User metadata is immediately available
+3. **User updates settings**: Changes are stored directly in auth user metadata via `auth.updateUser()`
+4. **Automatic sync**: User preferences are always available from the auth session
+
+## Usage in Your Application
 
 The function is already integrated into your `SupabaseService` class:
 
@@ -69,24 +85,38 @@ const exists = await supabase.checkUserExists(null, 'username')
 const exists = await supabase.checkUserExists('user@example.com', 'username')
 ```
 
-### Testing the Function
+User settings are managed through the auth user metadata:
+
+```typescript
+// Update user settings
+await userStore.updateUserSettings({
+  music: true,
+  sound: false,
+  language: 'es',
+  avatar_shape: 'star',
+  avatar_color: '#FF0000',
+})
+```
+
+## Testing the Function
 
 You can test the function directly in the Supabase SQL Editor:
 
 ```sql
--- Test with email
+-- Test check_user_exists with email
 SELECT check_user_exists('test@example.com', NULL);
 
--- Test with username
+-- Test check_user_exists with username
 SELECT check_user_exists(NULL, 'testuser');
 
--- Test with both
+-- Test check_user_exists with both
 SELECT check_user_exists('test@example.com', 'testuser');
 ```
 
-### Notes
+## Notes
 
-- The function checks the `auth.users` table which is part of Supabase Auth
+- The `check_user_exists` function checks the `auth.users` table which is part of Supabase Auth
 - Usernames are stored in the `raw_user_meta_data` JSON field as `display_name`
-- The function is designed to work with your existing authentication flow
-- Both parameters are optional, so you can check for either email or username independently
+- User preferences (country, language, avatar, music, sound) are stored in auth user metadata
+- This approach eliminates the need for a separate `user_data` table and associated triggers
+- User settings are automatically available whenever the user is authenticated

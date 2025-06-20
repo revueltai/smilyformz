@@ -2,11 +2,13 @@
   import { ref, onMounted, onUnmounted } from 'vue'
   import { RouterView } from 'vue-router'
   import { isMobile, enterFullscreen, isFullscreen, isStandalone } from '@/utils'
+  import { useUserStore } from '@/stores/user.store'
   import ModalContainer from '@/components/shared/Modal/Container.vue'
   import Toast from '@/components/shared/Toast/index.vue'
 
   const events = ['click', 'touchstart', 'keydown']
   const hasInteracted = ref(false)
+  const userStore = useUserStore()
 
   function handleFirstInteraction() {
     if (isMobile() && !hasInteracted.value && !isFullscreen()) {
@@ -19,7 +21,11 @@
     // TODO: Keep track of fullscreen state changes
   }
 
-  onMounted(() => {
+  onMounted(async () => {
+    // Initialize user store and auth listener
+    await userStore.initialize()
+    userStore.setupAuthListener()
+
     // If running from home screen, enter fullscreen immediately
     if (isMobile() && isStandalone() && !isFullscreen()) {
       enterFullscreen()

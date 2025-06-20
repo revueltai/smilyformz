@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue'
 import { Bus } from '@/services/Bus.service'
-import { useGameStore } from '@/stores/gameStore'
+import { useGameStore } from '@/stores/game.store'
 import { useTileGeneration } from './useTileGeneration'
 import { useCollisionDetection } from './useCollisionDetection'
 

@@ -6,7 +6,9 @@
   import { MODALS } from '@/configs/constants'
   import { useModalStore } from '@/stores/modal.store'
   import ModalShare from '@/components/app/ModalShare.vue'
+  import { useUserStore } from '@/stores/user.store'
 
+  const userStore = useUserStore()
   const modalStore = useModalStore()
 
   const score = ref(2000)
@@ -34,18 +36,18 @@
     has-tutorial-button
     content-classes="flex flex-col justify-between"
   >
-    <HeaderUser />
+    <HeaderUser :user-name="userStore.displayName" />
 
     <div class="flex flex-col gap-4">
       <StatBlock
-        :label="$t('lastScore')"
+        :label="$t('yourLastScore')"
         :value="score"
         variant="score"
         @click="handleShare('score')"
       />
 
       <StatBlock
-        :label="$t('globalRanking')"
+        :label="$t('yourGlobalRanking')"
         value="123"
         @click="handleShare('ranking')"
       />

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { TILE_SHAPES, TILE_EXPRESSIONS } from '@/configs/constants'
+  import { TILE_SHAPES, TILE_EXPRESSIONS, TILE_DEFAULTS } from '@/configs/constants'
   import type { TileShape } from '@/components/app/tile/types'
   import type { TileExpression } from '@/components/app/tile/types'
   import Shape from '@/components/app/tile/TileShape.vue'
@@ -14,8 +14,8 @@
   }
 
   withDefaults(defineProps<Props>(), {
-    shape: 'circle',
-    expression: 'exp1',
+    shape: TILE_DEFAULTS.shape,
+    expression: TILE_DEFAULTS.expression,
   })
 
   const tabs = ['expression', 'shape'] as Tab[]

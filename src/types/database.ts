@@ -44,47 +44,6 @@ export interface Database {
           position?: number | null
         }
       }
-      user_data: {
-        Row: {
-          id: number
-          created_at: string
-          user_id: string | null
-          music: boolean | null
-          sound: boolean | null
-          language: string | null
-          avatar_shape: string | null
-          avatar_color: string | null
-          avatar_background_color: string | null
-          avatar_expression: string | null
-          country: string | null
-        }
-        Insert: {
-          id?: number
-          created_at?: string
-          user_id?: string | null
-          music?: boolean | null
-          sound?: boolean | null
-          language?: string | null
-          avatar_shape?: string | null
-          avatar_color?: string | null
-          avatar_background_color?: string | null
-          avatar_expression?: string | null
-          country?: string | null
-        }
-        Update: {
-          id?: number
-          created_at?: string
-          user_id?: string | null
-          music?: boolean | null
-          sound?: boolean | null
-          language?: string | null
-          avatar_shape?: string | null
-          avatar_color?: string | null
-          avatar_background_color?: string | null
-          avatar_expression?: string | null
-          country?: string | null
-        }
-      }
     }
   }
 }

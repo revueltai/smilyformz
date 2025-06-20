@@ -7,14 +7,14 @@
 
   withDefaults(
     defineProps<{
-      colorShape: string
-      colorBackground: string
+      shapeColor: string
+      backgroundColor: string
       shape: TileShape
       expression: TileExpression
     }>(),
     {
-      colorShape: TILE_DEFAULTS.shapeColor,
-      colorBackground: TILE_DEFAULTS.backgroundColor,
+      shapeColor: TILE_DEFAULTS.shapeColor,
+      backgroundColor: TILE_DEFAULTS.backgroundColor,
       shape: TILE_DEFAULTS.shape as TileShape,
       expression: TILE_DEFAULTS.expression as TileExpression,
     },
@@ -24,26 +24,26 @@
 <template>
   <div
     class="relative flex flex-col items-center justify-center gap-2 rounded-lg px-4 pt-16 pb-8"
-    :style="{ backgroundColor: colorBackground }"
+    :style="{ backgroundColor }"
   >
     <div class="absolute top-0 left-0 pt-3 pl-3 flex gap-2">
       <ColorPicker
-        :color="colorShape"
+        :color="shapeColor"
         label="Shape"
-        @update="$emit('update:colorShape', $event)"
+        @update="$emit('update:shapeColor', $event)"
       />
 
       <ColorPicker
-        :color="colorBackground"
+        :color="backgroundColor"
         label="Background"
-        @update="$emit('update:colorBackground', $event)"
+        @update="$emit('update:backgroundColor', $event)"
       />
     </div>
 
     <Tile
       id="avatar-preview-tile"
       :shape="shape"
-      :shape-color="colorShape"
+      :shape-color="shapeColor"
       :expression="expression"
     />
   </div>

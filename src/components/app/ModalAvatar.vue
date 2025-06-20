@@ -1,22 +1,32 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { TILE_DEFAULTS } from '@/configs/constants'
+  import { useUserStore } from '@/stores/user.store'
+  import { useModalStore } from '@/stores/modal.store'
   import AvatarPreview from '@/components/app/AvatarPreview.vue'
   import AvatarCustomizer from '@/components/app/AvatarCustomizer.vue'
   import type { TileShape } from '@/components/app/tile/types'
   import type { TileExpression } from '@/components/app/tile/types'
+  import { ToastService } from '@/components/shared/Toast/service'
+  import { useI18n } from 'vue-i18n'
 
-  const colorShape = ref(TILE_DEFAULTS.shapeColor)
+  const { t } = useI18n()
+  const userStore = useUserStore()
+  const modalStore = useModalStore()
 
-  const colorBackground = ref(TILE_DEFAULTS.backgroundColor)
+  const shapeColor = ref(userStore.profile?.avatar.shape_color || TILE_DEFAULTS.shapeColor)
 
-  const avatarShape = ref<TileShape>(TILE_DEFAULTS.shape as TileShape)
+  const backgroundColor = ref(
+    userStore.profile?.avatar.background_color || TILE_DEFAULTS.backgroundColor,
+  )
 
-  const avatarExpression = ref<TileExpression>(TILE_DEFAULTS.expression as TileExpression)
+  const avatarShape = ref<TileShape>(
+    userStore.profile?.avatar.shape || (TILE_DEFAULTS.shape as TileShape),
+  )
 
-  function handleSave() {
-    console.log('save')
-  }
+  const avatarExpression = ref<TileExpression>(
+    userStore.profile?.avatar.expression || (TILE_DEFAULTS.expression as TileExpression),
+  )
 
   function handleUpdateShape(shape: TileShape) {
     avatarShape.value = shape
@@ -26,24 +36,36 @@
     avatarExpression.value = expression
   }
 
-  function handleUpdateColorShape(color: string) {
-    colorShape.value = color
+  function handleUpdateShapeColor(color: string) {
+    shapeColor.value = color
   }
 
-  function handleUpdateColorBackground(color: string) {
-    colorBackground.value = color
+  function handleUpdateBackgroundColor(color: string) {
+    backgroundColor.value = color
+  }
+
+  function handleSave() {
+    userStore.updateUserSettings({
+      avatar_shape: avatarShape.value,
+      avatar_expression: avatarExpression.value,
+      avatar_shape_color: shapeColor.value,
+      avatar_background_color: backgroundColor.value,
+    })
+
+    modalStore.closeModal()
+    ToastService.emitToast(t('avatarUpdated'), 'success')
   }
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <AvatarPreview
-      :color-shape="colorShape"
-      :color-background="colorBackground"
+      :shape-color="shapeColor"
+      :background-color="backgroundColor"
       :shape="avatarShape"
       :expression="avatarExpression"
-      @update:color-shape="handleUpdateColorShape"
-      @update:color-background="handleUpdateColorBackground"
+      @update:shape-color="handleUpdateShapeColor"
+      @update:background-color="handleUpdateBackgroundColor"
     />
 
     <AvatarCustomizer

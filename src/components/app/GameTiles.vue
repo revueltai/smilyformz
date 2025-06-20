@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, onMounted, watch, nextTick } from 'vue'
   import { isEmptyArray } from '@/utils'
-  import { useGameStore } from '@/stores/gameStore'
+  import { useGameStore } from '@/stores/game.store'
   import GameTilesRow from '@/components/app/GameTilesRow.vue'
   import { useTileGeneration } from '@/composables/useTileGeneration'
   import { useRowAnimation } from '@/composables/useRowAnimation'

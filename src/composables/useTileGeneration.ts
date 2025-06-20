@@ -12,7 +12,7 @@ import type {
   TileRow,
   TileColor,
 } from '@/components/app/tile/types'
-import { useGameStore } from '@/stores/gameStore'
+import { useGameStore } from '@/stores/game.store'
 import { getRandomNumber, getRandomItem, getRandomBoolean, getRowIndex } from '@/utils'
 
 const SHAPES = Object.values(TILE_SHAPES) as TileShape[]

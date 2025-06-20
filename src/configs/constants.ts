@@ -5,15 +5,19 @@ import type {
   TilePowerUpType,
 } from '@/components/app/tile/types'
 
+export const DEFAULT_LANGUAGE = 'en'
+
 export const MODALS = {
   LOGIN: 'login',
   CREATE_ACCOUNT: 'createAccount',
   TUTORIAL: 'tutorial',
   AVATAR: 'avatar',
+  USERNAME: 'username',
   PAUSE: 'pause',
   SHARE: 'share',
   QUIT_CONFIRM: 'quitConfirm',
   GAME_OVER: 'gameOver',
+  DELETE_ACCOUNT_CONFIRM: 'deleteAccountConfirm',
 }
 
 export const TILE_COLORS: Record<string, TileColor> = {

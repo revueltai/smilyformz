@@ -12,7 +12,7 @@
   "tutorial4_1": "Each match gives you one point.",
   "tutorial4_2": "Some matches will give you double.",
   "welcomeBack": "Welcome back",
-  "lastScore": "Your last score",
+  "yourLastScore": "Your last score",
   "yourGlobalRanking": "Your global rank",
   "logout": "Logout",
   "logoutSuccess": "Logged out successfully",
@@ -21,7 +21,7 @@
   "deleteAccount": "Delete Account",
   "deleteAccountConfirmation": "Delete Account",
   "deleteAccountWarning": "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.",
-  "confirmDelete": "Delete Account",
+  "delete": "Delete",
   "accountDeleted": "Account deleted successfully",
   "accountDeletionFailed": "Failed to delete account",
   "deletingAccount": "Deleting account...",
@@ -112,5 +112,6 @@
   "motivationMessage12": "Brilliant",
   "motivationMessage13": "Super",
   "motivationMessage14": "Wonderful",
-  "motivationMessage15": "Outstanding"
+  "motivationMessage15": "Outstanding",
+  "avatarUpdated": "Avatar updated successfully"
 }

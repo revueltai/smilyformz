@@ -1,6 +1,6 @@
 import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
 import type { Ref } from 'vue'
-import { useGameStore } from '@/stores/gameStore'
+import { useGameStore } from '@/stores/game.store'
 import type { RefElement } from '@/components/shared/types'
 
 /**

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { watch, ref, onMounted } from 'vue'
   import { useModalStore } from '@/stores/modal.store'
-  import { useGameStore } from '@/stores/gameStore'
+  import { useGameStore } from '@/stores/game.store'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { MODALS } from '@/configs/constants'
   import ModalPause from '@/components/app/ModalPause.vue'

@@ -2,22 +2,34 @@
   import { ref, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { supabase } from '@/services/Supabase.service'
+  import { useUserStore } from '@/stores/user.store'
   import { ToastService } from '../shared/Toast/service'
 
   const router = useRouter()
   const { t } = useI18n()
+  const userStore = useUserStore()
 
   const email = ref('')
   const password = ref('')
   const rememberMe = ref(false)
-  const isLoading = ref(false)
+  const submitAttempted = ref(false)
+
+  const isFormValid = computed(() => {
+    const emailRequired = email.value && email.value.trim() !== ''
+    const passwordRequired = password.value && password.value.trim() !== ''
+
+    return emailRequired && passwordRequired
+  })
 
   async function handleSubmit() {
-    isLoading.value = true
+    submitAttempted.value = true
+
+    if (!isFormValid.value) {
+      return
+    }
 
     try {
-      await supabase.signIn(email.value.trim(), password.value, rememberMe.value)
+      await userStore.signIn(email.value.trim(), password.value, rememberMe.value)
       ToastService.emitToast(t('loginSuccess'), 'success')
       router.push('/home')
     } catch (error) {
@@ -34,8 +46,6 @@
       }
 
       ToastService.emitToast(t('loginFailed'), 'error')
-    } finally {
-      isLoading.value = false
     }
   }
 </script>
@@ -74,7 +84,7 @@
     </div>
 
     <Button
-      :disabled="isLoading"
+      :disabled="submitAttempted && !isFormValid"
       type="submit"
       border-color="lime-600"
       border-color-hover="lime-400"
@@ -82,7 +92,7 @@
       background-color-hover="lime-100"
       class="w-full"
     >
-      {{ isLoading ? $t('loggingIn') : $t('login') }}
+      {{ submitAttempted && !isFormValid ? $t('loggingIn') : $t('login') }}
     </Button>
   </form>
 </template>
