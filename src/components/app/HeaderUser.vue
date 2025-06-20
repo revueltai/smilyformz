@@ -77,7 +77,7 @@
       <Input
         :model-value="displayName"
         :is-editable="hasEditOptions"
-        css-classes-field="text-2xl text-slate-600"
+        css-classes-field="text-2xl text-slate-600 justify-center"
         show-static-field
         @update="handleUpdateDisplayName"
       />

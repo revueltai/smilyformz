@@ -156,12 +156,10 @@
     <div
       v-if="showStaticField && !isEditing"
       class="flex items-center gap-2 w-full"
+      :class="cssClassesField"
       @click="handleClickEdit"
     >
-      <div
-        :class="cssClassesField"
-        class="cursor-pointer truncate max-w-xs"
-      >
+      <div class="cursor-pointer truncate max-w-xs">
         {{ type === 'password' ? '********' : inputModel }}
       </div>
 
