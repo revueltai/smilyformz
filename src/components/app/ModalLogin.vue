@@ -39,10 +39,10 @@
           return
         }
 
-        if (error.message.includes('Email not confirmed')) {
-          ToastService.emitToast(t('emailNotConfirmed'), 'error')
-          return
-        }
+        // if (error.message.includes('Email not confirmed')) {
+        //   ToastService.emitToast(t('emailNotConfirmed'), 'error')
+        //   return
+        // }
       }
 
       ToastService.emitToast(t('loginFailed'), 'error')

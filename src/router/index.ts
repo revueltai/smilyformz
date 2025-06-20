@@ -2,7 +2,7 @@ import type { I18n } from 'vue-i18n'
 import {
   createRouter,
   createWebHistory,
-  // type RouteLocationNormalized,
+  type RouteLocationNormalized,
   type Router,
   type RouteRecordRaw,
 } from 'vue-router'
@@ -28,25 +28,31 @@ async function setI18nAppLanguage(i18n: I18n) {
   }
 }
 
-// async function validateUser(to: RouteLocationNormalized): Promise<{ name: string } | undefined> {
-async function validateUser(): Promise<{ name: string } | undefined> {
-  // const userStore = useUserStore()
-  // const isPublicRoute = publicRoutes.includes(to.name as string)
+// Define public routes that don't require authentication
+const publicRoutes = ['Splash', 'Game']
 
-  // if (!userStore.isAuthenticated) {
-  //   await userStore.loadUserAccount()
-  // }
+async function validateUser(to: RouteLocationNormalized): Promise<{ name: string } | undefined> {
+  // Import the store dynamically to avoid calling useUserStore at module level
+  const { useUserStore } = await import('@/stores/user.store')
+  const userStore = useUserStore()
+  const isPublicRoute = publicRoutes.includes(to.name as string)
 
-  // if (userStore.isAuthenticated) {
-  //   if (isPublicRoute) {
-  //     return { name: 'Dashboard' }
-  //   }
-  // } else if (!isPublicRoute) {
-  //   return { name: 'Welcome' }
-  // }
+  // Initialize user store if not already done
+  if (!userStore.isAuthenticated && userStore.isLoading === false) {
+    await userStore.initialize()
+  }
 
-  // return undefined
-  return { name: 'Splash' }
+  // If user is not authenticated and trying to access a protected route
+  if (!userStore.isAuthenticated && !isPublicRoute) {
+    return { name: 'Splash' }
+  }
+
+  // If user is authenticated and trying to access splash page, redirect to home
+  if (userStore.isAuthenticated && to.name === 'Splash') {
+    return { name: 'Home' }
+  }
+
+  return undefined
 }
 
 export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
@@ -94,7 +100,7 @@ export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
 
     i18n.global.locale = 'en' //settingsStore.appLocales.includes(initialLocale) ? initialLocale : 'en'
 
-    const route = false //await validateUser()
+    const route = await validateUser(to)
 
     if (route) {
       next(route)

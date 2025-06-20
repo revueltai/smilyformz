@@ -1,4 +1,13 @@
 {
+  "language": "Language",
+  "selectLanguage": "Select your language",
+  "languageUpdated": "Language updated successfully",
+  "languageUpdateFailed": "Failed to update language",
+  "lang_en": "English",
+  "lang_es": "Spanish",
+  "lang_fr": "French",
+  "lang_de": "German",
+  "lang_it": "Italian",
   "createAnAccount": "Create An Account",
   "createAccount": "Create Account",
   "haveAccount": "I have an Account",
@@ -38,7 +47,8 @@
   "loginFailed": "Login failed",
   "loggingIn": "Logging in...",
   "invalidCredentials": "Invalid email or password",
-  "emailNotConfirmed": "Please confirm your email address before logging in",
+  "emailNotConfirmed": "Confirm your email address",
+  "emailNotConfirmedDescription": "Please check your email and click the confirmation link to verify your account.",
   "createYourAccount": "Create your Account",
   "country": "Country",
   "username": "Username",
@@ -48,6 +58,7 @@
   "repeatPassword": "Repeat Password",
   "enterEmail": "Enter your email",
   "enterPassword": "Enter your password",
+  "enterNewPassword": "Enter your new password",
   "selectCountry": "Select your country",
   "enterValidEmail": "Please enter a valid email address",
   "enterValidUrl": "Please enter a valid URL",
@@ -116,5 +127,7 @@
   "avatarUpdated": "Avatar updated successfully",
   "enterNewDisplayName": "Enter your new username",
   "displayNameUpdated": "Username updated successfully",
-  "displayNameUpdateFailed": "Failed to update username"
+  "displayNameUpdateFailed": "Failed to update username",
+  "countryUpdated": "Country updated successfully",
+  "countryUpdateFailed": "Failed to update country"
 }

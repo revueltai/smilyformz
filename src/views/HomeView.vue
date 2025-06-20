@@ -3,9 +3,10 @@
   import Page from '@/components/app/Page.vue'
   import HeaderUser from '@/components/app/HeaderUser.vue'
   import StatBlock from '@/components/app/StatBlock.vue'
+  import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
+  import ModalShare from '@/components/app/ModalShare.vue'
   import { MODALS } from '@/configs/constants'
   import { useModalStore } from '@/stores/modal.store'
-  import ModalShare from '@/components/app/ModalShare.vue'
   import { useUserStore } from '@/stores/user.store'
 
   const userStore = useUserStore()
@@ -37,6 +38,8 @@
     content-classes="flex flex-col justify-between"
   >
     <HeaderUser :display-name="userStore.displayName" />
+
+    <EmailConfirmationWarning :is-confirmed="userStore.isEmailConfirmed" />
 
     <div class="flex flex-col gap-4">
       <StatBlock

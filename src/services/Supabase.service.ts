@@ -1,7 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
-import { DEFAULT_LANGUAGE, TILE_DEFAULTS } from '@/configs/constants'
+import { TILE_DEFAULTS } from '@/configs/constants'
+import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 
 interface UserPayload {
   display_name: string
@@ -139,7 +140,7 @@ export class SupabaseService {
         data: {
           display_name,
           country,
-          language: DEFAULT_LANGUAGE,
+          language: DEFAULT_LANGUAGE_CODE,
           music: false,
           sound: false,
           avatar_shape: TILE_DEFAULTS.shape,

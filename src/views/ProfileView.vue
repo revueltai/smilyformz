@@ -1,9 +1,10 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { MODALS } from '@/configs/constants'
   import { getCountriesForSelect } from '@/configs/countries'
+  import { getLanguagesForSelect } from '@/configs/languages'
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
   import { ToastService } from '@/components/shared/Toast/service'
@@ -13,27 +14,29 @@
   import ModalAvatar from '@/components/app/ModalAvatar.vue'
   import ModalDeleteAccount from '@/components/app/ModalDeleteAccount.vue'
   import { useFormValidation } from '@/composables/useFormValidation'
+  import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
 
   const router = useRouter()
   const { t } = useI18n()
   const userStore = useUserStore()
   const modalStore = useModalStore()
   const countries = getCountriesForSelect()
+  const languages = getLanguagesForSelect()
 
   const password = ref('')
   const isLoading = ref(false)
   const isDeletingAccount = ref(false)
   const showDeleteConfirmation = ref(false)
+  const currentCountry = ref(userStore.country)
+  const currentLanguage = ref(userStore.language)
 
-  async function handleLogout() {
-    try {
-      await userStore.signOut()
-      ToastService.emitToast(t('logoutSuccess'), 'success')
-      router.push('/')
-    } catch (error) {
-      console.error('Logout error:', error)
-      ToastService.emitToast(t('logoutFailed'), 'error')
-    }
+  function handleCancelDeleteAccount() {
+    showDeleteConfirmation.value = false
+    modalStore.closeModal()
+  }
+
+  function handleEditAvatar() {
+    modalStore.openModal(MODALS.AVATAR)
   }
 
   function handleDeleteAccount() {
@@ -57,11 +60,6 @@
     }
   }
 
-  function cancelDeleteAccount() {
-    showDeleteConfirmation.value = false
-    modalStore.closeModal()
-  }
-
   async function handleUpdateDisplayName(newDisplayName: string) {
     if (newDisplayName && newDisplayName.trim() && newDisplayName !== userStore.displayName) {
       try {
@@ -82,9 +80,48 @@
     }
   }
 
-  function handleEditAvatar() {
-    modalStore.openModal(MODALS.AVATAR)
+  async function handleUpdateLanguage(newLanguage: string) {
+    if (newLanguage && newLanguage !== userStore.language) {
+      try {
+        await userStore.updateUserSettings({ language: newLanguage })
+        ToastService.emitToast(t('languageUpdated'), 'success')
+      } catch (error) {
+        console.error('Error updating language:', error)
+        ToastService.emitToast(t('languageUpdateFailed'), 'error')
+      }
+    }
   }
+
+  async function handleUpdateCountry(newCountry: string) {
+    if (newCountry && newCountry !== userStore.country) {
+      try {
+        await userStore.updateUserSettings({ country: newCountry })
+        ToastService.emitToast(t('countryUpdated'), 'success')
+      } catch (error) {
+        console.error('Error updating country:', error)
+        ToastService.emitToast(t('countryUpdateFailed'), 'error')
+        // Revert to original value on error
+        currentCountry.value = userStore.country
+      }
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await userStore.signOut()
+      ToastService.emitToast(t('logoutSuccess'), 'success')
+      router.push('/')
+    } catch (error) {
+      console.error('Logout error:', error)
+      ToastService.emitToast(t('logoutFailed'), 'error')
+    }
+  }
+
+  watch(
+    () => userStore.country,
+    (newCountry) => (currentCountry.value = newCountry),
+    { immediate: true },
+  )
 </script>
 
 <template>
@@ -103,8 +140,34 @@
       @edit-avatar="handleEditAvatar"
     />
 
+    <EmailConfirmationWarning :is-confirmed="userStore.isEmailConfirmed" />
+
     <form>
       <div class="mb-8">
+        <Select
+          v-model="currentCountry"
+          :label="$t('country')"
+          :options="countries"
+          :placeholder="$t('selectCountry')"
+          name="country"
+          show-static-field
+          required
+          class="border-b border-slate-300 pb-3 mb-3"
+          @update="handleUpdateCountry"
+        />
+
+        <Select
+          v-model="currentLanguage"
+          :label="$t('language')"
+          :options="languages"
+          :placeholder="$t('selectLanguage')"
+          name="language"
+          show-static-field
+          required
+          class="border-b border-slate-300 pb-3 mb-3"
+          @update="handleUpdateLanguage"
+        />
+
         <Input
           v-model="userStore.email"
           :label="$t('email')"
@@ -116,23 +179,12 @@
           class="border-b border-slate-300 pb-3 mb-3"
         />
 
-        <Select
-          v-model="userStore.country"
-          :label="$t('country')"
-          :options="countries"
-          :placeholder="$t('selectCountry')"
-          name="country"
-          show-static-field
-          required
-          class="border-b border-slate-300 pb-3 mb-3"
-        />
-
         <Input
           v-model="password"
           :label="$t('password')"
           name="password"
           type="password"
-          :placeholder="$t('enterPassword')"
+          :placeholder="$t('enterNewPassword')"
           show-static-field
           required
           class="border-b border-slate-300 pb-3 mb-3"
@@ -173,11 +225,11 @@
     <Modal
       :name="MODALS.DELETE_ACCOUNT_CONFIRM"
       :heading="$t('deleteAccountConfirmation')"
-      @close="cancelDeleteAccount"
+      @close="handleCancelDeleteAccount"
     >
       <ModalDeleteAccount
         :is-deleting="isDeletingAccount"
-        @cancel="cancelDeleteAccount"
+        @cancel="handleCancelDeleteAccount"
         @confirm="confirmDeleteAccount"
       />
     </Modal>

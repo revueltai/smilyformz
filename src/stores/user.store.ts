@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase } from '@/services/Supabase.service'
-import { DEFAULT_LANGUAGE, TILE_DEFAULTS } from '@/configs/constants'
+import { TILE_DEFAULTS } from '@/configs/constants'
+import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 import type { User } from '@supabase/supabase-js'
 import type { TileExpression, TileShape } from '@/components/app/tile/types'
 
@@ -47,8 +48,15 @@ export const useUserStore = defineStore('user', () => {
   const country = computed(() => profile.value?.country || user.value?.user_metadata?.country || '')
 
   const music = computed(() => profile.value?.music ?? false)
+
   const sound = computed(() => profile.value?.sound ?? false)
-  const language = computed(() => profile.value?.language || DEFAULT_LANGUAGE)
+
+  const language = computed(() => profile.value?.language || DEFAULT_LANGUAGE_CODE)
+
+  // Check if user's email is confirmed
+  const isEmailConfirmed = computed(() => {
+    return user.value?.email_confirmed_at !== null && user.value?.email_confirmed_at !== undefined
+  })
 
   /**
    * Initializes the user store by getting the session and loading the user profile.
@@ -335,6 +343,7 @@ export const useUserStore = defineStore('user', () => {
     music,
     sound,
     language,
+    isEmailConfirmed,
 
     // Actions
     initialize,

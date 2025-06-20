@@ -5,8 +5,6 @@ import type {
   TilePowerUpType,
 } from '@/components/app/tile/types'
 
-export const DEFAULT_LANGUAGE = 'en'
-
 export const MODALS = {
   LOGIN: 'login',
   CREATE_ACCOUNT: 'createAccount',

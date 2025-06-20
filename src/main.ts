@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { detectBrowserLanguage, setupI18n } from '@/services/i18n.service'
 import { setupRouter } from './router'
+import { useUserStore } from '@/stores/user.store'
 import type { AppLocaleCode } from './types'
 
 import Button from '@/components/shared/Button/index.vue'
@@ -20,8 +21,19 @@ import en from '@/configs/locales/en.json'
 
 const initialLocale = detectBrowserLanguage() as AppLocaleCode
 
+/**
+ * Initializes the user authentication system
+ * Sets up the auth state change listener to automatically update user state
+ * when users sign in/out through Supabase
+ */
+function initializeUserAuthentication() {
+  const userStore = useUserStore()
+  userStore.setupAuthListener()
+}
+
 const app = createApp(App)
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
 
 const i18n = setupI18n({
   legacy: false,
@@ -44,5 +56,7 @@ app.component('Select', Select)
 app.component('Icon', Icon)
 app.component('Button', Button)
 app.component('Modal', Modal)
+
+initializeUserAuthentication()
 
 router.isReady().then(() => app.mount('#app'))
