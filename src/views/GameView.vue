@@ -63,11 +63,23 @@
     modalStore.openModal(MODALS.CREATE_ACCOUNT)
   }
 
+  async function handleGameSessionSave() {
+    if (userStore.isAuthenticated && gameStore.score > 0) {
+      try {
+        const totalSeconds = gameStore.time.minutes * 60 + gameStore.time.seconds
+        await gameStore.saveGameSession(gameStore.score, totalSeconds)
+      } catch (error) {
+        console.error('Failed to save game session:', error)
+      }
+    }
+  }
+
   watch(
     () => gameStore.isGameOver,
-    (isGameOver) => {
+    async (isGameOver) => {
       if (isGameOver) {
         showGameEndCountdown.value = true
+        await handleGameSessionSave()
       }
     },
   )

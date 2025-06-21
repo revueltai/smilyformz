@@ -3,6 +3,8 @@ import { ref, computed } from 'vue'
 import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES } from '@/configs/constants'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import { getRandomItem } from '@/utils'
+import { supabase } from '@/services/Supabase.service'
+import { useUserStore } from './user.store'
 
 interface GameTime {
   seconds: number
@@ -191,6 +193,28 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  /**
+   * Saves the current game session to the database
+   *
+   * @param finalScore - The final score of the game
+   * @param durationSeconds - The duration of the game in seconds
+   */
+  async function saveGameSession(finalScore: number, durationSeconds: number) {
+    const userStore = useUserStore()
+
+    if (!userStore.user) {
+      throw new Error('No authenticated user found')
+    }
+
+    const payload = {
+      user_id: userStore.user.id,
+      score: finalScore.toString(),
+      duration: durationSeconds.toString(),
+    }
+
+    return supabase.insertRecord('game_sessions', payload)
+  }
+
   return {
     character,
     pointsPerMatch,
@@ -212,5 +236,6 @@ export const useGameStore = defineStore('game', () => {
     startGame,
     updateCharacterOnMatch,
     resetSpeed,
+    saveGameSession,
   }
 })

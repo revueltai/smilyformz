@@ -10,9 +10,15 @@
    - Navigate to the **SQL Editor** section
 
 2. **Create the Function**
+
    - Copy the contents of `supabase_functions.sql`
    - Paste it into the SQL Editor
    - Click **Run** to execute the function creation
+
+3. **Set up Row Level Security Policies**
+   - Copy the contents of `rls_policies.sql`
+   - Paste it into the SQL Editor
+   - Click **Run** to execute the RLS policies creation
 
 ### Option 2: Using Supabase CLI
 
@@ -34,10 +40,34 @@
    supabase link --project-ref YOUR_PROJECT_REF
    ```
 
-4. **Deploy the function**
+4. **Deploy the function and policies**
    ```bash
    supabase db push
    ```
+
+## Row Level Security (RLS) Policies
+
+The `rls_policies.sql` file contains the necessary Row Level Security policies for:
+
+### game_sessions table
+
+- **INSERT**: Users can insert their own game sessions
+- **SELECT**: Users can view their own game sessions
+- **UPDATE**: Users can update their own game sessions
+- **DELETE**: Users can delete their own game sessions
+
+### global_ranking table
+
+- **SELECT**: Anyone can view global rankings
+- **INSERT**: Users can insert their own ranking entries
+- **UPDATE**: Users can update their own ranking entries
+
+These policies ensure that:
+
+- Users can only access their own data
+- Game sessions are properly secured
+- Global rankings are viewable by all authenticated users
+- Data integrity is maintained
 
 ## Function Details
 
