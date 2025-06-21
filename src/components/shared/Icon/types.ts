@@ -46,6 +46,7 @@ export type IconName =
   | 'trophy'
   | 'user-round'
   | 'user-search'
+  | 'github'
 
 export interface IconProps {
   name: IconName

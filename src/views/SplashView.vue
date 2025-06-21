@@ -4,11 +4,11 @@
   import { useModalStore } from '@/stores/modal.store'
   import ModalLogin from '@/components/app/ModalLogin.vue'
   import ModalCreateAccount from '@/components/app/ModalCreateAccount.vue'
+  import ModalCredits from '@/components/app/ModalCredits.vue'
   import { MODALS } from '@/configs/constants'
   import { useRouter } from 'vue-router'
 
   const router = useRouter()
-  const activeModal = ref('')
   const modalStore = useModalStore()
 
   function handleClickButtonPlay() {
@@ -16,13 +16,15 @@
   }
 
   function handleClickButtonCreateAccount() {
-    activeModal.value = MODALS.CREATE_ACCOUNT
-    modalStore.openModal(activeModal.value)
+    modalStore.openModal(MODALS.CREATE_ACCOUNT)
   }
 
   function handleClickButtonLogin() {
-    activeModal.value = MODALS.LOGIN
-    modalStore.openModal(activeModal.value)
+    modalStore.openModal(MODALS.LOGIN)
+  }
+
+  function handleClickButtonCredits() {
+    modalStore.openModal(MODALS.CREDITS)
   }
 </script>
 
@@ -37,6 +39,7 @@
         alt="splash"
         width="249"
         height="120"
+        class="animate-scale-in-bounce"
       />
 
       <div class="flex flex-col gap-4 items-center">
@@ -45,6 +48,7 @@
             size="2xl"
             background-color="lime-50"
             border-color="lime-600"
+            class="animate-scale-in-bounce-delay-1"
             @click="handleClickButtonPlay"
           >
             <Icon
@@ -57,6 +61,7 @@
 
         <Button
           size="base"
+          class="animate-scale-in-bounce-delay-2"
           @click="handleClickButtonCreateAccount"
         >
           <Icon
@@ -69,6 +74,7 @@
 
         <Button
           size="xs"
+          class="animate-scale-in-bounce-delay-3"
           @click="handleClickButtonLogin"
         >
           <Icon
@@ -81,8 +87,18 @@
       </div>
     </div>
 
+    <div class="absolute bottom-0 left-0 right-0 px-2 pb-4 text-center">
+      <Button
+        size="xs"
+        type="link"
+        text-color="slate-500"
+        @click="handleClickButtonCredits"
+      >
+        {{ $t('credits') }}
+      </Button>
+    </div>
+
     <Modal
-      v-if="activeModal === MODALS.LOGIN"
       :name="MODALS.LOGIN"
       :heading="$t('loginToYourAccount')"
     >
@@ -90,11 +106,17 @@
     </Modal>
 
     <Modal
-      v-if="activeModal === MODALS.CREATE_ACCOUNT"
       :name="MODALS.CREATE_ACCOUNT"
       :heading="$t('createAnAccount')"
     >
       <ModalCreateAccount />
+    </Modal>
+
+    <Modal
+      :name="MODALS.CREDITS"
+      :heading="$t('designedAndDevelopedBy')"
+    >
+      <ModalCredits />
     </Modal>
   </Page>
 </template>

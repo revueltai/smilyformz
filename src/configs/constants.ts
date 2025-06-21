@@ -6,6 +6,7 @@ import type {
 } from '@/components/app/tile/types'
 
 export const MODALS = {
+  CREDITS: 'credits',
   LOGIN: 'login',
   CREATE_ACCOUNT: 'createAccount',
   TUTORIAL: 'tutorial',

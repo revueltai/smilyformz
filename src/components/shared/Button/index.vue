@@ -80,16 +80,18 @@
     }
 
     const payload = [
-      `${baseClasses} justify-center shadow-xs border border-x border-t-1 border-b-2 disabled:grayscale disabled:opacity-50 focus:outline-none text-${props.textAlignment} ${props.cssClasses}`,
+      `${baseClasses} text-${props.textColor} disabled:grayscale disabled:opacity-50 focus:outline-none text-${props.textAlignment} ${props.cssClasses}`,
     ]
 
     if (!isLink.value) {
       payload.push(
-        `bg-${props.backgroundColor} text-${props.textColor} hover:bg-${props.backgroundColorHover}`,
+        `justify-center shadow-xs bg-${props.backgroundColor} hover:bg-${props.backgroundColorHover}`,
       )
 
       if (!isNoneToken(props.borderColor)) {
-        payload.push(`border-${props.borderColor} hover:border-${props.borderColorHover}`)
+        payload.push(
+          `border border-x border-t-1 border-b-2 border-${props.borderColor} hover:border-${props.borderColorHover}`,
+        )
       }
     }
 
@@ -99,9 +101,9 @@
     } else {
       payload.push('rounded-lg')
 
-      if (isExternalLink.value) {
+      if (isLink.value) {
         payload.push(LINK_SIZE_CLASSES[props.size])
-      } else if (!isLink.value) {
+      } else {
         payload.push(BUTTON_SIZE_CLASSES[props.size])
       }
     }
