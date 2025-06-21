@@ -29,6 +29,7 @@ export const useGameStore = defineStore('game', () => {
     minutes: 0,
   })
 
+  // Speed milestones for increasing the game speed
   const speedMilestones = [
     [15, 2.7],
     [30, 2.9],
@@ -40,6 +41,7 @@ export const useGameStore = defineStore('game', () => {
     [2880, 7],
   ]
 
+  // Character state
   const character = ref({
     id: 'character',
     type: 'character',
@@ -49,11 +51,15 @@ export const useGameStore = defineStore('game', () => {
     expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
   })
 
+  // Formatted time for display
   const formattedTime = computed(() => {
     const pad = (num: number) => num.toString().padStart(2, '0')
     return `${pad(time.value.minutes)}:${pad(time.value.seconds)}`
   })
 
+  /**
+   * Checks if the game speed should be increased based on the time elapsed
+   */
   function checkAndIncreaseSpeed() {
     const totalSeconds = time.value.minutes * 60 + time.value.seconds
 
@@ -69,6 +75,9 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  /**
+   * Starts tracking the time elapsed
+   */
   function startTimeTracking() {
     if (timeInterval) {
       return
@@ -81,6 +90,9 @@ export const useGameStore = defineStore('game', () => {
     }, 1000)
   }
 
+  /**
+   * Stops tracking the time elapsed
+   */
   function stopTimeTracking() {
     if (timeInterval) {
       clearInterval(timeInterval)
@@ -88,6 +100,9 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  /**
+   * Increments the time elapsed
+   */
   function incrementTime() {
     time.value.seconds++
 
@@ -99,6 +114,9 @@ export const useGameStore = defineStore('game', () => {
     checkAndIncreaseSpeed()
   }
 
+  /**
+   * Resets the time elapsed
+   */
   function resetTime() {
     time.value = {
       seconds: 0,
@@ -106,11 +124,21 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  /**
+   * Resets the game speed
+   */
   function resetSpeed() {
     gameSpeed.value = GAME_INITIAL_SPEED
     showSpeedIncreaseNotification.value = false
   }
 
+  /**
+   * Increments the score based on the match
+   *
+   * @param shapeMatch - Whether the shape matched
+   * @param colorMatch - Whether the color matched
+   * @param doublePoints - Whether the double points are enabled
+   */
   function incrementScore(shapeMatch: boolean, colorMatch: boolean, doublePoints: boolean = false) {
     if (isPaused.value || !isGameStarted.value || isGameOver.value) {
       return
@@ -145,19 +173,31 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  /**
+   * Pauses the game
+   */
   function pause() {
     isPaused.value = true
   }
 
+  /**
+   * Resumes the game
+   */
   function resume() {
     isPaused.value = false
   }
 
+  /**
+   * Starts the game
+   */
   function startGame() {
     isGameStarted.value = true
     startTimeTracking()
   }
 
+  /**
+   * Resets the game
+   */
   function resetGame() {
     stopTimeTracking()
     resetScore()
@@ -178,6 +218,11 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  /**
+   * Updates the character on a match
+   *
+   * @param characterProps - The properties to update the character with
+   */
   function updateCharacterOnMatch(characterProps: {
     shape: TileShape
     shapeColor: string
