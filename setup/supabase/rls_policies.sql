@@ -1,3 +1,7 @@
+-- =============================================================================
+-- ROW LEVEL SECURITY POLICIES
+-- =============================================================================
+
 -- Row Level Security Policies for game_sessions table
 
 -- Enable RLS on game_sessions table (if not already enabled)
