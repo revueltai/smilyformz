@@ -11,6 +11,16 @@ interface UserPayload {
   country: string
 }
 
+// Type-safe database function names
+export const DATABASE_FUNCTIONS = {
+  CHECK_USER_EXISTS: 'check_user_exists',
+  DELETE_USER_DATA: 'delete_user_data',
+  IS_ACCOUNT_DELETED: 'is_account_deleted',
+  VALIDATE_ACCOUNT_STATUS: 'validate_account_status',
+} as const
+
+export type DatabaseFunctionName = (typeof DATABASE_FUNCTIONS)[keyof typeof DATABASE_FUNCTIONS]
+
 /**
  * Checks if the Supabase error code indicates no rows were returned
  *
@@ -63,6 +73,26 @@ export class SupabaseService {
     return this.client
   }
 
+  /**
+   * Calls RPC (PostgreSQL) database functions with standardized error handling
+   *
+   * @param functionName - The name of the RPC (PostgreSQL) database function to call
+   * @param params - The parameters to pass to the function
+   * @returns The function result data
+   */
+  public async callDatabaseFunction<T = any>(
+    functionName: DatabaseFunctionName,
+    params?: Record<string, any>,
+  ): Promise<T> {
+    const { data, error } = await this.client.rpc(functionName, params)
+
+    if (error) {
+      throw new Error(`Failed to call database function: ${error.message}`)
+    }
+
+    return data
+  }
+
   // AUTHENTICATION METHODS ==========
 
   /**
@@ -76,16 +106,30 @@ export class SupabaseService {
     email: string | null = null,
     username: string | null = null,
   ): Promise<boolean> {
-    const { data, error } = await this.client.rpc('check_user_exists', {
+    return this.callDatabaseFunction<boolean>(DATABASE_FUNCTIONS.CHECK_USER_EXISTS, {
       p_email: email,
       p_username: username,
     })
+  }
 
-    if (error) {
-      throw error
+  /**
+   * Validates account status before login attempt
+   *
+   * @param email - The email to validate
+   * @throws Error if account is deleted or validation fails
+   */
+  async validateAccountBeforeLogin(email: string): Promise<void> {
+    const validation = await this.callDatabaseFunction<{
+      valid: boolean
+      error?: string
+      message: string
+    }>(DATABASE_FUNCTIONS.VALIDATE_ACCOUNT_STATUS, {
+      p_email: email,
+    })
+
+    if (!validation.valid) {
+      throw new Error(validation.error || 'Account validation failed')
     }
-
-    return data
   }
 
   /**
@@ -167,6 +211,10 @@ export class SupabaseService {
    * @returns The user data
    */
   async signIn(email: string, password: string, rememberMe: boolean = false) {
+    // Validate account status before attempting login
+    await this.validateAccountBeforeLogin(email)
+
+    // Proceed with normal Supabase authentication
     const { data, error } = await this.client.auth.signInWithPassword({
       email,
       password,
@@ -201,8 +249,8 @@ export class SupabaseService {
    * Deletes the current user account
    * Note: This is a destructive operation and cannot be undone
    *
-   * This method deletes user data from custom tables and signs out
-   * The auth user will remain but will have no associated data
+   * This method calls a PostgreSQL function to delete user data and mark the account as deleted,
+   * then signs out the user.
    */
   async deleteAccount() {
     const {
@@ -218,19 +266,30 @@ export class SupabaseService {
       throw new Error('NoUserFound')
     }
 
-    try {
-      // Delete user data from custom tables
-      // Add your table deletion logic here based on your schema
-      // Example:
-      // await this.client.from('user_profiles').delete().eq('user_id', user.id)
-      // await this.client.from('user_scores').delete().eq('user_id', user.id)
+    // Call PostgreSQL function to delete user data and mark account as deleted
+    const data = await this.callDatabaseFunction<{
+      success: boolean
+      message: string
+      deleted_game_sessions: number
+      deleted_at: string
+      error?: string
+    }>(DATABASE_FUNCTIONS.DELETE_USER_DATA, {
+      p_user_id: user.id,
+    })
 
-      // For now, we'll just sign out which effectively "deletes" the account
-      // from the user's perspective
-      await this.signOut()
-    } catch (deleteError) {
-      throw deleteError
+    if (!data?.success) {
+      throw new Error(data?.error || 'Failed to delete user data')
     }
+
+    console.log(
+      'User data deleted successfully:',
+      data?.message,
+      'Deleted sessions:',
+      data?.deleted_game_sessions,
+    )
+
+    // Sign out the user
+    await this.signOut()
   }
 
   // DATA METHODS ==========

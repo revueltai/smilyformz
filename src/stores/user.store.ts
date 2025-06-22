@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { supabase } from '@/services/Supabase.service'
+import { supabase, DATABASE_FUNCTIONS } from '@/services/Supabase.service'
 import { TILE_DEFAULTS } from '@/configs/constants'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 import type { User } from '@supabase/supabase-js'
@@ -53,7 +53,6 @@ export const useUserStore = defineStore('user', () => {
 
   const language = computed(() => profile.value?.language || DEFAULT_LANGUAGE_CODE)
 
-  // Check if user's email is confirmed
   const isEmailConfirmed = computed(() => {
     return user.value?.email_confirmed_at !== null && user.value?.email_confirmed_at !== undefined
   })
@@ -88,6 +87,49 @@ export const useUserStore = defineStore('user', () => {
   }
 
   /**
+   * Checks if the current user's account has been deleted (server-side check)
+   * @returns Promise<boolean> - true if account is deleted, false otherwise
+   */
+  async function isAccountDeleted(): Promise<boolean> {
+    if (!user.value) {
+      return false
+    }
+
+    try {
+      return await supabase.callDatabaseFunction<boolean>(DATABASE_FUNCTIONS.IS_ACCOUNT_DELETED, {
+        p_user_id: user.value.id,
+      })
+    } catch (error) {
+      console.error('Error checking account deletion status:', error)
+      return false
+    }
+  }
+
+  /**
+   * Validates account status and signs out if account is deleted
+   * @returns Promise<boolean> - true if account is valid, false if deleted
+   */
+  async function validateAccountStatus(): Promise<boolean> {
+    if (!user.value) {
+      return true
+    }
+
+    try {
+      const isDeleted = await isAccountDeleted()
+
+      if (isDeleted) {
+        await signOut()
+        return false
+      }
+
+      return true
+    } catch (error) {
+      console.error('Error validating account status:', error)
+      return true
+    }
+  }
+
+  /**
    * Loads the user profile including the display name, email, country, created, updated at, music, sound, language and avatar.
    */
   async function loadUserProfile() {
@@ -104,6 +146,11 @@ export const useUserStore = defineStore('user', () => {
       avatar_color,
       avatar_background_color,
     } = user_metadata
+
+    const isValid = await validateAccountStatus()
+    if (!isValid) {
+      return
+    }
 
     try {
       profile.value = {
@@ -140,6 +187,11 @@ export const useUserStore = defineStore('user', () => {
       isAuthenticated.value = true
       await loadUserProfile()
       return data
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('Invalid login credentials')) {
+        throw new Error('Invalid email or password')
+      }
+      throw error
     } finally {
       isLoading.value = false
     }
@@ -355,5 +407,7 @@ export const useUserStore = defineStore('user', () => {
     setupAuthListener,
     updateUserSettings,
     updateDisplayName,
+    isAccountDeleted,
+    validateAccountStatus,
   }
 })

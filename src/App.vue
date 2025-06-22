@@ -22,16 +22,13 @@
   }
 
   onMounted(async () => {
-    // Initialize user store and auth listener
     await userStore.initialize()
     userStore.setupAuthListener()
 
-    // If running from home screen, enter fullscreen immediately
     if (isMobile() && isStandalone() && !isFullscreen()) {
       enterFullscreen()
     }
 
-    // For browser mode, wait for first user interaction
     if (isMobile() && !isStandalone()) {
       events.forEach((event) => {
         document.addEventListener(event, handleFirstInteraction, { once: true })

@@ -33,14 +33,14 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 BEGIN
-  -- Check if user exists by email
+  -- Check if user exists by email (including deleted accounts)
   IF p_email IS NOT NULL AND EXISTS (
     SELECT 1 FROM auth.users WHERE email = p_email
   ) THEN
     RETURN TRUE;
   END IF;
   
-  -- Check if user exists by username (display_name in raw_user_meta_data)
+  -- Check if user exists by username (including deleted accounts)
   IF p_username IS NOT NULL AND EXISTS (
     SELECT 1 FROM auth.users WHERE raw_user_meta_data->>'display_name' = p_username
   ) THEN
@@ -139,6 +139,72 @@ EXCEPTION
 END;
 $$;
 
+-- Function to check if a user account has been deleted
+CREATE OR REPLACE FUNCTION is_account_deleted(
+  p_user_id UUID
+)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Check if user exists and account is marked as deleted
+  RETURN EXISTS (
+    SELECT 1 FROM auth.users 
+    WHERE id = p_user_id 
+    AND raw_user_meta_data->>'account_deleted' = 'true'
+  );
+END;
+$$;
+
+-- Function to validate account status before login (email only check)
+CREATE OR REPLACE FUNCTION validate_account_status(
+  p_email TEXT
+)
+RETURNS JSON
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  user_record RECORD;
+BEGIN
+  -- Check if user exists and get their deletion status
+  SELECT id, raw_user_meta_data->>'account_deleted' as account_deleted 
+  INTO user_record 
+  FROM auth.users 
+  WHERE email = p_email;
+  
+  -- If user doesn't exist, return generic response (don't reveal if email exists)
+  IF user_record IS NULL THEN
+    RETURN json_build_object(
+      'valid', true,
+      'message', 'Proceed with login'
+    );
+  END IF;
+  
+  -- Check if account is deleted
+  IF user_record.account_deleted = 'true' THEN
+    RETURN json_build_object(
+      'valid', false,
+      'error', 'Account has been deleted'
+    );
+  END IF;
+  
+  -- Account exists and is not deleted
+  RETURN json_build_object(
+    'valid', true,
+    'message', 'Account is valid for login'
+  );
+  
+EXCEPTION
+  WHEN OTHERS THEN
+    RETURN json_build_object(
+      'valid', true,
+      'message', 'Proceed with login'
+    );
+END;
+$$;
+
 -- =============================================================================
 -- PERMISSIONS
 -- =============================================================================
@@ -150,4 +216,10 @@ GRANT EXECUTE ON FUNCTION check_user_exists(TEXT, TEXT) TO authenticated;
 GRANT EXECUTE ON FUNCTION check_user_exists(TEXT, TEXT) TO anon;
 
 -- Grant execute permission to authenticated users for delete_user_data
-GRANT EXECUTE ON FUNCTION delete_user_data(UUID) TO authenticated; 
+GRANT EXECUTE ON FUNCTION delete_user_data(UUID) TO authenticated;
+
+-- Grant execute permission to authenticated users for is_account_deleted
+GRANT EXECUTE ON FUNCTION is_account_deleted(UUID) TO authenticated;
+
+-- Grant execute permission to anon users for validate_account_status (needed for login)
+GRANT EXECUTE ON FUNCTION validate_account_status(TEXT) TO anon; 
