@@ -32,7 +32,6 @@
   }
 
   function handleUpdateDisplayName(value: string) {
-    // Only emit when user clicks the update button, not on every keystroke
     emit('update:displayName', value)
   }
 </script>
