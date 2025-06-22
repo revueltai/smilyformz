@@ -147,11 +147,6 @@ export const useUserStore = defineStore('user', () => {
       avatar_background_color,
     } = user_metadata
 
-    const isValid = await validateAccountStatus()
-    if (!isValid) {
-      return
-    }
-
     try {
       profile.value = {
         id,
@@ -185,6 +180,13 @@ export const useUserStore = defineStore('user', () => {
       const data = await supabase.signIn(email, password, rememberMe)
       user.value = data.user
       isAuthenticated.value = true
+
+      // Validate account status to check if the user is deleted
+      const isValid = await validateAccountStatus()
+      if (!isValid) {
+        return data
+      }
+
       await loadUserProfile()
       return data
     } catch (error) {
