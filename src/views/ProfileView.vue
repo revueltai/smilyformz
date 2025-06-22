@@ -29,6 +29,19 @@
   const showDeleteConfirmation = ref(false)
   const currentCountry = ref(userStore.country)
   const currentLanguage = ref(userStore.language)
+  const headerUserKey = ref(0)
+
+  function forceUpdateHeaderUserComponent() {
+    headerUserKey.value++
+  }
+
+  function revertDisplayName(originalDisplayName: string) {
+    if (userStore.profile) {
+      userStore.profile.display_name = originalDisplayName
+    }
+
+    forceUpdateHeaderUserComponent()
+  }
 
   function handleCancelDeleteAccount() {
     showDeleteConfirmation.value = false
@@ -62,12 +75,15 @@
 
   async function handleUpdateDisplayName(newDisplayName: string) {
     if (newDisplayName && newDisplayName.trim() && newDisplayName !== userStore.displayName) {
+      const originalDisplayName = userStore.displayName
+
       try {
         const { validateUsername } = useFormValidation()
         const validation = await validateUsername(newDisplayName.trim())
 
         if (!validation.isValid) {
           ToastService.emitToast(t(validation.message), 'error')
+          revertDisplayName(originalDisplayName)
           return
         }
 
@@ -76,6 +92,7 @@
       } catch (error) {
         console.error('Error updating display name:', error)
         ToastService.emitToast(t('displayNameUpdateFailed'), 'error')
+        revertDisplayName(originalDisplayName)
       }
     }
   }
@@ -100,7 +117,6 @@
       } catch (error) {
         console.error('Error updating country:', error)
         ToastService.emitToast(t('countryUpdateFailed'), 'error')
-        // Revert to original value on error
         currentCountry.value = userStore.country
       }
     }
@@ -130,6 +146,7 @@
     content-classes="flex flex-col justify-between gap-6"
   >
     <HeaderUser
+      :key="headerUserKey"
       :display-name="userStore.displayName"
       :has-edit-options="true"
       :avatar-shape="userStore.profile?.avatar.shape"
@@ -158,7 +175,7 @@
 
         <Select
           v-model="currentLanguage"
-          :label="$t('language')"
+          :label="$t('appLanguage')"
           :options="languages"
           :placeholder="$t('selectLanguage')"
           name="language"

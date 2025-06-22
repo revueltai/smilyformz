@@ -1,5 +1,6 @@
 {
   "language": "Language",
+  "appLanguage": "App Language",
   "selectLanguage": "Select your language",
   "languageUpdated": "Language updated successfully",
   "languageUpdateFailed": "Failed to update language",
