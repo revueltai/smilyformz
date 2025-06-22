@@ -205,6 +205,87 @@ EXCEPTION
 END;
 $$;
 
+-- Function: cleanup_deleted_users (Cron Job)
+-- 
+-- Parameters:
+--   p_retention_days INTEGER - Number of days to wait before permanent deletion (default: 30)
+-- 
+-- Returns: JSON - Object containing cleanup statistics
+-- 
+-- Description:
+--   This function permanently removes users who have been marked as deleted
+--   and have exceeded the retention period. It's designed to be run as a cron job.
+-- 
+--   The function:
+--   1. Finds users marked as deleted with deletion timestamp older than retention period
+--   2. Permanently deletes them from auth.users table
+--   3. Returns statistics about the cleanup operation
+-- 
+-- Returns JSON structure:
+--   {
+--     "success": boolean,
+--     "message": string,
+--     "users_deleted": integer,
+--     "execution_time": string (ISO timestamp),
+--     "retention_days": integer,
+--     "error": string (only if success is false)
+--   }
+-- 
+-- Examples:
+--   -- Run cleanup with default 30-day retention
+--   SELECT cleanup_deleted_users();
+--   
+--   -- Run cleanup with 7-day retention
+--   SELECT cleanup_deleted_users(7);
+-- 
+-- Cron Job Setup:
+--   This function should be scheduled to run daily or weekly using Supabase's cron jobs.
+--   Example cron schedule: '0 2 * * *' (daily at 2 AM)
+CREATE OR REPLACE FUNCTION cleanup_deleted_users(
+  p_retention_days INTEGER DEFAULT 30
+)
+RETURNS JSON
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  deleted_users_count INTEGER := 0;
+  retention_date TIMESTAMP;
+  result JSON;
+BEGIN
+  -- Calculate retention date
+  retention_date := now() - INTERVAL '1 day' * p_retention_days;
+  
+  -- Delete users marked as deleted and older than retention period
+  DELETE FROM auth.users 
+  WHERE raw_user_meta_data->>'account_deleted' = 'true'
+    AND (raw_user_meta_data->>'deleted_at')::TIMESTAMP < retention_date;
+  
+  GET DIAGNOSTICS deleted_users_count = ROW_COUNT;
+  
+  -- Return cleanup statistics
+  result := json_build_object(
+    'success', true,
+    'message', 'Deleted users cleanup completed',
+    'users_deleted', deleted_users_count,
+    'execution_time', now()::text,
+    'retention_days', p_retention_days,
+    'retention_date', retention_date::text
+  );
+  
+  RETURN result;
+  
+EXCEPTION
+  WHEN OTHERS THEN
+    RETURN json_build_object(
+      'success', false,
+      'error', SQLERRM,
+      'execution_time', now()::text,
+      'retention_days', p_retention_days
+    );
+END;
+$$;
+
 -- =============================================================================
 -- PERMISSIONS
 -- =============================================================================
@@ -222,4 +303,69 @@ GRANT EXECUTE ON FUNCTION delete_user_data(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION is_account_deleted(UUID) TO authenticated;
 
 -- Grant execute permission to anon users for validate_account_status (needed for login)
-GRANT EXECUTE ON FUNCTION validate_account_status(TEXT) TO anon; 
+GRANT EXECUTE ON FUNCTION validate_account_status(TEXT) TO anon;
+
+-- Grant execute permission to service_role for cleanup_deleted_users (cron job)
+GRANT EXECUTE ON FUNCTION cleanup_deleted_users(INTEGER) TO service_role;
+
+-- =============================================================================
+-- CRON JOB SETUP
+-- =============================================================================
+
+-- Note: To set up the cron job in Supabase, you need to:
+-- 1. Go to your Supabase dashboard
+-- 2. Navigate to Database > Functions
+-- 3. Create a new cron job with the following settings:
+--    - Name: cleanup_deleted_users_job
+--    - Schedule: '0 2 * * *' (daily at 2 AM UTC)
+--    - Function: cleanup_deleted_users()
+--    - Timeout: 300 seconds
+--
+-- Alternative schedules:
+--   - '0 2 * * 0' (weekly on Sunday at 2 AM)
+--   - '0 2 1 * *' (monthly on the 1st at 2 AM)
+--   - '0 */6 * * *' (every 6 hours)
+--
+-- You can also run the function manually for testing:
+--   SELECT cleanup_deleted_users(7); -- Clean up users deleted more than 7 days ago
+
+-- =============================================================================
+-- SUPABASE CRON SETUP (Updated)
+-- =============================================================================
+
+-- To set up the cron job using Supabase Cron:
+-- 
+-- 1. Enable the Cron Postgres Module:
+--    - Go to your Supabase dashboard
+--    - Navigate to Settings > Integrations
+--    - Enable the "Cron" Postgres Module
+--
+-- 2. Create a new Cron Job:
+--    - Go to Database > Cron Jobs
+--    - Click "Create a new job"
+--    - Choose "Database Functions" as the job type
+--    - Select the cleanup_deleted_users function
+--    - Set the schedule using standard cron syntax or natural language
+--
+-- 3. Recommended Schedule Options:
+--    - Daily at 2 AM: "0 2 * * *"
+--    - Weekly on Sunday: "0 2 * * 0" 
+--    - Monthly on 1st: "0 2 1 * *"
+--    - Every 6 hours: "0 */6 * * *"
+--    - Natural language: "daily at 2am" or "weekly on sunday"
+--
+-- 4. Job Configuration:
+--    - Name: cleanup_deleted_users_job
+--    - Function: cleanup_deleted_users()
+--    - Parameters: Leave empty for default 30-day retention
+--    - Timeout: 300 seconds
+--    - Retry on failure: Enabled (recommended)
+--
+-- 5. Monitor and Debug:
+--    - View job history in the Cron Jobs dashboard
+--    - Check logs in the Logs Explorer for detailed execution results
+--    - Monitor job performance and success rates
+--
+-- Manual Testing:
+--   You can test the function manually in the SQL Editor:
+--   SELECT cleanup_deleted_users(7); -- Clean up users deleted more than 7 days ago 
