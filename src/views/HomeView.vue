@@ -37,7 +37,13 @@
     has-tutorial-button
     content-classes="flex flex-col justify-between"
   >
-    <HeaderUser :display-name="userStore.displayName" />
+    <HeaderUser
+      :display-name="userStore.displayName"
+      :avatar-shape="userStore.profile?.avatar.shape"
+      :avatar-shape-color="userStore.profile?.avatar.shape_color"
+      :avatar-background-color="userStore.profile?.avatar.background_color"
+      :avatar-expression="userStore.profile?.avatar.expression"
+    />
 
     <EmailConfirmationWarning :is-confirmed="userStore.isEmailConfirmed" />
 

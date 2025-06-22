@@ -143,7 +143,7 @@ export const useUserStore = defineStore('user', () => {
       display_name,
       avatar_expression,
       avatar_shape,
-      avatar_color,
+      avatar_shape_color,
       avatar_background_color,
     } = user_metadata
 
@@ -158,7 +158,7 @@ export const useUserStore = defineStore('user', () => {
         avatar: {
           expression: avatar_expression || TILE_DEFAULTS.expression,
           shape: avatar_shape || TILE_DEFAULTS.shape,
-          shape_color: avatar_color || TILE_DEFAULTS.shapeColor,
+          shape_color: avatar_shape_color || TILE_DEFAULTS.shapeColor,
           background_color: avatar_background_color || TILE_DEFAULTS.backgroundColor,
         },
         music: music.value,
