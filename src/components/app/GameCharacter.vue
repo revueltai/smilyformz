@@ -88,7 +88,7 @@
 
   <div
     ref="characterRef"
-    class="absolute bottom-24 left-0 transition-all duration-300 ease-in-out"
+    class="absolute bottom-30 left-0 transition-all duration-300 ease-in-out"
     :class="{ 'opacity-0': !isCharacterVisible, 'opacity-100': isCharacterVisible }"
     :style="{ transform: `translateX(${x}px)` }"
   >
