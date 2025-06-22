@@ -62,7 +62,7 @@
       />
     </div>
 
-    <div class="w-full flex gap-4 items-end justify-center">
+    <div class="w-full flex gap-4 items-end justify-center pb-6">
       <Button
         to="/ranking"
         size="base"
