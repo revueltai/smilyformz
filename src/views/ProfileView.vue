@@ -160,7 +160,7 @@
     <EmailConfirmationWarning :is-confirmed="userStore.isEmailConfirmed" />
 
     <form>
-      <div class="mb-8">
+      <div class="mb-4">
         <Select
           v-model="currentCountry"
           :label="$t('country')"
@@ -171,18 +171,6 @@
           required
           class="border-b border-slate-300 pb-3 mb-3"
           @update="handleUpdateCountry"
-        />
-
-        <Select
-          v-model="currentLanguage"
-          :label="$t('appLanguage')"
-          :options="languages"
-          :placeholder="$t('selectLanguage')"
-          name="language"
-          show-static-field
-          required
-          class="border-b border-slate-300 pb-3 mb-3"
-          @update="handleUpdateLanguage"
         />
 
         <Input
@@ -204,8 +192,21 @@
           :placeholder="$t('enterNewPassword')"
           show-static-field
           required
-          class="border-b border-slate-300 pb-3 mb-3"
+          class="mb-4"
         />
+
+        <div class="p-4 bg-slate-100 rounded-lg">
+          <Select
+            v-model="currentLanguage"
+            :label="$t('appLanguage')"
+            :options="languages"
+            :placeholder="$t('selectLanguage')"
+            name="language"
+            show-static-field
+            required
+            @update="handleUpdateLanguage"
+          />
+        </div>
       </div>
 
       <SettingsSound />
