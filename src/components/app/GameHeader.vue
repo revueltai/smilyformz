@@ -12,7 +12,7 @@
 </script>
 
 <template>
-  <div class="fixed left-0 top-0 w-full z-20">
+  <div class="absolute left-0 top-0 w-full z-20">
     <div
       class="flex justify-between items-center gap-3 w-full h-full bg-white p-3 border-b border-slate-300 shadow-sm"
     >

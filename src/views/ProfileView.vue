@@ -13,23 +13,66 @@
   import SettingsSound from '@/components/app/SettingsSound.vue'
   import ModalAvatar from '@/components/app/ModalAvatar.vue'
   import ModalDeleteAccount from '@/components/app/ModalDeleteAccount.vue'
+  import ModalReloginConfirm from '@/components/app/ModalReloginConfirm.vue'
   import { useFormValidation } from '@/composables/useFormValidation'
   import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
+  import type { ValidationState } from '@/composables/useFormValidation'
 
   const router = useRouter()
   const { t } = useI18n()
+  const { validatePassword, validateEmail } = useFormValidation()
+
   const userStore = useUserStore()
   const modalStore = useModalStore()
   const countries = getCountriesForSelect()
   const languages = getLanguagesForSelect()
 
   const password = ref('')
+  const email = ref(userStore.email)
   const isLoading = ref(false)
   const isDeletingAccount = ref(false)
+  const isUpdatingCredentials = ref(false)
   const showDeleteConfirmation = ref(false)
   const currentCountry = ref(userStore.country)
   const currentLanguage = ref(userStore.language)
   const headerUserKey = ref(0)
+  const pendingEmailUpdate = ref('')
+  const pendingPasswordUpdate = ref('')
+  const pendingFieldType = ref<'email' | 'password' | 'both'>('email')
+
+  const touched = ref({
+    email: false,
+    password: false,
+  })
+
+  const validationStates = ref<ValidationState>({
+    email: { isValid: true, message: '' },
+    password: { isValid: true, message: '' },
+  })
+
+  const emailError = computed(() =>
+    shouldShowError('email') ? validationStates.value.email.message : '',
+  )
+
+  const passwordError = computed(() =>
+    shouldShowError('password') ? validationStates.value.password.message : '',
+  )
+
+  const emailInvalid = computed(() => shouldShowError('email'))
+
+  const passwordInvalid = computed(() => shouldShowError('password'))
+
+  function shouldShowValidation(fieldName: keyof typeof touched.value) {
+    return touched.value[fieldName]
+  }
+
+  function shouldShowError(fieldName: keyof typeof touched.value) {
+    return (
+      shouldShowValidation(fieldName) &&
+      (fieldName === 'email' ? email.value : password.value) &&
+      !validationStates.value[fieldName].isValid
+    )
+  }
 
   function forceUpdateHeaderUserComponent() {
     headerUserKey.value++
@@ -55,6 +98,30 @@
   function handleDeleteAccount() {
     showDeleteConfirmation.value = true
     modalStore.openModal(MODALS.DELETE_ACCOUNT_CONFIRM)
+  }
+
+  async function handleFieldBlur(fieldName: keyof typeof touched.value) {
+    touched.value[fieldName] = true
+
+    const validationMap = {
+      email: async () => {
+        if (email.value && email.value.trim()) {
+          const shouldCheckUnique = email.value !== userStore.email
+          validationStates.value.email = await validateEmail(email.value, shouldCheckUnique)
+        }
+      },
+      password: () => {
+        if (password.value && password.value.trim()) {
+          validationStates.value.password = validatePassword(password.value)
+        }
+      },
+    }
+
+    const validator = validationMap[fieldName]
+
+    if (validator) {
+      await validator()
+    }
   }
 
   async function confirmDeleteAccount() {
@@ -122,8 +189,88 @@
     }
   }
 
+  function handlePasswordChange(newPassword: string) {
+    if (newPassword && newPassword.trim()) {
+      touched.value.password = true
+      const validation = validatePassword(newPassword)
+      validationStates.value.password = validation
+
+      if (!validation.isValid) {
+        return
+      }
+
+      pendingPasswordUpdate.value = newPassword
+      pendingFieldType.value = 'password'
+      modalStore.openModal(MODALS.RELOGIN_CONFIRM)
+    }
+  }
+
+  function handleCancelRelogin() {
+    modalStore.closeModal()
+    email.value = userStore.email
+    password.value = ''
+    pendingEmailUpdate.value = ''
+    pendingPasswordUpdate.value = ''
+    touched.value.email = false
+    touched.value.password = false
+    validationStates.value.email = { isValid: true, message: '' }
+    validationStates.value.password = { isValid: true, message: '' }
+  }
+
+  async function handleEmailChange(newEmail: string) {
+    const trimmedEmail = newEmail.trim()
+
+    if (trimmedEmail && trimmedEmail !== userStore.email) {
+      touched.value.email = true
+      const shouldCheckUnique = trimmedEmail !== userStore.email
+      const validation = await validateEmail(trimmedEmail, shouldCheckUnique)
+      validationStates.value.email = validation
+
+      if (!validation.isValid) {
+        return
+      }
+
+      pendingEmailUpdate.value = trimmedEmail
+      pendingFieldType.value = 'email'
+      modalStore.openModal(MODALS.RELOGIN_CONFIRM)
+    }
+  }
+
+  async function handleConfirmRelogin() {
+    isUpdatingCredentials.value = true
+
+    try {
+      if (pendingEmailUpdate.value) {
+        await userStore.updateEmail(pendingEmailUpdate.value)
+      }
+
+      if (pendingPasswordUpdate.value) {
+        await userStore.updatePassword(pendingPasswordUpdate.value)
+      }
+
+      if (pendingEmailUpdate.value && pendingPasswordUpdate.value) {
+        ToastService.emitToast(t('credentialsUpdated'), 'success')
+      } else if (pendingEmailUpdate.value) {
+        ToastService.emitToast(t('emailUpdated'), 'success')
+      } else if (pendingPasswordUpdate.value) {
+        ToastService.emitToast(t('passwordUpdated'), 'success')
+      }
+
+      modalStore.closeModal()
+      await handleLogout()
+    } catch (error) {
+      console.error('Error updating credentials:', error)
+      ToastService.emitToast(t('credentialsUpdateFailed'), 'error')
+    } finally {
+      isUpdatingCredentials.value = false
+      pendingEmailUpdate.value = ''
+      pendingPasswordUpdate.value = ''
+    }
+  }
+
   async function handleLogout() {
     try {
+      modalStore.closeModal()
       await userStore.signOut()
       ToastService.emitToast(t('logoutSuccess'), 'success')
       router.push('/')
@@ -133,9 +280,26 @@
     }
   }
 
+  watch([email, password], async ([newEmail, newPassword]) => {
+    if (newEmail && newEmail.trim() && shouldShowValidation('email')) {
+      const shouldCheckUnique = newEmail !== userStore.email
+      validationStates.value.email = await validateEmail(newEmail, shouldCheckUnique)
+    }
+
+    if (newPassword && newPassword.trim() && shouldShowValidation('password')) {
+      validationStates.value.password = validatePassword(newPassword)
+    }
+  })
+
   watch(
     () => userStore.country,
     (newCountry) => (currentCountry.value = newCountry),
+    { immediate: true },
+  )
+
+  watch(
+    () => userStore.email,
+    (newEmail) => (email.value = newEmail),
     { immediate: true },
   )
 </script>
@@ -174,14 +338,17 @@
         />
 
         <Input
-          v-model="userStore.email"
+          v-model="email"
           :label="$t('email')"
           :placeholder="$t('enterEmail')"
           name="email"
           type="email"
           show-static-field
-          required
           class="border-b border-slate-300 pb-3 mb-3"
+          :externalError="emailError"
+          :forceInvalid="emailInvalid"
+          @update="handleEmailChange"
+          @blur="handleFieldBlur('email')"
         />
 
         <Input
@@ -191,8 +358,11 @@
           type="password"
           :placeholder="$t('enterNewPassword')"
           show-static-field
-          required
           class="mb-4"
+          :externalError="passwordError"
+          :forceInvalid="passwordInvalid"
+          @update="handlePasswordChange"
+          @blur="handleFieldBlur('password')"
         />
 
         <div class="p-4 bg-slate-100 rounded-lg">
@@ -249,6 +419,18 @@
         :is-deleting="isDeletingAccount"
         @cancel="handleCancelDeleteAccount"
         @confirm="confirmDeleteAccount"
+      />
+    </Modal>
+
+    <Modal
+      :name="MODALS.RELOGIN_CONFIRM"
+      :heading="$t('reloginConfirmation')"
+      @close="handleCancelRelogin"
+    >
+      <ModalReloginConfirm
+        :is-updating="isUpdatingCredentials"
+        @cancel="handleCancelRelogin"
+        @confirm="handleConfirmRelogin"
       />
     </Modal>
   </Page>

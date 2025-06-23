@@ -7,6 +7,7 @@
   import { useUserStore } from '@/stores/user.store'
   import { ToastService } from '../shared/Toast/service'
   import { useModalStore } from '@/stores/modal.store'
+  import type { ValidationState } from '@/composables/useFormValidation'
 
   const { validateUsername, validateEmail, validatePassword, validateConfirmPassword } =
     useFormValidation()
@@ -33,7 +34,7 @@
     confirmPassword: false,
   })
 
-  const validationStates = ref({
+  const validationStates = ref<ValidationState>({
     username: { isValid: true, message: '' },
     email: { isValid: true, message: '' },
     password: { isValid: true, message: '' },

@@ -15,7 +15,7 @@
     leave-to-class="transform scale-0 opacity-0"
   >
     <div
-      class="fixed inset-0 flex items-center justify-center bg-slate-900/50 z-50 pointer-events-none"
+      class="absolute inset-0 flex items-center justify-center bg-slate-900/50 z-50 pointer-events-none"
     >
       <div
         class="text-6xl font-bold text-shadow-lg uppercase countdown-text"

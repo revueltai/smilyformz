@@ -33,8 +33,11 @@ body {
 }
 
 body {
-  /* @apply bg-blue-100 font-sans; */
-  @apply bg-white font-sans;
+  @apply bg-white font-sans sm:p-4 sm:bg-slate-50;
+}
+
+#app {
+  @apply relative w-screen h-screen max-w-[800px] mx-auto sm:border-slate-300 sm:rounded-lg sm:border;
 }
 
 /* Animations */

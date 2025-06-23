@@ -73,6 +73,7 @@
   "enterValidUrl": "Please enter a valid URL",
   "enterValidNumber": "Please enter a valid number",
   "enterValidPhoneNumber": "Please enter a valid phone number",
+  "enterValidInput": "Please enter a valid input",
   "invalidInput": "Invalid input",
   "requiredField": "This field is required",
   "rememberMe": "Remember me",
@@ -139,5 +140,17 @@
   "displayNameUpdated": "Username updated successfully",
   "displayNameUpdateFailed": "Failed to update username",
   "countryUpdated": "Country updated successfully",
-  "countryUpdateFailed": "Failed to update country"
+  "countryUpdateFailed": "Failed to update country",
+  "reloginRequired": "Relogin Required",
+  "reloginConfirmation": "Relogin Required",
+  "reloginExplanation0": "For security reasons, you will be logged out after updating your email or password.",
+  "reloginExplanation1": "You will need to relogin to continue using the app.",
+  "continue": "Continue",
+  "updating": "Updating...",
+  "credentialsUpdated": "Credentials updated successfully",
+  "credentialsUpdateFailed": "Failed to update credentials",
+  "emailUpdated": "Email updated successfully",
+  "emailUpdateFailed": "Failed to update email",
+  "passwordUpdated": "Password updated successfully",
+  "passwordUpdateFailed": "Failed to update password"
 }

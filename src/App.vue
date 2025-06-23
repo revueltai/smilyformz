@@ -66,10 +66,6 @@
 </template>
 
 <style>
-  #app {
-    @apply w-screen h-screen;
-  }
-
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity 0.3s ease;

@@ -18,6 +18,7 @@ export const MODALS = {
   GAME_OVER: 'gameOver',
   GAME_OVER_GUEST: 'gameOverGuest',
   DELETE_ACCOUNT_CONFIRM: 'deleteAccountConfirm',
+  RELOGIN_CONFIRM: 'reloginConfirm',
 }
 
 export const TILE_COLORS: Record<string, TileColor> = {

@@ -367,6 +367,54 @@ export const useUserStore = defineStore('user', () => {
   }
 
   /**
+   * Updates the user's email address
+   * This will require the user to relogin after the update
+   */
+  async function updateEmail(newEmail: string) {
+    await updateUserField({ email: newEmail }, () => {
+      if (profile.value) {
+        profile.value.email = newEmail
+      }
+    })
+  }
+
+  /**
+   * Updates the user's password
+   * This will require the user to relogin after the update
+   */
+  async function updatePassword(newPassword: string) {
+    await updateUserField({ password: newPassword })
+  }
+
+  /**
+   * Helper function to update user fields that require relogin
+   */
+  async function updateUserField(
+    updateData: { email?: string; password?: string },
+    onSuccess?: () => void,
+  ) {
+    if (!user.value) {
+      return
+    }
+
+    try {
+      const { data, error } = await supabase.getClient().auth.updateUser(updateData)
+
+      if (error) {
+        throw error
+      }
+
+      if (data.user) {
+        user.value = data.user
+        onSuccess?.()
+      }
+    } catch (error) {
+      console.error('Error updating user field:', error)
+      throw error
+    }
+  }
+
+  /**
    * Sets up an auth state change listener to update the user store when the auth state changes.
    */
   function setupAuthListener() {
@@ -411,5 +459,7 @@ export const useUserStore = defineStore('user', () => {
     updateDisplayName,
     isAccountDeleted,
     validateAccountStatus,
+    updateEmail,
+    updatePassword,
   }
 })

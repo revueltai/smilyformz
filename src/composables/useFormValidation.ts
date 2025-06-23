@@ -5,6 +5,8 @@ export interface ValidationResult {
   message: string
 }
 
+export type ValidationState = Record<string, ValidationResult>
+
 export interface FormValidationOptions {
   username?: string
   email?: string

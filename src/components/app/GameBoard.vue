@@ -16,7 +16,7 @@
   <div class="relative h-full w-full">
     <div
       ref="boardRef"
-      class="relative h-full w-full overflow-hidden"
+      class="relative h-full w-full overflow-hidden bg-white"
     >
       <GameTiles />
 
