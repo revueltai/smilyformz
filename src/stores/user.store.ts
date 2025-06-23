@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase, DATABASE_FUNCTIONS } from '@/services/Supabase.service'
-import { TILE_DEFAULTS } from '@/configs/constants'
+import { GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
+import type { GameLeagueLevelKey } from '@/types/game'
+import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 import type { User } from '@supabase/supabase-js'
-import type { TileExpression, TileShape } from '@/components/app/tile/types'
 
 interface UserProfile {
   id: string
@@ -19,6 +20,7 @@ interface UserProfile {
     shape_color: string
     background_color: string
   }
+  league_level: GameLeagueLevelKey
   music: boolean
   sound: boolean
   language: string
@@ -145,6 +147,7 @@ export const useUserStore = defineStore('user', () => {
       avatar_shape,
       avatar_shape_color,
       avatar_background_color,
+      league_level,
     } = user_metadata
 
     try {
@@ -161,6 +164,7 @@ export const useUserStore = defineStore('user', () => {
           shape_color: avatar_shape_color || TILE_DEFAULTS.shapeColor,
           background_color: avatar_background_color || TILE_DEFAULTS.backgroundColor,
         },
+        league_level: league_level || GAME_LEAGUE_LEVELS.easy,
         music: music.value,
         sound: sound.value,
         language: language.value,
@@ -311,6 +315,7 @@ export const useUserStore = defineStore('user', () => {
     avatar_shape_color?: string
     avatar_background_color?: string
     avatar_expression?: string
+    league_level?: GameLeagueLevelKey
   }) {
     if (!user.value) return
 
@@ -357,6 +362,10 @@ export const useUserStore = defineStore('user', () => {
 
           if (settings.avatar_expression !== undefined) {
             profile.value.avatar.expression = settings.avatar_expression as TileExpression
+          }
+
+          if (settings.league_level !== undefined) {
+            profile.value.league_level = settings.league_level
           }
         }
       }

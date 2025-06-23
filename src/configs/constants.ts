@@ -4,6 +4,7 @@ import type {
   TileExpression,
   TilePowerUpType,
 } from '@/components/app/tile/types'
+import type { GameLeagueLevel, GameLeagueLevelKey } from '@/types/game'
 
 export const MODALS = {
   CREDITS: 'credits',
@@ -58,3 +59,26 @@ export const TILE_DEFAULTS = {
   shapeColor: TILE_COLORS.COLOR1.shapeColor,
   backgroundColor: TILE_COLORS.COLOR1.backgroundColor,
 }
+
+export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
+  easy: {
+    totalRowsLength: 3,
+    initialRowSpacing: 400,
+    initialSpeed: 2.5,
+  },
+  medium: {
+    totalRowsLength: 5,
+    initialRowSpacing: 400,
+    initialSpeed: 2.5,
+  },
+  hard: {
+    totalRowsLength: 7,
+    initialRowSpacing: 400,
+    initialSpeed: 2.5,
+  },
+  expert: {
+    totalRowsLength: 9,
+    initialRowSpacing: 400,
+    initialSpeed: 2.5,
+  },
+} as const

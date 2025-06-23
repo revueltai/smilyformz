@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import Tile from '@/components/app/tile/Tile.vue'
   import type { TileRowItem } from '@/components/app/tile/types'
+  import { createCssVar } from '@/utils'
 
   defineProps<{
     tiles: TileRowItem[]
@@ -9,7 +10,10 @@
 
 <template>
   <div class="tile-row w-full absolute">
-    <div class="grid grid-cols-3 gap-2 p-2 h-32 opacity-90">
+    <div
+      class="tile-row-grid grid gap-2 p-2 h-32 opacity-90"
+      :style="createCssVar('total-rows-length', tiles.length.toString())"
+    >
       <Tile
         v-for="tile in tiles"
         :key="tile.id"
@@ -30,5 +34,9 @@
 <style scoped>
   .tile-row {
     will-change: transform;
+  }
+
+  .tile-row-grid {
+    grid-template-columns: repeat(var(--total-rows-length), minmax(0, 1fr));
   }
 </style>

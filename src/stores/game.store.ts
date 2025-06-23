@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES } from '@/configs/constants'
+import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES, GAME_LEAGUE_LEVELS } from '@/configs/constants'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import { getRandomItem } from '@/utils'
 import { supabase } from '@/services/Supabase.service'
@@ -11,17 +11,17 @@ interface GameTime {
   minutes: number
 }
 
-const GAME_INITIAL_SPEED = 2.5
-const GAME_INITIAL_TOTAL_ROWS_LENGTH = 3
-const GAME_INITIAL_ROW_SPACING = 400
-
 export const useGameStore = defineStore('game', () => {
+  const userStore = useUserStore()
+
+  const initialLeagueSettings = GAME_LEAGUE_LEVELS[userStore.profile?.league_level || 'easy']
+
   let timeInterval: number | null = null
   const pointsPerMatch = ref(1)
   const score = ref(0)
-  const totalRowsLength = ref(GAME_INITIAL_TOTAL_ROWS_LENGTH)
-  const initialRowSpacing = ref(GAME_INITIAL_ROW_SPACING)
-  const gameSpeed = ref(GAME_INITIAL_SPEED)
+  const totalRowsLength = ref(initialLeagueSettings.totalRowsLength)
+  const initialRowSpacing = ref(initialLeagueSettings.initialRowSpacing)
+  const gameSpeed = ref(initialLeagueSettings.initialSpeed)
   const isGameOver = ref(false)
   const isPaused = ref(false)
   const isGameStarted = ref(false)
@@ -130,7 +130,7 @@ export const useGameStore = defineStore('game', () => {
    * Resets the game speed
    */
   function resetSpeed() {
-    gameSpeed.value = GAME_INITIAL_SPEED
+    gameSpeed.value = initialLeagueSettings.initialSpeed
     showSpeedIncreaseNotification.value = false
   }
 

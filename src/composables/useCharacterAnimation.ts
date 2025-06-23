@@ -18,7 +18,7 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
   const posX = ref(0)
   const boardWidth = ref(0)
   const characterWidth = ref(0)
-  const positionOnBoard = ref(1) // 0: left, 1: center, 2: right
+  const positionOnBoard = ref(Math.floor(gameStore.totalRowsLength / 2))
 
   const characterPositionPercent = computed(() =>
     !boardWidth.value ? 0 : (posX.value / boardWidth.value) * 100,
@@ -38,7 +38,7 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
    */
   function centerCharacter() {
     if (boardWidth.value && characterWidth.value) {
-      positionOnBoard.value = 1
+      positionOnBoard.value = Math.floor(gameStore.totalRowsLength / 2)
       posX.value = clampX((boardWidth.value - characterWidth.value) / 2)
     }
   }
@@ -49,7 +49,7 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
    */
   function resetCharacterAnimation() {
     posX.value = 0
-    positionOnBoard.value = 1
+    positionOnBoard.value = Math.floor(gameStore.totalRowsLength / 2)
     updateSizes()
     centerCharacter()
   }
@@ -67,27 +67,20 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
   }
 
   /**
-   * Positions the character at a specific position (0: left, 1: center, 2: right)
+   * Positions the character at a specific column position
    */
   function positionCharacter(position: number) {
     if (!boardWidth.value || !characterWidth.value) return
 
-    const boardCenter = (boardWidth.value - characterWidth.value) / 2
-    const offset = 32 // 2 * 16px padding from edges
+    const maxPosition = gameStore.totalRowsLength - 1
+    const clampedPosition = Math.max(0, Math.min(position, maxPosition))
 
-    switch (position) {
-      case 0: // Left position: +2 from left edge
-        posX.value = clampX(offset)
-        break
-      case 1: // Center position
-        posX.value = clampX(boardCenter)
-        break
-      case 2: // Right position: -2 from right edge
-        posX.value = clampX(boardWidth.value - characterWidth.value - offset)
-        break
-      default:
-        posX.value = clampX(boardCenter)
-    }
+    // Calculate the width of each column
+    const columnWidth = boardWidth.value / gameStore.totalRowsLength
+    const characterCenter = characterWidth.value / 2
+
+    // Position the character at the center of the specified column
+    posX.value = clampX(clampedPosition * columnWidth + columnWidth / 2 - characterCenter)
   }
 
   /**
@@ -140,7 +133,8 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
       return
     }
 
-    if (positionOnBoard.value < 2) {
+    const maxPosition = gameStore.totalRowsLength - 1
+    if (positionOnBoard.value < maxPosition) {
       positionOnBoard.value++
       positionCharacter(positionOnBoard.value)
     }

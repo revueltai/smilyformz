@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
-import { TILE_DEFAULTS } from '@/configs/constants'
+import { GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 
 interface UserPayload {
@@ -20,16 +20,6 @@ export const DATABASE_FUNCTIONS = {
 } as const
 
 export type DatabaseFunctionName = (typeof DATABASE_FUNCTIONS)[keyof typeof DATABASE_FUNCTIONS]
-
-/**
- * Checks if the Supabase error code indicates no rows were returned
- *
- * @param supabaseErrorCode - The error code to check
- * @returns True if the error code indicates no rows were returned, false otherwise
- */
-function isNoRowsReturned(supabaseErrorCode: string) {
-  return supabaseErrorCode === 'PGRST116'
-}
 
 /**
  * The Supabase service class for interacting with the database
@@ -191,6 +181,7 @@ export class SupabaseService {
           avatar_color: TILE_DEFAULTS.shapeColor,
           avatar_background_color: TILE_DEFAULTS.backgroundColor,
           avatar_expression: TILE_DEFAULTS.expression,
+          league_level: GAME_LEAGUE_LEVELS.easy,
         },
       },
     })
