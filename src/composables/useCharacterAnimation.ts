@@ -6,15 +6,10 @@ import type { RefElement } from '@/components/shared/types'
 /**
  * Handles the movement of the character on the board
  *
- * @param stepPx - The step size in pixels (should be full tile width including padding)
  * @param boardEl - The board element
  * @param characterRef - The reference to the character element
  */
-export function useMovementCharacter(
-  stepPx: number,
-  boardEl?: RefElement,
-  characterRef?: Ref<RefElement>,
-) {
+export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<RefElement>) {
   const gameStore = useGameStore()
 
   let boardObserver: ResizeObserver | null = null
@@ -23,8 +18,11 @@ export function useMovementCharacter(
   const posX = ref(0)
   const boardWidth = ref(0)
   const characterWidth = ref(0)
+  const positionOnBoard = ref(1) // 0: left, 1: center, 2: right
 
-  const percent = computed(() => (!boardWidth.value ? 0 : (posX.value / boardWidth.value) * 100))
+  const characterPositionPercent = computed(() =>
+    !boardWidth.value ? 0 : (posX.value / boardWidth.value) * 100,
+  )
 
   /**
    * Updates the board and character width
@@ -40,6 +38,7 @@ export function useMovementCharacter(
    */
   function centerCharacter() {
     if (boardWidth.value && characterWidth.value) {
+      positionOnBoard.value = 1
       posX.value = clampX((boardWidth.value - characterWidth.value) / 2)
     }
   }
@@ -49,6 +48,7 @@ export function useMovementCharacter(
    */
   function resetCharacterAnimation() {
     posX.value = 0
+    positionOnBoard.value = 1 // Start at center
     updateSizes()
     centerCharacter()
   }
@@ -63,6 +63,33 @@ export function useMovementCharacter(
     return !boardWidth.value || !characterWidth.value
       ? val
       : Math.min(Math.max(val, 0), boardWidth.value - characterWidth.value)
+  }
+
+  /**
+   * Positions the character at a specific position (0: left, 1: center, 2: right)
+   */
+  function positionCharacter(position: number) {
+    if (!boardWidth.value || !characterWidth.value) return
+
+    const boardCenter = (boardWidth.value - characterWidth.value) / 2
+    const offset = 32 // 2 * 16px padding from edges
+
+    switch (position) {
+      case 0: // Left position: +2 from left edge
+        posX.value = clampX(offset)
+        break
+
+      case 1: // Center position
+        posX.value = clampX(boardCenter)
+        break
+
+      case 2: // Right position: -2 from right edge
+        posX.value = clampX(boardWidth.value - characterWidth.value - offset)
+        break
+
+      default:
+        posX.value = clampX(boardCenter)
+    }
   }
 
   /**
@@ -101,7 +128,10 @@ export function useMovementCharacter(
       return
     }
 
-    posX.value = clampX(posX.value - stepPx)
+    if (positionOnBoard.value > 0) {
+      positionOnBoard.value--
+      positionCharacter(positionOnBoard.value)
+    }
   }
 
   /**
@@ -112,7 +142,10 @@ export function useMovementCharacter(
       return
     }
 
-    posX.value = clampX(posX.value + stepPx)
+    if (positionOnBoard.value < 2) {
+      positionOnBoard.value++
+      positionCharacter(positionOnBoard.value)
+    }
   }
 
   /**
@@ -145,8 +178,8 @@ export function useMovementCharacter(
   })
 
   return {
-    x: posX,
-    percent,
+    posX,
+    characterPositionPercent,
     moveLeft,
     moveRight,
     updateSizes,
