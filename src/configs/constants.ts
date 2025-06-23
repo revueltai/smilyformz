@@ -60,6 +60,8 @@ export const TILE_DEFAULTS = {
   backgroundColor: TILE_COLORS.COLOR1.backgroundColor,
 }
 
+export const DEFAULT_LEAGUE_LEVEL = 'easy'
+
 export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   easy: {
     totalRowsLength: 3,

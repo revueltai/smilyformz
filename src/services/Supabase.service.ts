@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
-import { GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
+import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 
 interface UserPayload {
@@ -175,13 +175,13 @@ export class SupabaseService {
           display_name,
           country,
           language: DEFAULT_LANGUAGE_CODE,
+          league_level: DEFAULT_LEAGUE_LEVEL,
           music: false,
           sound: false,
           avatar_shape: TILE_DEFAULTS.shape,
           avatar_color: TILE_DEFAULTS.shapeColor,
           avatar_background_color: TILE_DEFAULTS.backgroundColor,
           avatar_expression: TILE_DEFAULTS.expression,
-          league_level: GAME_LEAGUE_LEVELS.easy,
         },
       },
     })
