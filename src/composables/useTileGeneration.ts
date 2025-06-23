@@ -144,11 +144,10 @@ export function useTileGeneration() {
    * @returns An array of tiles
    */
   function generateTiles(rowId: string): TileRowItem[] {
-    const totalRowsLength = 3
-    const matchIndex = getRandomNumber(totalRowsLength)
+    const matchIndex = getRandomNumber(gameStore.totalRowsLength)
     const resetKey = rowResetKeys.value[rowId] || 0
 
-    return Array.from({ length: totalRowsLength }, (_, tileIndex) => {
+    return Array.from({ length: gameStore.totalRowsLength }, (_, tileIndex) => {
       const matchCharacter = tileIndex === matchIndex
       const color = getRandomItem(COLORS)
       return createTile(matchCharacter, rowId, tileIndex, color, resetKey)

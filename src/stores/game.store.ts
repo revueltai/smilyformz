@@ -12,12 +12,14 @@ interface GameTime {
 }
 
 const GAME_INITIAL_SPEED = 2.5
+const GAME_INITIAL_TOTAL_ROWS_LENGTH = 3
 const GAME_INITIAL_ROW_SPACING = 400
 
 export const useGameStore = defineStore('game', () => {
   let timeInterval: number | null = null
   const pointsPerMatch = ref(1)
   const score = ref(0)
+  const totalRowsLength = ref(GAME_INITIAL_TOTAL_ROWS_LENGTH)
   const initialRowSpacing = ref(GAME_INITIAL_ROW_SPACING)
   const gameSpeed = ref(GAME_INITIAL_SPEED)
   const isGameOver = ref(false)
@@ -271,6 +273,7 @@ export const useGameStore = defineStore('game', () => {
     showSpeedIncreaseNotification,
     time,
     formattedTime,
+    totalRowsLength,
     initialRowSpacing,
     incrementScore,
     resetScore,

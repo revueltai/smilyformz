@@ -45,10 +45,11 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
 
   /**
    * Resets the character animation system for a new game
+   * Initial character position is center
    */
   function resetCharacterAnimation() {
     posX.value = 0
-    positionOnBoard.value = 1 // Start at center
+    positionOnBoard.value = 1
     updateSizes()
     centerCharacter()
   }
@@ -78,15 +79,12 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
       case 0: // Left position: +2 from left edge
         posX.value = clampX(offset)
         break
-
       case 1: // Center position
         posX.value = clampX(boardCenter)
         break
-
       case 2: // Right position: -2 from right edge
         posX.value = clampX(boardWidth.value - characterWidth.value - offset)
         break
-
       default:
         posX.value = clampX(boardCenter)
     }
