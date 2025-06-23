@@ -39,7 +39,7 @@
         alt="splash"
         width="249"
         height="120"
-        class="animate-scale-in-bounce"
+        class="animate-scale-in-bounce sm:w-1/2"
       />
 
       <div class="flex flex-col gap-4 items-center">

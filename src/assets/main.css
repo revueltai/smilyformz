@@ -7,7 +7,12 @@
     'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-/* Tailwind Safelist */
+/*
+--------------------------------
+Tailwind Safelist
+--------------------------------
+*/
+
 @source inline("stroke-{0,1,2,4,8,current}");
 @source inline("fill-current");
 
@@ -33,30 +38,40 @@ body {
 }
 
 body {
-  @apply bg-white font-sans sm:p-4 sm:bg-slate-50;
+  @apply bg-white font-sans sm:p-4 sm:bg-slate-200;
 }
 
 #app {
-  @apply relative w-screen h-screen max-w-[800px] mx-auto sm:border-slate-300 sm:rounded-lg sm:border;
+  @apply relative max-w-[800px] mx-auto bg-white sm:border-slate-300 sm:rounded-lg sm:border sm:overflow-hidden;
+  width: 100vw;
+  height: 100vh;
 }
 
-/* Animations */
-
-.fade-enter-active,
-.fade-leave-active {
-  @apply transition-opacity duration-300 ease-in-out;
+/* Fullscreen */
+.fullscreen-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  @apply opacity-0;
+.fullscreen-mode #app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #__vue-devtools-container__ {
   display: none !important;
 }
 
-/* Animations */
+/*
+--------------------------------
+Animations & Keyframes
+--------------------------------
+*/
 
 @keyframes bounceStrong {
   0%,
@@ -111,6 +126,17 @@ body {
   }
 }
 
+/* Vue transitions */
+.fade-enter-active,
+.fade-leave-active {
+  @apply transition-opacity duration-300 ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  @apply opacity-0;
+}
+
 /* Splash screen animations */
 .animate-scale-in-bounce {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
@@ -132,20 +158,18 @@ body {
   @apply origin-center opacity-0;
 }
 
-/* Fullscreen mode styles */
-.fullscreen-mode {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
+/*
+--------------------------------
+Media queries
+--------------------------------
+*/
 
-.fullscreen-mode #app {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+/* Calculate width and height of app for responsive design */
+@media (min-width: 640px) {
+  #app {
+    width: calc(100vw - 2rem);
+    height: calc(100vh - 2rem);
+  }
 }
 
 /* Prevent browser UI from covering game controls on mobile */

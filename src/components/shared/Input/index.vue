@@ -159,7 +159,10 @@
       :class="cssClassesField"
       @click="handleClickEdit"
     >
-      <div class="cursor-pointer truncate max-w-xs">
+      <div
+        class="truncate max-w-xs"
+        :class="{ 'cursor-pointer': isEditable && showEditIcon }"
+      >
         {{ type === 'password' ? '********' : inputModel }}
       </div>
 

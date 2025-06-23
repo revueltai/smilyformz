@@ -49,7 +49,7 @@
     <Button
       v-if="backButtonTo"
       color="white"
-      class="absolute top-6 left-0 rounded-tl-none rounded-bl-none z-10"
+      class="absolute top-6 left-0 ml-[-1px] rounded-tl-none rounded-bl-none z-10"
       :to="backButtonTo"
     >
       <Icon name="arrow-left" />
