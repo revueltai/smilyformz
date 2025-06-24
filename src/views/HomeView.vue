@@ -140,7 +140,7 @@
 
     <Modal
       :name="MODALS.LEAGUE_SELECTION"
-      :heading="$t('leagues')"
+      :heading="$t('smilyLeagues')"
     >
       <ModalLeagueSelection />
     </Modal>

@@ -6,7 +6,7 @@
   import { useGameStore } from '@/stores/game.store'
   import { GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import type { GameLeagueLevelKey } from '@/types/game'
-  import ModalControls from '@/components/app/ModalControls.vue'
+  import LeagueItem from '@/components/app/LeagueItem.vue'
 
   const router = useRouter()
   const modalStore = useModalStore()
@@ -15,83 +15,67 @@
 
   const currentUserLeague = computed(() => userStore.profile?.league_level || 'easy')
 
-  const availableLeagues = computed(() => {
-    const leagueKeys: GameLeagueLevelKey[] = ['easy', 'medium', 'hard', 'ultimate']
-    const currentIndex = leagueKeys.indexOf(currentUserLeague.value)
+  const allLeagues = computed(() => {
+    const leagueKeys = Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[]
 
-    return leagueKeys.slice(0, currentIndex + 1).map((leagueKey) => ({
-      ...GAME_LEAGUE_LEVELS[leagueKey],
-      isCurrent: leagueKey === currentUserLeague.value,
-    }))
+    return leagueKeys.map((leagueKey) => {
+      const league = GAME_LEAGUE_LEVELS[leagueKey]
+      const currentIndex = leagueKeys.indexOf(currentUserLeague.value)
+      const leagueIndex = leagueKeys.indexOf(leagueKey)
+      const isAvailable = leagueIndex <= currentIndex
+
+      return {
+        ...league,
+        isCurrent: leagueKey === currentUserLeague.value,
+        isAvailable,
+        isLocked: !isAvailable,
+        pointsToUnlock: isAvailable ? null : league.nextLevelPoints,
+        nextLevelPoints: leagueKey === currentUserLeague.value ? league.nextLevelPoints : null,
+      }
+    })
   })
 
   function handleLeagueSelect(leagueKey: GameLeagueLevelKey) {
-    gameStore.setLeagueLevel(leagueKey)
-    modalStore.closeModal()
-    router.push('/game')
-  }
+    const league = allLeagues.value.find((l) => l.id === leagueKey)
 
-  function handleCancel() {
-    modalStore.closeModal()
+    if (league && league.isAvailable) {
+      gameStore.setLeagueLevel(leagueKey)
+      modalStore.closeModal()
+      router.push('/game')
+    }
   }
 </script>
 
 <template>
   <div class="flex flex-col gap-6">
-    <div class="text-center">
-      <h3 class="text-lg font-semibold text-slate-900 mb-2">
-        {{ $t('selectLeague') }}
-      </h3>
-      <p class="text-sm text-slate-600">
-        {{ $t('selectLeagueDescription') }}
-      </p>
-    </div>
+    <p class="text-center text-sm text-slate-600">
+      {{ $t('selectLeagueDescription') }}
+    </p>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div
-        v-for="league in availableLeagues"
-        :key="league.id"
-        class="relative"
-      >
-        <button
-          class="w-full p-4 bg-white border-2 border-slate-200 rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          :class="{
-            'border-blue-500 bg-blue-50': league.isCurrent,
-          }"
-          @click="handleLeagueSelect(league.id)"
-        >
-          <div class="flex flex-col items-center gap-3">
-            <img
-              :src="`/images/leagues/${league.id}.svg`"
-              :alt="`${$t(league.name)} league badge`"
-              class="w-12 h-12"
-            />
-
-            <div class="text-center">
-              <h4 class="font-semibold text-slate-900">
-                {{ $t(league.name) }}
-              </h4>
-
-              <div class="text-xs text-slate-500 mt-1">
-                {{ $t('rows') }}: {{ league.totalRowsLength }}
-              </div>
-            </div>
-          </div>
-
-          <div
-            v-if="league.isCurrent"
-            class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-medium"
-          >
-            {{ $t('current') }}
-          </div>
-        </button>
+    <div class="relative">
+      <div class="flex items-center gap-4 overflow-x-auto overflow-y-visible scrollbar-hide">
+        <LeagueItem
+          v-for="(league, index) in allLeagues"
+          :key="league.id"
+          :league="league"
+          :show-arrow="index < allLeagues.length - 1"
+          :is-next-available="
+            index < allLeagues.length - 1 ? allLeagues[index + 1].isAvailable : false
+          "
+          @select="handleLeagueSelect"
+        />
       </div>
     </div>
-
-    <ModalControls
-      :has-home-button="false"
-      :cta-text="$t('cancel')"
-      @click="handleCancel"
-    />
   </div>
 </template>
+
+<style scoped>
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+</style>

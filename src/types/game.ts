@@ -7,4 +7,4 @@ export interface GameLeagueLevel {
   nextLevelPoints: number
 }
 
-export type GameLeagueLevelKey = 'easy' | 'medium' | 'hard' | 'ultimate'
+export type GameLeagueLevelKey = 'easy' | 'medium' | 'hard' | 'legend'

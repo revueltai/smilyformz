@@ -88,9 +88,9 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
     initialSpeed: 2.5,
     nextLevelPoints: 250,
   },
-  ultimate: {
-    id: 'ultimate',
-    name: 'leagueNameUltimate',
+  legend: {
+    id: 'legend',
+    name: 'leagueNameLegend',
     totalRowsLength: 9,
     initialRowSpacing: 400,
     initialSpeed: 2.5,
