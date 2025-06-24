@@ -166,8 +166,9 @@
   "gameStats": "Game Statistics",
   "highestScore": "Highest Score",
   "latestScore": "Latest Score",
-  "shareLatestScore": "Share Latest Score",
-  "shareRanking": "Share Ranking",
-  "shareLatestScoreText": "I just scored {score} points in Smily Formz!",
-  "shareRankingText": "I just got to the top 100 in Smily Formz!"
+  "selectLeague": "Select League",
+  "selectLeagueDescription": "Choose the league you want to play in",
+  "current": "Current",
+  "rows": "Rows",
+  "leagues": "Leagues"
 }

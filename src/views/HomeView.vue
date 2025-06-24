@@ -5,6 +5,7 @@
   import StatBlockItem from '@/components/app/StatBlockItem.vue'
   import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
   import ModalShare from '@/components/app/ModalShare.vue'
+  import ModalLeagueSelection from '@/components/app/ModalLeagueSelection.vue'
   import LeagueBlock from '@/components/app/LeagueBlock.vue'
   import Button from '@/components/shared/Button/index.vue'
   import Icon from '@/components/shared/Icon/index.vue'
@@ -13,14 +14,13 @@
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
 
-  type ShareType = 'latestScore' | 'highestScore' | 'ranking'
+  type ShareType = 'latestScore' | 'highestScore'
 
   const userStore = useUserStore()
   const modalStore = useModalStore()
 
   const latestScore = ref(0)
   const highestScore = ref(0)
-  const ranking = ref(120)
   const activeShare = ref<ShareType>('latestScore')
 
   function isActiveShareLatestScore() {
@@ -34,8 +34,12 @@
       return
     }
 
-    activeShare.value = 'ranking'
+    activeShare.value = 'highestScore'
     modalStore.openModal(MODALS.SHARE)
+  }
+
+  function handlePlayClick() {
+    modalStore.openModal(MODALS.LEAGUE_SELECTION)
   }
 
   onMounted(async () => {
@@ -95,12 +99,12 @@
       </Button>
 
       <Button
-        to="/game"
         size="2xl"
         border-color="lime-600"
         border-color-hover="lime-400"
         background-color="lime-100"
         background-color-hover="lime-200"
+        @click="handlePlayClick"
       >
         <Icon
           name="play"
@@ -123,15 +127,22 @@
 
     <Modal
       :name="MODALS.SHARE"
-      :heading="isActiveShareLatestScore() ? $t('shareLatestScore') : $t('shareRanking')"
+      :heading="isActiveShareLatestScore() ? $t('shareLatestScore') : $t('shareHighestScore')"
     >
       <ModalShare
         :text="
-          !isActiveShareLatestScore()
+          isActiveShareLatestScore()
             ? $t('shareLatestScoreText', { score: latestScore })
-            : $t('shareRankingText', { ranking })
+            : $t('shareHighestScoreText', { score: highestScore })
         "
       />
+    </Modal>
+
+    <Modal
+      :name="MODALS.LEAGUE_SELECTION"
+      :heading="$t('leagues')"
+    >
+      <ModalLeagueSelection />
     </Modal>
   </Page>
 </template>

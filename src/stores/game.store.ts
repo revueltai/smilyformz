@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES, GAME_LEAGUE_LEVELS } from '@/configs/constants'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
+import type { GameLeagueLevelKey } from '@/types/game'
 import { getRandomItem } from '@/utils'
 import { supabase } from '@/services/Supabase.service'
 import { useUserStore } from './user.store'
@@ -262,6 +263,18 @@ export const useGameStore = defineStore('game', () => {
     return supabase.insertRecord('game_sessions', payload)
   }
 
+  /**
+   * Sets the league level for the current game session
+   *
+   * @param leagueLevel - The league level to set
+   */
+  function setLeagueLevel(leagueLevel: GameLeagueLevelKey) {
+    const leagueSettings = GAME_LEAGUE_LEVELS[leagueLevel]
+    totalRowsLength.value = leagueSettings.totalRowsLength
+    initialRowSpacing.value = leagueSettings.initialRowSpacing
+    gameSpeed.value = leagueSettings.initialSpeed
+  }
+
   return {
     character,
     pointsPerMatch,
@@ -285,5 +298,6 @@ export const useGameStore = defineStore('game', () => {
     updateCharacterOnMatch,
     resetSpeed,
     saveGameSession,
+    setLeagueLevel,
   }
 })

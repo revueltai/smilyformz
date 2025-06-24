@@ -20,6 +20,7 @@ export const MODALS = {
   GAME_OVER_GUEST: 'gameOverGuest',
   DELETE_ACCOUNT_CONFIRM: 'deleteAccountConfirm',
   RELOGIN_CONFIRM: 'reloginConfirm',
+  LEAGUE_SELECTION: 'leagueSelection',
 }
 
 export const TILE_COLORS: Record<string, TileColor> = {
