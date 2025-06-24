@@ -1,12 +1,16 @@
 <script setup lang="ts">
+  import NumberCounter from '@/components/shared/NumberCounter/index.vue'
+
   withDefaults(
     defineProps<{
       label: string
       value: string | number
       hasShareButton?: boolean
+      animateValue?: boolean
     }>(),
     {
       hasShareButton: true,
+      animateValue: true,
     },
   )
 </script>
@@ -18,8 +22,15 @@
     </p>
 
     <div class="flex items-center gap-2">
-      <p class="">
-        <span class="text-lg uppercase font-bold">{{ value }}</span>
+      <p class="flex items-center">
+        <NumberCounter
+          :value="Number(value)"
+          :duration="1000"
+          :delay="200"
+          easing="ease-out"
+          class="text-lg uppercase font-bold"
+        />
+
         <span class="text-xs text-slate-500 ml-1">{{ $t('points') }}</span>
       </p>
 
