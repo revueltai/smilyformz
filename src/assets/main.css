@@ -67,6 +67,17 @@ body {
   display: none !important;
 }
 
+/* Vue transitions */
+.fade-enter-active,
+.fade-leave-active {
+  @apply transition-opacity duration-300 ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  @apply opacity-0;
+}
+
 /*
 --------------------------------
 Animations & Keyframes
@@ -99,11 +110,29 @@ Animations & Keyframes
     opacity: 0;
   }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.1);
     opacity: 1;
   }
   70% {
     transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleInBounceSubtle {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.95);
   }
   100% {
     transform: scale(1);
@@ -126,35 +155,43 @@ Animations & Keyframes
   }
 }
 
-/* Vue transitions */
-.fade-enter-active,
-.fade-leave-active {
-  @apply transition-opacity duration-300 ease-in-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  @apply opacity-0;
-}
-
-/* Splash screen animations */
-.animate-scale-in-bounce {
+.animate-bounce {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
   transform-origin: center;
 }
 
-.animate-scale-in-bounce-delay-1 {
+.animate-bounce-1 {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 300ms forwards;
   @apply origin-center opacity-0;
 }
 
-.animate-scale-in-bounce-delay-2 {
+.animate-bounce-2 {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 600ms forwards;
   @apply origin-center opacity-0;
 }
 
-.animate-scale-in-bounce-delay-3 {
+.animate-bounce-3 {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 900ms forwards;
+  @apply origin-center opacity-0;
+}
+
+.animate-bounce-subtle {
+  animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  transform-origin: center;
+}
+
+.animate-bounce-subtle-1 {
+  animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 200ms forwards;
+  @apply origin-center opacity-0;
+}
+
+.animate-bounce-subtle-2 {
+  animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 400ms forwards;
+  @apply origin-center opacity-0;
+}
+
+.animate-bounce-subtle-3 {
+  animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 600ms forwards;
   @apply origin-center opacity-0;
 }
 

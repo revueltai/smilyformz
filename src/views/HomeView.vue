@@ -55,15 +55,15 @@
       :avatar-shape-color="userStore.profile?.avatar.shape_color"
       :avatar-background-color="userStore.profile?.avatar.background_color"
       :avatar-expression="userStore.profile?.avatar.expression"
-      class="animate-scale-in-bounce"
+      class="animate-bounce-subtle"
     />
 
     <EmailConfirmationWarning
       :is-confirmed="userStore.isEmailConfirmed"
-      class="animate-scale-in-bounce-delay-1"
+      class="animate-bounce-subtle-1"
     />
 
-    <div class="flex flex-col gap-4 animate-scale-in-bounce-delay-2">
+    <div class="flex flex-col gap-4 animate-bounce-subtle-2">
       <LeagueBlock />
 
       <div class="flex flex-col gap-2 bg-slate-100 rounded-xl p-3">
@@ -82,7 +82,7 @@
       </div>
     </div>
 
-    <div class="w-full flex gap-4 items-end justify-center pb-6 animate-scale-in-bounce-delay-3">
+    <div class="w-full flex gap-4 items-end justify-center pb-6 animate-bounce-subtle-3">
       <Button
         to="/ranking"
         size="base"

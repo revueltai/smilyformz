@@ -39,7 +39,7 @@
         alt="splash"
         width="249"
         height="120"
-        class="animate-scale-in-bounce sm:w-1/2"
+        class="animate-bounce sm:w-1/2"
       />
 
       <div class="flex flex-col gap-4 items-center">
@@ -48,7 +48,7 @@
             size="2xl"
             background-color="lime-50"
             border-color="lime-600"
-            class="animate-scale-in-bounce-delay-1"
+            class="animate-bounce-1"
             @click="handleClickButtonPlay"
           >
             <Icon
@@ -61,7 +61,7 @@
 
         <Button
           size="base"
-          class="animate-scale-in-bounce-delay-2"
+          class="animate-bounce-2"
           @click="handleClickButtonCreateAccount"
         >
           <Icon
@@ -74,7 +74,7 @@
 
         <Button
           size="xs"
-          class="animate-scale-in-bounce-delay-3"
+          class="animate-bounce-3"
           @click="handleClickButtonLogin"
         >
           <Icon
