@@ -7,20 +7,22 @@
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 h-[60vh]">
+  <div class="flex flex-col gap-4">
     <StatBlock
       :label="$t('youScored')"
       :value="`${gameStore.score} ${$t('points')}`"
-      variant="score"
       class="shrink-0"
     />
 
-    <div class="flex-1 flex flex-col items-center justify-center text-center gap-4 p-4">
-      <div class="text-lg font-semibold text-gray-800">
-        {{ $t('createAccountToSave') }}
+    <div
+      class="flex-1 flex flex-col items-center justify-center text-center gap-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100"
+    >
+      <div class="text-lg font-semibold text-blue-800">
+        {{ $t('guestCreateAccountHeader') }}
       </div>
-      <div class="text-sm text-gray-600 max-w-xs">
-        {{ $t('createAccountBenefits') }}
+
+      <div class="text-sm text-blue-600 max-w-xs">
+        {{ $t('guestCreateAccountDescription') }}
       </div>
     </div>
 

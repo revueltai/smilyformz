@@ -33,7 +33,7 @@
           appear
         >
           <div
-            class="relative min-w-xs max-w-xs rounded-2xl shadow-2xl bg-white px-4 pt-8 pb-4 text-center sm:max-w-sm flex flex-col max-h-[90vh]"
+            class="relative min-w-xs max-w-xs rounded-2xl shadow-2xl bg-white px-4 pt-8 pb-4 text-center sm:max-w-sm flex flex-col"
           >
             <div class="shrink-0">
               <Button

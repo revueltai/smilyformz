@@ -41,12 +41,22 @@
     const easedProgress = EASINGS[easing](progress)
     const currentValue = startValue + (endValue - startValue) * easedProgress
 
+    if (isNaN(currentValue) || !isFinite(currentValue)) {
+      displayValue.value = endValue
+      return false
+    }
+
     displayValue.value = Math.round(currentValue)
 
     return progress < 1
   }
 
   function animateValue(startValue: number, endValue: number) {
+    if (isNaN(startValue) || isNaN(endValue) || !isFinite(startValue) || !isFinite(endValue)) {
+      displayValue.value = endValue || 0
+      return
+    }
+
     if (animationId) {
       cancelAnimationFrame(animationId)
     }
@@ -78,8 +88,11 @@
   watch(
     () => props.value,
     (newValue, oldValue) => {
-      if (newValue !== oldValue) {
-        animateValue(oldValue || 0, newValue)
+      const validNewValue = typeof newValue === 'number' && isFinite(newValue) ? newValue : 0
+      const validOldValue = typeof oldValue === 'number' && isFinite(oldValue) ? oldValue : 0
+
+      if (validNewValue !== validOldValue) {
+        animateValue(validOldValue, validNewValue)
       }
     },
   )

@@ -168,5 +168,7 @@
   "nextLeagueRequirement": "Score {points}+ points for next league.",
   "unlockInstructions": "Score {points}+ points to unlock {league}.",
   "smilies": "Smilies",
-  "smilyLeagues": "Smily Leagues"
+  "smilyLeagues": "Smily Leagues",
+  "guestCreateAccountHeader": "Unlock Power-ups & Rise Through Leagues!",
+  "guestCreateAccountDescription": "Get double points, match any shape or color, and climb from Casual to Legend league. Customize your character and track your progress!"
 }
