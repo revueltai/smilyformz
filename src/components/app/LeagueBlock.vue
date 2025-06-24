@@ -2,32 +2,12 @@
   import { computed } from 'vue'
   import { GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import { useUserStore } from '@/stores/user.store'
-  import type { GameLeagueLevelKey } from '@/types/game'
 
   const userStore = useUserStore()
 
   const currentLeague = computed(() => {
     const leagueLevel = userStore.profile?.league_level || 'easy'
     return GAME_LEAGUE_LEVELS[leagueLevel]
-  })
-
-  const nextLeagueInfo = computed(() => {
-    const leagueLevel = userStore.profile?.league_level || 'easy'
-    const leagueKeys: GameLeagueLevelKey[] = Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[]
-    const currentIndex = leagueKeys.indexOf(leagueLevel)
-
-    if (currentIndex === leagueKeys.length - 1) {
-      return null
-    }
-
-    const nextLeagueKey = leagueKeys[currentIndex + 1]
-    const nextLeague = GAME_LEAGUE_LEVELS[nextLeagueKey]
-    const currentLeague = GAME_LEAGUE_LEVELS[leagueLevel]
-
-    return {
-      name: nextLeague.name,
-      requiredPoints: currentLeague.nextLevelPoints,
-    }
   })
 </script>
 

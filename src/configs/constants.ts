@@ -66,7 +66,7 @@ export const DEFAULT_LEAGUE_LEVEL = 'easy'
 export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   easy: {
     id: 'easy',
-    name: 'leagueNameEasy',
+    name: 'leagueName_easy',
     totalRowsLength: 3,
     initialRowSpacing: 400,
     initialSpeed: 2.5,
@@ -74,7 +74,7 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   },
   medium: {
     id: 'medium',
-    name: 'leagueNameMedium',
+    name: 'leagueName_medium',
     totalRowsLength: 5,
     initialRowSpacing: 400,
     initialSpeed: 2.5,
@@ -82,7 +82,7 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   },
   hard: {
     id: 'hard',
-    name: 'leagueNameHard',
+    name: 'leagueName_hard',
     totalRowsLength: 7,
     initialRowSpacing: 400,
     initialSpeed: 2.5,
@@ -90,7 +90,7 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   },
   legend: {
     id: 'legend',
-    name: 'leagueNameLegend',
+    name: 'leagueName_legend',
     totalRowsLength: 9,
     initialRowSpacing: 400,
     initialSpeed: 2.5,

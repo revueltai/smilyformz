@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import { watch, ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
   import { useModalStore } from '@/stores/modal.store'
   import { useGameStore } from '@/stores/game.store'
   import { useUserStore } from '@/stores/user.store'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { MODALS } from '@/configs/constants'
+  import { ToastService } from '@/components/shared/Toast/service'
   import ModalPause from '@/components/app/ModalPause.vue'
   import ModalGameOver from '@/components/app/ModalGameOver.vue'
   import ModalGameOverGuest from '@/components/app/ModalGameOverGuest.vue'
@@ -19,10 +21,12 @@
   import CharacterMessageContainer from '@/components/app/CharacterMessage/Container.vue'
   import ModalCreateAccount from '@/components/app/ModalCreateAccount.vue'
 
+  const { t } = useI18n()
   const gameStore = useGameStore()
   const modalStore = useModalStore()
   const userStore = useUserStore()
   const { resetCollisionDetection } = useCollisionDetection()
+
   const showGameEndCountdown = ref(false)
   const router = useRouter()
 
@@ -68,8 +72,18 @@
       try {
         const totalSeconds = gameStore.time.minutes * 60 + gameStore.time.seconds
         await gameStore.saveGameSession(gameStore.score, totalSeconds)
+
+        const leagueUpdate = await gameStore.checkAndUpdateLeagueLevel(gameStore.score)
+
+        if (leagueUpdate.updated && leagueUpdate.newLeague) {
+          ToastService.emitToast(
+            t('leagueUpgrade', { league: leagueUpdate.newLeague }),
+            'success',
+            false,
+          )
+        }
       } catch (error) {
-        console.error('Failed to save game session:', error)
+        console.error('Failed to save game session or update league level:', error)
       }
     }
   }
@@ -97,7 +111,6 @@
     () => userStore.isAuthenticated,
     (isAuthenticated) => {
       if (isAuthenticated) {
-        // Close any modals when user becomes authenticated
         modalStore.closeModal()
       }
     },
@@ -107,7 +120,6 @@
     gameStore.resetGame()
     resetCollisionDetection()
 
-    // Close any modals if user is already authenticated
     if (userStore.isAuthenticated) {
       modalStore.closeModal()
     }

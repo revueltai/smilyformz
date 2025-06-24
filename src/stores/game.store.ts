@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES, GAME_LEAGUE_LEVELS } from '@/configs/constants'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import type { GameLeagueLevelKey } from '@/types/game'
-import { getRandomItem } from '@/utils'
+import { getRandomItem, canAdvanceToNextLeague } from '@/utils'
 import { supabase } from '@/services/Supabase.service'
 import { useUserStore } from './user.store'
 
@@ -275,6 +275,45 @@ export const useGameStore = defineStore('game', () => {
     gameSpeed.value = leagueSettings.initialSpeed
   }
 
+  /**
+   * Checks if the user's score qualifies them for a new league level and updates it in the database
+   *
+   * @param finalScore - The final score of the game
+   * @returns Promise<{ updated: boolean; newLeague?: GameLeagueLevelKey }> - Whether the league was updated and the new league if applicable
+   */
+  async function checkAndUpdateLeagueLevel(finalScore: number) {
+    if (!userStore.user || !userStore.profile) {
+      return { updated: false }
+    }
+
+    const currentLeague = userStore.profile.league_level
+    const leagueKeys = Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[]
+
+    if (canAdvanceToNextLeague(currentLeague, GAME_LEAGUE_LEVELS)) {
+      const currentIndex = leagueKeys.indexOf(currentLeague)
+      const nextLeagueKey = leagueKeys[currentIndex + 1]
+      const currentLeagueSettings = GAME_LEAGUE_LEVELS[currentLeague]
+
+      if (finalScore >= currentLeagueSettings.nextLevelPoints) {
+        try {
+          await userStore.updateUserSettings({
+            league_level: nextLeagueKey,
+          })
+
+          return {
+            updated: true,
+            newLeague: nextLeagueKey,
+          }
+        } catch (error) {
+          console.error('Error updating league level:', error)
+          return { updated: false }
+        }
+      }
+    }
+
+    return { updated: false }
+  }
+
   return {
     character,
     pointsPerMatch,
@@ -299,5 +338,6 @@ export const useGameStore = defineStore('game', () => {
     resetSpeed,
     saveGameSession,
     setLeagueLevel,
+    checkAndUpdateLeagueLevel,
   }
 })

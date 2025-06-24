@@ -164,7 +164,7 @@ export function getRandomItem<T>(array: T[]): T {
  * If name="my-var" & value="123" & wrapInVar=true > `var(--my-var)`. // value is ignored.
  * ```
  *
- * @param {string} name - The name of the CSS variable.
+ * @param name - The name of the CSS variable.
  * @param {string} [value] - (optional) The value to assign to the CSS variable.
  * @param {boolean} [wrapInVar] - (optional) Wether to wrap the variable in a `var()` delcaration.
  * @returns {string} - The CSS variable string in the format `--name`, `--name: value` or `var(--name)`.
@@ -243,8 +243,8 @@ export function isFullscreen(): boolean {
 /**
  * Extracts the row ID from a given tile ID.
  *
- * @param {string} tileId - The input string containing the row ID.
- * @returns {string} The extracted row ID.
+ * @param tileId - The input string containing the row ID.
+ * @returns The extracted row ID.
  */
 export function getTileRowId(tileId: string): string {
   return tileId.split('-')[0]
@@ -253,9 +253,26 @@ export function getTileRowId(tileId: string): string {
 /**
  * Extracts the row index from a given row ID.
  *
- * @param {string} rowId - The input string containing the row ID.
- * @returns {number} The extracted row index.
+ * @param rowId - The input string containing the row ID.
+ * @returns The extracted row index.
  */
 export function getRowIndex(rowId: string): number {
   return Number(rowId.split('row')[1])
+}
+
+/**
+ * Checks if a league level can advance to the next level.
+ * This determines if the current league is not the highest level available.
+ *
+ * @param currentLeagueLevel - The current league level to check
+ * @param allLeagueLevels - Object containing all available league levels
+ * @returns True if the league can advance to the next level, false if it's already at the highest level
+ */
+export function canAdvanceToNextLeague<T extends Record<string, any>>(
+  currentLeagueLevel: keyof T,
+  allLeagueLevels: T,
+): boolean {
+  const leagueKeys = Object.keys(allLeagueLevels) as (keyof T)[]
+  const currentIndex = leagueKeys.indexOf(currentLeagueLevel)
+  return currentIndex < leagueKeys.length - 1
 }
