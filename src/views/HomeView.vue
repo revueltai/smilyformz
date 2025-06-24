@@ -67,29 +67,32 @@
       class="animate-bounce-subtle-1"
     />
 
-    <div class="flex flex-col gap-4 animate-bounce-subtle-2">
-      <LeagueBlock />
+    <div class="flex flex-col gap-4">
+      <LeagueBlock class="animate-bounce-subtle-2" />
 
-      <div class="flex flex-col gap-2 bg-slate-100 rounded-xl p-3">
+      <div class="flex flex-col gap-2 bg-slate-100 rounded-xl p-3 animate-bounce-subtle-2">
         <StatBlockItem
           :label="$t('yourLatestScore')"
           :value="latestScore"
           variant="score"
+          class="animate-bounce-subtle-3"
           @click="handleShare('latestScore')"
         />
 
         <StatBlockItem
           :label="$t('yourHighestScore')"
           :value="highestScore"
+          class="animate-bounce-subtle-4"
           @click="handleShare('highestScore')"
         />
       </div>
     </div>
 
-    <div class="w-full flex gap-4 items-end justify-center pb-6 animate-bounce-subtle-3">
+    <div class="w-full flex gap-4 items-end justify-center pb-6">
       <Button
         to="/ranking"
         size="base"
+        class="animate-bounce-subtle-5"
       >
         <Icon
           name="award"
@@ -104,6 +107,7 @@
         border-color-hover="lime-400"
         background-color="lime-100"
         background-color-hover="lime-200"
+        class="animate-bounce-subtle-7"
         @click="handlePlayClick"
       >
         <Icon
@@ -116,6 +120,7 @@
       <Button
         to="/profile"
         size="base"
+        class="animate-bounce-subtle-6"
       >
         <Icon
           name="settings-2"

@@ -160,19 +160,29 @@ Animations & Keyframes
   transform-origin: center;
 }
 
+.animate-bounce-1,
+.animate-bounce-2,
+.animate-bounce-3,
+.animate-bounce-subtle-1,
+.animate-bounce-subtle-2,
+.animate-bounce-subtle-3,
+.animate-bounce-subtle-4,
+.animate-bounce-subtle-5,
+.animate-bounce-subtle-6,
+.animate-bounce-subtle-7 {
+  @apply origin-center opacity-0;
+}
+
 .animate-bounce-1 {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 300ms forwards;
-  @apply origin-center opacity-0;
 }
 
 .animate-bounce-2 {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 600ms forwards;
-  @apply origin-center opacity-0;
 }
 
 .animate-bounce-3 {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 900ms forwards;
-  @apply origin-center opacity-0;
 }
 
 .animate-bounce-subtle {
@@ -182,17 +192,30 @@ Animations & Keyframes
 
 .animate-bounce-subtle-1 {
   animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 200ms forwards;
-  @apply origin-center opacity-0;
 }
 
 .animate-bounce-subtle-2 {
   animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 400ms forwards;
-  @apply origin-center opacity-0;
 }
 
 .animate-bounce-subtle-3 {
   animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 600ms forwards;
-  @apply origin-center opacity-0;
+}
+
+.animate-bounce-subtle-4 {
+  animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 800ms forwards;
+}
+
+.animate-bounce-subtle-5 {
+  animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 1000ms forwards;
+}
+
+.animate-bounce-subtle-6 {
+  animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 1200ms forwards;
+}
+
+.animate-bounce-subtle-7 {
+  animation: scaleInBounceSubtle 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 1400ms forwards;
 }
 
 /*
