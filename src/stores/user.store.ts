@@ -26,6 +26,11 @@ interface UserProfile {
   language: string
 }
 
+interface UserScore {
+  highestScore: number
+  latestScore: number
+}
+
 /**
  * User store for managing user authentication and profile data.
  *
@@ -37,6 +42,7 @@ interface UserProfile {
  */
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
+  const userScores = ref<UserScore | null>(null)
   const profile = ref<UserProfile | null>(null)
   const isLoading = ref(false)
   const isAuthenticated = ref(false)
@@ -440,6 +446,80 @@ export const useUserStore = defineStore('user', () => {
     })
   }
 
+  /**
+   * Gets the score from the data array gotten from the database
+   *
+   * @param data - The data to get the score from
+   * @returns The score or 0 if the data is empty or the score is not a number
+   */
+  function getScore(data: { score: string }[]) {
+    if (!data || data.length === 0 || !data[0].score) {
+      return 0
+    }
+
+    // Parse the score string to number
+    const score = parseInt(data[0].score, 10)
+    return isNaN(score) ? 0 : score
+  }
+
+  /**
+   * Gets the user's latest score from the database
+   */
+  async function getLatestScore(): Promise<number> {
+    if (!user.value) {
+      return 0
+    }
+
+    try {
+      const { data, error } = await supabase
+        .getClient()
+        .from('game_sessions')
+        .select('score')
+        .eq('user_id', user.value.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+
+      if (error) {
+        console.error('Error fetching latest score:', error)
+        return 0
+      }
+
+      return getScore(data)
+    } catch (error) {
+      console.error('Error getting latest score:', error)
+      return 0
+    }
+  }
+
+  /**
+   * Gets the user's highest score from the database
+   */
+  async function getHighestScore(): Promise<number> {
+    if (!user.value) {
+      return 0
+    }
+
+    try {
+      const { data, error } = await supabase
+        .getClient()
+        .from('game_sessions')
+        .select('score')
+        .eq('user_id', user.value.id)
+        .order('score', { ascending: false })
+        .limit(1)
+
+      if (error) {
+        console.error('Error fetching highest score:', error)
+        return 0
+      }
+
+      return getScore(data)
+    } catch (error) {
+      console.error('Error getting highest score:', error)
+      return 0
+    }
+  }
+
   return {
     // State
     user,
@@ -470,5 +550,7 @@ export const useUserStore = defineStore('user', () => {
     validateAccountStatus,
     updateEmail,
     updatePassword,
+    getLatestScore,
+    getHighestScore,
   }
 })
