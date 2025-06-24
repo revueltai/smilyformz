@@ -65,7 +65,7 @@
       </Button>
     </div>
 
-    <div class="flex flex-col gap-1">
+    <div class="flex flex-col">
       <p
         v-if="!hasEditOptions"
         class="text-sm text-slate-400"

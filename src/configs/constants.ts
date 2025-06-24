@@ -64,23 +64,35 @@ export const DEFAULT_LEAGUE_LEVEL = 'easy'
 
 export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   easy: {
+    id: 'easy',
+    name: 'leagueNameEasy',
     totalRowsLength: 3,
     initialRowSpacing: 400,
     initialSpeed: 2.5,
+    nextLevelPoints: 50,
   },
   medium: {
+    id: 'medium',
+    name: 'leagueNameMedium',
     totalRowsLength: 5,
     initialRowSpacing: 400,
     initialSpeed: 2.5,
+    nextLevelPoints: 120,
   },
   hard: {
+    id: 'hard',
+    name: 'leagueNameHard',
     totalRowsLength: 7,
     initialRowSpacing: 400,
     initialSpeed: 2.5,
+    nextLevelPoints: 250,
   },
-  expert: {
+  ultimate: {
+    id: 'ultimate',
+    name: 'leagueNameUltimate',
     totalRowsLength: 9,
     initialRowSpacing: 400,
     initialSpeed: 2.5,
+    nextLevelPoints: 500,
   },
-} as const
+}

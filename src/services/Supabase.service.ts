@@ -1,7 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
-import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
+import { DEFAULT_LEAGUE_LEVEL, TILE_DEFAULTS } from '@/configs/constants'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 
 interface UserPayload {

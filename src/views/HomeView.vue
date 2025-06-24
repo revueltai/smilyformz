@@ -1,28 +1,35 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import Page from '@/components/app/Page.vue'
   import HeaderUser from '@/components/app/HeaderUser.vue'
-  import StatBlock from '@/components/app/StatBlock.vue'
+  import StatBlockItem from '@/components/app/StatBlockItem.vue'
   import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
   import ModalShare from '@/components/app/ModalShare.vue'
+  import LeagueBlock from '@/components/app/LeagueBlock.vue'
+  import Button from '@/components/shared/Button/index.vue'
+  import Icon from '@/components/shared/Icon/index.vue'
+  import Modal from '@/components/shared/Modal/index.vue'
   import { MODALS } from '@/configs/constants'
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
 
+  type ShareType = 'latestScore' | 'highestScore' | 'ranking'
+
   const userStore = useUserStore()
   const modalStore = useModalStore()
 
-  const score = ref(2000)
+  const latestScore = ref(0)
+  const highestScore = ref(0)
   const ranking = ref(120)
-  const activeShare = ref<'score' | 'ranking'>('score')
+  const activeShare = ref<ShareType>('latestScore')
 
-  function isActiveShareScore() {
-    return activeShare.value === 'score'
+  function isActiveShareLatestScore() {
+    return activeShare.value === 'latestScore'
   }
 
-  function handleShare(type: 'score' | 'ranking') {
-    if (type === 'score') {
-      activeShare.value = 'score'
+  function handleShare(type: ShareType) {
+    if (type === 'latestScore') {
+      activeShare.value = 'latestScore'
       modalStore.openModal(MODALS.SHARE)
       return
     }
@@ -30,6 +37,11 @@
     activeShare.value = 'ranking'
     modalStore.openModal(MODALS.SHARE)
   }
+
+  onMounted(async () => {
+    latestScore.value = await userStore.getLatestScore()
+    highestScore.value = await userStore.getHighestScore()
+  })
 </script>
 
 <template>
@@ -48,18 +60,22 @@
     <EmailConfirmationWarning :is-confirmed="userStore.isEmailConfirmed" />
 
     <div class="flex flex-col gap-4">
-      <StatBlock
-        :label="$t('yourLastScore')"
-        :value="score"
-        variant="score"
-        @click="handleShare('score')"
-      />
+      <LeagueBlock />
 
-      <StatBlock
-        :label="$t('yourGlobalRanking')"
-        value="123"
-        @click="handleShare('ranking')"
-      />
+      <div class="flex flex-col gap-2 bg-slate-100 rounded-xl p-3">
+        <StatBlockItem
+          :label="$t('yourLatestScore')"
+          :value="latestScore"
+          variant="score"
+          @click="handleShare('latestScore')"
+        />
+
+        <StatBlockItem
+          :label="$t('yourHighestScore')"
+          :value="highestScore"
+          @click="handleShare('highestScore')"
+        />
+      </div>
     </div>
 
     <div class="w-full flex gap-4 items-end justify-center pb-6">
@@ -79,8 +95,8 @@
         size="2xl"
         border-color="lime-600"
         border-color-hover="lime-400"
-        background-color="lime-50"
-        background-color-hover="lime-100"
+        background-color="lime-100"
+        background-color-hover="lime-200"
       >
         <Icon
           name="play"
@@ -103,12 +119,12 @@
 
     <Modal
       :name="MODALS.SHARE"
-      :heading="isActiveShareScore() ? $t('shareScore') : $t('shareRanking')"
+      :heading="isActiveShareLatestScore() ? $t('shareLatestScore') : $t('shareRanking')"
     >
       <ModalShare
         :text="
-          !isActiveShareScore()
-            ? $t('shareScoreText', { score })
+          !isActiveShareLatestScore()
+            ? $t('shareLatestScoreText', { score: latestScore })
             : $t('shareRankingText', { ranking })
         "
       />

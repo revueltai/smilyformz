@@ -190,6 +190,7 @@
           :type="iconType"
           :color="iconColor"
           :size="isMobile() ? 'sm' : 'md'"
+          class="cursor-pointer"
           @click="handleIconClick"
         />
 
