@@ -1,8 +1,9 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
-import { DEFAULT_LEAGUE_LEVEL, TILE_DEFAULTS } from '@/configs/constants'
+import { DEFAULT_LEAGUE_LEVEL, LEAGUE_RANKING_LIST_LIMIT, TILE_DEFAULTS } from '@/configs/constants'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
+import type { LeagueRankingItem } from '@/types/game'
 
 interface UserPayload {
   display_name: string
@@ -17,6 +18,7 @@ export const DATABASE_FUNCTIONS = {
   DELETE_USER_DATA: 'delete_user_data',
   IS_ACCOUNT_DELETED: 'is_account_deleted',
   VALIDATE_ACCOUNT_STATUS: 'validate_account_status',
+  GET_LEAGUE_RANKINGS: 'get_league_rankings',
 } as const
 
 export type DatabaseFunctionName = (typeof DATABASE_FUNCTIONS)[keyof typeof DATABASE_FUNCTIONS]
@@ -367,6 +369,28 @@ export class SupabaseService {
     }
 
     return true
+  }
+
+  /**
+   * Fetches league rankings from the database
+   *
+   * @param leagueLevel - The league level to fetch rankings for
+   * @param limit - Maximum number of records to fetch (default: LEAGUE_RANKING_LIST_LIMIT)
+   * @returns Array of ranking records with user information
+   */
+  public async getLeagueRankings(
+    leagueLevel: string,
+    limit: number = LEAGUE_RANKING_LIST_LIMIT,
+  ): Promise<LeagueRankingItem[]> {
+    const data = await this.callDatabaseFunction<LeagueRankingItem[]>(
+      DATABASE_FUNCTIONS.GET_LEAGUE_RANKINGS,
+      {
+        p_league_level: leagueLevel,
+        p_limit: limit,
+      },
+    )
+
+    return data || []
   }
 }
 

@@ -64,6 +64,8 @@ export const TILE_DEFAULTS = {
 
 export const DEFAULT_LEAGUE_LEVEL = 'easy'
 
+export const LEAGUE_RANKING_LIST_LIMIT = 100
+
 export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   easy: {
     id: 'easy',

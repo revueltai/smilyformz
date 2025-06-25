@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { TILE_EXPRESSIONS, TILE_COLORS, TILE_SHAPES, GAME_LEAGUE_LEVELS } from '@/configs/constants'
+import {
+  TILE_EXPRESSIONS,
+  TILE_COLORS,
+  TILE_SHAPES,
+  GAME_LEAGUE_LEVELS,
+  DEFAULT_LEAGUE_LEVEL,
+} from '@/configs/constants'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import type { GameLeagueLevelKey } from '@/types/game'
 import { getRandomItem, canAdvanceToNextLeague } from '@/utils'
@@ -15,7 +21,8 @@ interface GameTime {
 export const useGameStore = defineStore('game', () => {
   const userStore = useUserStore()
 
-  const initialLeagueSettings = GAME_LEAGUE_LEVELS[userStore.profile?.league_level || 'easy']
+  const initialLeagueSettings =
+    GAME_LEAGUE_LEVELS[userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL]
 
   let timeInterval: number | null = null
   const pointsPerMatch = ref(1)

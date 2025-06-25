@@ -1,12 +1,12 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { GAME_LEAGUE_LEVELS } from '@/configs/constants'
+  import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import { useUserStore } from '@/stores/user.store'
 
   const userStore = useUserStore()
 
   const currentLeague = computed(() => {
-    const leagueLevel = userStore.profile?.league_level || 'easy'
+    const leagueLevel = userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL
     return GAME_LEAGUE_LEVELS[leagueLevel]
   })
 </script>

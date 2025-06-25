@@ -3,23 +3,17 @@
   import RankingItem from '@/components/app/RankingItem.vue'
   import Tabs from '@/components/shared/Tabs/index.vue'
   import { GAME_LEAGUE_LEVELS } from '@/configs/constants'
-  import type { GameLeagueLevelKey } from '@/types/game'
+  import type { LeagueRankingListRankItem, GameLeagueLevelKey } from '@/types/game'
   import { useI18n } from 'vue-i18n'
   import { isEmptyArray } from '@/utils'
 
-  interface RankItem {
-    league: GameLeagueLevelKey
-    position: number
-    username: string
-    score: string | number
-    country: string
-  }
+  const props = defineProps<{
+    list?: LeagueRankingListRankItem[]
+  }>()
 
-  interface Props {
-    list?: RankItem[]
-  }
-
-  const props = defineProps<Props>()
+  const emit = defineEmits<{
+    'tab-change': [index: number]
+  }>()
 
   const { t } = useI18n()
 
@@ -33,10 +27,20 @@
     }))
   })
 
-  const leagueData = computed(() => (props.list && !isEmptyArray(props.list) ? props.list : []))
+  const activeLeagueData = computed(() => {
+    if (!props.list || isEmptyArray(props.list)) {
+      return []
+    }
+
+    const leagueKeys = Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[]
+    const activeLeague = leagueKeys[activeTab.value]
+
+    return props.list.filter((item) => item.league === activeLeague)
+  })
 
   function handleTabChange(index: number) {
     activeTab.value = index
+    emit('tab-change', index)
   }
 </script>
 
@@ -73,7 +77,7 @@
       <template #default>
         <ol class="flex flex-col">
           <li
-            v-for="item in leagueData"
+            v-for="item in activeLeagueData"
             :key="item.position"
           >
             <RankingItem

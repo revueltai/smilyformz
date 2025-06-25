@@ -26,11 +26,6 @@ interface UserProfile {
   language: string
 }
 
-interface UserScore {
-  highestScore: number
-  latestScore: number
-}
-
 /**
  * User store for managing user authentication and profile data.
  *
@@ -42,7 +37,6 @@ interface UserScore {
  */
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
-  const userScores = ref<UserScore | null>(null)
   const profile = ref<UserProfile | null>(null)
   const isLoading = ref(false)
   const isAuthenticated = ref(false)

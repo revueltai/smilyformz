@@ -4,7 +4,7 @@
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
   import { useGameStore } from '@/stores/game.store'
-  import { GAME_LEAGUE_LEVELS } from '@/configs/constants'
+  import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import type { GameLeagueLevelKey } from '@/types/game'
   import LeagueItem from '@/components/app/LeagueItem.vue'
 
@@ -13,7 +13,7 @@
   const userStore = useUserStore()
   const gameStore = useGameStore()
 
-  const currentUserLeague = computed(() => userStore.profile?.league_level || 'easy')
+  const currentUserLeague = computed(() => userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL)
 
   const allLeagues = computed(() => {
     const leagueKeys = Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[]
