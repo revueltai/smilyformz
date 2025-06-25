@@ -12,7 +12,7 @@ import {
   // loadLocaleMessages,
   // setI18nLanguage,
 } from '@/services/i18n.service'
-import type { AppLocaleCode } from '@/types'
+import type { AppLocaleCode } from '@/services/i18n.service'
 
 async function setI18nAppLanguage(i18n: I18n) {
   // const settingsStore = useSettingsStore()

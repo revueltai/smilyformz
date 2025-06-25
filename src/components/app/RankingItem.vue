@@ -32,8 +32,9 @@
       <span
         :class="cssClassesPosition"
         class="w-6 h-6 flex items-center justify-center rounded-lg border"
-        >{{ position }}</span
       >
+        {{ position }}
+      </span>
 
       <img
         v-if="country"

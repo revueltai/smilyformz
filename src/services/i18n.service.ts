@@ -1,7 +1,8 @@
 import type { I18n, I18nOptions, Locale } from 'vue-i18n'
 import { nextTick } from 'vue'
 import { createI18n } from 'vue-i18n'
-import type { AppLocaleCode } from '@/types'
+
+export type AppLocaleCode = 'en' | 'es' | 'fr' | 'de' | 'it' | 'pt'
 
 const getResourceMessages = (r: any) => r.default || r
 

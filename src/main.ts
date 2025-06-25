@@ -5,7 +5,7 @@ import { createPinia } from 'pinia'
 import { detectBrowserLanguage, setupI18n } from '@/services/i18n.service'
 import { setupRouter } from './router'
 import { useUserStore } from '@/stores/user.store'
-import type { AppLocaleCode } from './types'
+import type { AppLocaleCode } from '@/services/i18n.service'
 
 import Button from '@/components/shared/Button/index.vue'
 import Loader from '@/components/shared/Loader/index.vue'

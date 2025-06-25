@@ -1,10 +1,8 @@
 <script setup lang="ts">
   import StatBlock from '@/components/app/StatBlock.vue'
   import ModalControls from '@/components/app/ModalControls.vue'
-  import RankingList from '@/components/app/RankingList.vue'
   import { useRouter } from 'vue-router'
   import { useModalStore } from '@/stores/modal.store'
-  import { mockRankings } from '@/configs/mocks'
   import { useGameStore } from '@/stores/game.store'
 
   const router = useRouter()
@@ -35,8 +33,6 @@
       class="shrink-0"
       @click="handleShareScore"
     />
-
-    <RankingList :list="mockRankings" />
 
     <ModalControls
       class="shrink-0"

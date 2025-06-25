@@ -139,7 +139,7 @@ See [setup/README.md](setup/README.md) for detailed database setup instructions.
 
 - 🎮 **Game Mechanics**: Match shapes and colors to score points
 - 👤 **User Authentication**: Sign up, login, and account management
-- 🏆 **Global Rankings**: Compete with players worldwide
+- 🏆 **Leagues**: Compete with players in challenging leagues
 - 🎨 **Avatar Customization**: Create your unique character
 - 🌍 **Multi-language Support**: Multiple language options
 - 📱 **Responsive Design**: Works on desktop and mobile

@@ -1,10 +1,19 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
   import Page from '@/components/app/Page.vue'
   import RankingList from '@/components/app/RankingList.vue'
-  import { mockRankings } from '@/configs/mocks'
 
-  const filter = ref('')
+  const mockRankingData = [
+    { position: 1, username: 'Player1', score: 1250, country: 'US' },
+    { position: 2, username: 'Player2', score: 1100, country: 'CA' },
+    { position: 3, username: 'Player3', score: 950, country: 'UK' },
+    { position: 4, username: 'Player4', score: 800, country: 'DE' },
+    { position: 5, username: 'Player5', score: 750, country: 'FR' },
+    { position: 6, username: 'Player6', score: 750, country: 'FR' },
+    { position: 7, username: 'Player7', score: 750, country: 'FR' },
+    { position: 8, username: 'Player8', score: 750, country: 'FR' },
+    { position: 9, username: 'Player9', score: 750, country: 'FR' },
+    { position: 10, username: 'Player10', score: 750, country: 'FR' },
+  ]
 </script>
 
 <template>
@@ -21,20 +30,11 @@
           size="2xl"
         />
 
-        <h2 class="text-xl">{{ $t('globalRanking') }}</h2>
+        <h2 class="text-xl">{{ $t('smilyLeaguesRanking') }}</h2>
       </header>
 
       <div class="flex flex-col gap-4 min-h-0 flex-1">
-        <Input
-          v-model="filter"
-          :placeholder="$t('filterByUsername')"
-          :show-edit-icon="false"
-          iconName="search"
-          show-input-field
-          class="shrink-0"
-        />
-
-        <RankingList :list="mockRankings" />
+        <RankingList :list="mockRankingData" />
 
         <div class="flex flex-col items-center gap-3 mt-2 shrink-0">
           <p class="text-center text-xs text-slate-400">
