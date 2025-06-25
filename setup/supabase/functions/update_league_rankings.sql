@@ -75,16 +75,14 @@ BEGIN
         gs.user_id,
         u.raw_user_meta_data->>'display_name' as username,
         u.raw_user_meta_data->>'country' as country,
-        MAX(CAST(gs.score AS INTEGER)) as highest_score,
-        COUNT(*) as total_games,
-        AVG(CAST(gs.score AS INTEGER)) as avg_score
+        MAX(CAST(gs.score AS INTEGER)) as highest_score
       FROM game_sessions gs
       JOIN auth.users u ON gs.user_id = u.id
       WHERE gs.league_level = league_record.league_level
         AND u.raw_user_meta_data->>'account_deleted' IS NULL
         AND gs.user_id IS NOT NULL
       GROUP BY gs.user_id, u.raw_user_meta_data
-      ORDER BY highest_score DESC, avg_score DESC
+      ORDER BY highest_score DESC
       LIMIT p_top_players_per_league
     ),
     ranked_players AS (
@@ -93,20 +91,15 @@ BEGIN
         username,
         country,
         highest_score,
-        total_games,
-        avg_score,
-        ROW_NUMBER() OVER (ORDER BY highest_score DESC, avg_score DESC) as position
+        ROW_NUMBER() OVER (ORDER BY highest_score DESC) as position
       FROM top_players
     )
-    INSERT INTO leagues_ranking (user_id, league_level, position, highest_score, total_games, avg_score, updated_at)
+    INSERT INTO leagues_ranking (user_id, league_level, position, score)
     SELECT 
       user_id,
       league_record.league_level,
       position,
-      highest_score,
-      total_games,
-      avg_score,
-      now()
+      highest_score::text
     FROM ranked_players;
     
     -- Get count for this league
