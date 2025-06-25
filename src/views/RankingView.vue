@@ -59,13 +59,15 @@
       </header>
 
       <div class="flex flex-col gap-4 min-h-0 flex-1">
-        <RankingList
-          :list="rankingData"
-          :loading="loading"
-          :error="error"
-          @change="handleTabChange"
-          @retry="handleRetry"
-        />
+        <div class="flex-1 min-h-0">
+          <RankingList
+            :list="rankingData"
+            :loading="loading"
+            :error="error"
+            @change="handleTabChange"
+            @retry="handleRetry"
+          />
+        </div>
 
         <RankingCta v-if="!error" />
       </div>

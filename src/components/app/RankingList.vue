@@ -54,13 +54,13 @@
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col h-full">
     <Tabs
       :items="tabItems"
       :active-tab="activeTab"
-      tabs-container-classes="bg-white gap-0.5"
-      tabs-content-classes="py-2 px-0 overflow-y-auto"
-      class="bg-slate-100 rounded-xl overflow-hidden"
+      tabs-container-classes="bg-white gap-0.5 shrink-0"
+      tabs-content-classes="flex-1 min-h-0 h-full"
+      class="bg-slate-100 rounded-xl overflow-hidden h-full flex flex-col"
       @tab-change="handleTabChange"
     >
       <template #tabs="{ items, activeTab, handleTabClick }">
@@ -84,42 +84,44 @@
       </template>
 
       <template #default>
-        <Loader
-          v-if="loading"
-          size="lg"
-          class="flex items-center justify-center py-8"
-        />
+        <div class="h-full overflow-y-auto p-2">
+          <Loader
+            v-if="loading"
+            size="lg"
+            class="flex items-center justify-center py-8"
+          />
 
-        <div
-          v-else-if="error"
-          class="flex flex-col items-center justify-center py-8 gap-4"
-        >
-          <p class="text-red-500 text-center">{{ $t(error) }}</p>
-
-          <Button
-            size="sm"
-            @click="handleRetry"
+          <div
+            v-else-if="error"
+            class="flex flex-col items-center justify-center py-8 gap-4"
           >
-            {{ $t('retry') }}
-          </Button>
+            <p class="text-red-500 text-center">{{ $t(error) }}</p>
+
+            <Button
+              size="sm"
+              @click="handleRetry"
+            >
+              {{ $t('retry') }}
+            </Button>
+          </div>
+
+          <ol
+            v-else
+            class="flex flex-col"
+          >
+            <li
+              v-for="item in activeLeagueData"
+              :key="item.position"
+            >
+              <RankingItem
+                :position="item.position"
+                :username="item.username"
+                :score="item.score"
+                :country="item.country"
+              />
+            </li>
+          </ol>
         </div>
-
-        <ol
-          v-else
-          class="flex flex-col"
-        >
-          <li
-            v-for="item in activeLeagueData"
-            :key="item.position"
-          >
-            <RankingItem
-              :position="item.position"
-              :username="item.username"
-              :score="item.score"
-              :country="item.country"
-            />
-          </li>
-        </ol>
       </template>
     </Tabs>
   </div>
