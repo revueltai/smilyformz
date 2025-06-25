@@ -21,6 +21,7 @@ export const MODALS = {
   DELETE_ACCOUNT_CONFIRM: 'deleteAccountConfirm',
   RELOGIN_CONFIRM: 'reloginConfirm',
   LEAGUE_SELECTION: 'leagueSelection',
+  OFFLINE: 'offline',
 }
 
 export const TILE_COLORS: Record<string, TileColor> = {

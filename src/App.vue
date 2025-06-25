@@ -3,12 +3,16 @@
   import { RouterView } from 'vue-router'
   import { isMobile, enterFullscreen, isFullscreen, isStandalone } from '@/utils'
   import { useUserStore } from '@/stores/user.store'
+  import { useOfflineDetection } from '@/composables/useOfflineDetection'
   import ModalContainer from '@/components/shared/Modal/Container.vue'
+  import ModalOffline from '@/components/app/ModalOffline.vue'
   import Toast from '@/components/shared/Toast/index.vue'
+  import { MODALS } from '@/configs/constants'
 
   const events = ['click', 'touchstart', 'keydown']
   const hasInteracted = ref(false)
   const userStore = useUserStore()
+  const { handleRetry } = useOfflineDetection()
 
   function handleFirstInteraction() {
     if (isMobile() && !hasInteracted.value && !isFullscreen()) {
@@ -63,6 +67,14 @@
 
   <ModalContainer />
   <Toast />
+
+  <Modal
+    :name="MODALS.OFFLINE"
+    :heading="$t('noConnection')"
+    :has-close-button="false"
+  >
+    <ModalOffline @retry="handleRetry" />
+  </Modal>
 </template>
 
 <style>
