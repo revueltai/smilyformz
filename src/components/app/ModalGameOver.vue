@@ -30,7 +30,7 @@
   <div class="flex flex-col gap-4 h-[60vh]">
     <StatBlock
       :label="$t('youScored')"
-      :value="`${gameStore.score} ${$t('points')}`"
+      :value="gameStore.score"
       variant="score"
       class="shrink-0"
       @click="handleShareScore"

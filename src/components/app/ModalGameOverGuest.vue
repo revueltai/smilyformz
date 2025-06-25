@@ -10,7 +10,7 @@
   <div class="flex flex-col gap-4">
     <StatBlock
       :label="$t('youScored')"
-      :value="`${gameStore.score} ${$t('points')}`"
+      :value="gameStore.score"
       class="shrink-0"
     />
 
