@@ -25,17 +25,6 @@
     select: [leagueKey: GameLeagueLevelKey]
   }>()
 
-  const cssClasses = computed(() => {
-    return {
-      'border-blue-500 bg-blue-50 hover:border-blue-300 hover:bg-blue-50 focus:ring-blue-500':
-        props.league.isCurrent && props.league.isAvailable,
-      'border-slate-200 hover:border-blue-300 hover:bg-blue-50 focus:ring-blue-500':
-        props.league.isAvailable && !props.league.isCurrent,
-      'border-slate-200 bg-slate-50 opacity-60 cursor-not-allowed focus:ring-slate-400':
-        !props.league.isAvailable,
-    }
-  })
-
   function handleClick() {
     if (props.league.isAvailable) {
       emit('select', props.league.id)
@@ -45,13 +34,12 @@
 
 <template>
   <div class="relative flex-shrink-0">
-    <button
-      class="flex flex-col items-center p-4 bg-white border-2 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 shadow-md h-48 w-40"
-      :class="cssClasses"
+    <Button
+      class="flex flex-col items-center p-4 h-48 w-40"
       :disabled="!league.isAvailable"
       @click="handleClick"
     >
-      <div class="flex flex-col items-center gap-3">
+      <div class="flex flex-col items-center justify-start gap-3 h-full">
         <img
           :src="`/images/leagues/${league.id}.svg`"
           class="relative w-12 h-12 transition-all duration-300"
@@ -69,15 +57,7 @@
             {{ $t(league.name) }}
           </h4>
 
-          <div
-            class="text-xs mt-1 mb-4"
-            :class="{
-              'text-slate-500': league.isAvailable,
-              'text-slate-400': !league.isAvailable,
-            }"
-          >
-            {{ $t('smilies') }}: {{ league.totalRowsLength }}
-          </div>
+          <div class="text-xs mt-1 mb-4"> {{ $t('smilies') }}: {{ league.totalRowsLength }} </div>
 
           <div
             v-if="league.isCurrent && league.isAvailable && league.nextLevelPoints"
@@ -96,6 +76,6 @@
           </div>
         </div>
       </div>
-    </button>
+    </Button>
   </div>
 </template>

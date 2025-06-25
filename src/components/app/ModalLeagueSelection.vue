@@ -35,6 +35,10 @@
     })
   })
 
+  function isNextLeagueAvailable(index: number) {
+    return index < allLeagues.value.length - 1
+  }
+
   function handleLeagueSelect(leagueKey: GameLeagueLevelKey) {
     const league = allLeagues.value.find((l) => l.id === leagueKey)
 
@@ -58,10 +62,8 @@
           v-for="(league, index) in allLeagues"
           :key="league.id"
           :league="league"
-          :show-arrow="index < allLeagues.length - 1"
-          :is-next-available="
-            index < allLeagues.length - 1 ? allLeagues[index + 1].isAvailable : false
-          "
+          :show-arrow="isNextLeagueAvailable(index)"
+          :is-next-available="isNextLeagueAvailable(index)"
           @select="handleLeagueSelect"
         />
       </div>
