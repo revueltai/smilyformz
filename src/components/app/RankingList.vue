@@ -2,6 +2,8 @@
   import { ref, computed } from 'vue'
   import RankingItem from '@/components/app/RankingItem.vue'
   import Tabs from '@/components/shared/Tabs/index.vue'
+  import Loader from '@/components/shared/Loader/index.vue'
+  import Button from '@/components/shared/Button/index.vue'
   import { GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import type { LeagueRankingListRankItem, GameLeagueLevelKey } from '@/types/game'
   import { useI18n } from 'vue-i18n'
@@ -9,10 +11,13 @@
 
   const props = defineProps<{
     list?: LeagueRankingListRankItem[]
+    loading?: boolean
+    error?: string | null
   }>()
 
   const emit = defineEmits<{
-    'tab-change': [index: number]
+    change: [index: number]
+    retry: []
   }>()
 
   const { t } = useI18n()
@@ -40,7 +45,11 @@
 
   function handleTabChange(index: number) {
     activeTab.value = index
-    emit('tab-change', index)
+    emit('change', index)
+  }
+
+  function handleRetry() {
+    emit('retry')
   }
 </script>
 
@@ -51,8 +60,8 @@
       :active-tab="activeTab"
       tabs-container-classes="bg-white gap-0.5"
       tabs-content-classes="py-2 px-0 overflow-y-auto"
-      @tab-change="handleTabChange"
       class="bg-slate-100 rounded-xl overflow-hidden"
+      @tab-change="handleTabChange"
     >
       <template #tabs="{ items, activeTab, handleTabClick }">
         <div
@@ -75,7 +84,30 @@
       </template>
 
       <template #default>
-        <ol class="flex flex-col">
+        <Loader
+          v-if="loading"
+          size="lg"
+          class="flex items-center justify-center py-8"
+        />
+
+        <div
+          v-else-if="error"
+          class="flex flex-col items-center justify-center py-8 gap-4"
+        >
+          <p class="text-red-500 text-center">{{ $t(error) }}</p>
+
+          <Button
+            size="sm"
+            @click="handleRetry"
+          >
+            {{ $t('retry') }}
+          </Button>
+        </div>
+
+        <ol
+          v-else
+          class="flex flex-col"
+        >
           <li
             v-for="item in activeLeagueData"
             :key="item.position"

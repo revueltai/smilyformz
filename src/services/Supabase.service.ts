@@ -12,7 +12,6 @@ interface UserPayload {
   country: string
 }
 
-// Type-safe database function names
 export const DATABASE_FUNCTIONS = {
   CHECK_USER_EXISTS: 'check_user_exists',
   DELETE_USER_DATA: 'delete_user_data',

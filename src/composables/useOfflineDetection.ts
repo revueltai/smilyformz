@@ -2,6 +2,11 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useModalStore } from '@/stores/modal.store'
 import { MODALS } from '@/configs/constants'
 
+/**
+ * Handles the offline detection for the app when the user is offline.
+ * It shows a modal to the user to inform them that they are offline.
+ * It also handles the retry action when the user is online.
+ */
 export function useOfflineDetection() {
   const isOnline = ref(navigator.onLine)
   const modalStore = useModalStore()

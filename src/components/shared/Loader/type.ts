@@ -1,8 +1,6 @@
-import type { Color } from '@/types/theme'
-
-type LoaderSizes = 'sm' | 'md' | 'lg'
+type LoaderSizes = 'sm' | 'md' | 'lg' | 'xl'
 
 export interface LoaderProps {
-  color?: Color
+  color?: string
   size?: LoaderSizes
 }

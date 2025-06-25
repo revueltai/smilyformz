@@ -3,7 +3,7 @@
   import type { LoaderProps } from './type'
 
   const props = withDefaults(defineProps<LoaderProps>(), {
-    color: 'blue',
+    color: '#155DFC',
     size: 'md',
   })
 

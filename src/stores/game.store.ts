@@ -18,6 +18,9 @@ interface GameTime {
   minutes: number
 }
 
+/**
+ * Handles the game state for the app.
+ */
 export const useGameStore = defineStore('game', () => {
   const userStore = useUserStore()
 

@@ -1,38 +1,26 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, computed } from 'vue'
   import Page from '@/components/app/Page.vue'
   import RankingList from '@/components/app/RankingList.vue'
+  import RankingCta from '@/components/app/RankingCta.vue'
   import Icon from '@/components/shared/Icon/index.vue'
-  import Button from '@/components/shared/Button/index.vue'
-  import Loader from '@/components/shared/Loader/index.vue'
-  import { supabase } from '@/services/Supabase.service'
+  import { useRankingStore } from '@/stores/ranking.store'
   import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS } from '@/configs/constants'
-  import type { GameLeagueLevelKey, LeagueRankingListRankItem } from '@/types/game'
+  import type { GameLeagueLevelKey } from '@/types/game'
 
-  const rankingData = ref<LeagueRankingListRankItem[]>([])
-
-  const loading = ref(false)
-
-  const error = ref<string | null>(null)
+  const rankingStore = useRankingStore()
 
   const activeLeague = ref<GameLeagueLevelKey>(DEFAULT_LEAGUE_LEVEL)
 
-  async function fetchRankings(leagueLevel: GameLeagueLevelKey) {
-    loading.value = true
-    error.value = null
+  const rankingData = computed(() => rankingStore.getRankings(activeLeague.value))
+  const loading = computed(() => rankingStore.isLoading(activeLeague.value))
+  const error = computed(() => rankingStore.hasError(activeLeague.value))
 
+  async function fetchRankings(leagueLevel: GameLeagueLevelKey) {
     try {
-      const data = await supabase.getLeagueRankings(leagueLevel)
-      rankingData.value = data.map((item) => ({
-        ...item,
-        league: item.league as GameLeagueLevelKey,
-      }))
+      await rankingStore.fetchRankings(leagueLevel)
     } catch (err) {
       console.error('Failed to fetch rankings:', err)
-      error.value = 'failedToLoadRankings'
-      rankingData.value = []
-    } finally {
-      loading.value = false
     }
   }
 
@@ -44,6 +32,10 @@
       activeLeague.value = newLeague
       fetchRankings(newLeague)
     }
+  }
+
+  function handleRetry() {
+    rankingStore.refreshRankings(activeLeague.value)
   }
 
   onMounted(() => fetchRankings(activeLeague.value))
@@ -67,59 +59,15 @@
       </header>
 
       <div class="flex flex-col gap-4 min-h-0 flex-1">
-        <Loader
-          v-if="loading"
-          size="lg"
-          class="flex items-center justify-center py-8"
-        />
-
-        <div
-          v-else-if="error"
-          class="flex flex-col items-center justify-center py-8 gap-4"
-        >
-          <p class="text-red-500 text-center">{{ $t(error) }}</p>
-
-          <Button
-            size="sm"
-            @click="fetchRankings(activeLeague)"
-          >
-            {{ $t('retry') }}
-          </Button>
-        </div>
-
         <RankingList
-          v-else
           :list="rankingData"
-          @tab-change="handleTabChange"
+          :loading="loading"
+          :error="error"
+          @change="handleTabChange"
+          @retry="handleRetry"
         />
 
-        <div
-          v-if="!error"
-          class="flex flex-col items-center gap-3 mt-2 shrink-0"
-        >
-          <p class="text-center text-xs text-slate-400">
-            {{ $t('globalRankingTeaser1') }}<br />
-            {{ $t('globalRankingTeaser2') }}
-          </p>
-
-          <Button
-            size="xs"
-            to="game"
-            border-color="lime-600"
-            border-color-hover="lime-400"
-            background-color="lime-100"
-            background-color-hover="lime-200"
-            text-color="lime-800"
-          >
-            <Icon
-              name="play"
-              size="sm"
-              color="lime-800"
-            />
-
-            {{ $t('playNow') }}
-          </Button>
-        </div>
+        <RankingCta v-if="!error" />
       </div>
     </div>
   </Page>

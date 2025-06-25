@@ -5,7 +5,11 @@ import { useTileGeneration } from './useTileGeneration'
 import { useCollisionDetection } from './useCollisionDetection'
 
 /**
- * Handles the animation of rows
+ * Handles the animation of rows on the game board.
+ * It also handles the collision detection and the tile generation.
+ * It also handles the row reset and the row spacing.
+ * It also handles the row animation and the row spacing.
+ * It also handles the row animation and the row spacing.
  */
 export function useRowAnimation() {
   const gameStore = useGameStore()

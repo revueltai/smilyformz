@@ -1,11 +1,5 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<mask id="mask0_1624_3729" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="1" y="1" width="22" height="22">
-<circle cx="12" cy="12" r="11" fill="#D9D9D9"/>
-</mask>
-<g mask="url(#mask0_1624_3729)">
-<rect x="1" y="8" width="22" height="8" fill="#E7000B"/>
-<rect x="1" width="22" height="8" fill="black"/>
-<rect x="1" y="16" width="22" height="8" fill="#FFD230"/>
-<circle cx="12" cy="12" r="10.5" stroke="#E2E8F0"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" id="flag-icons-de" viewBox="0 0 512 512">
+  <path fill="#fc0" d="M0 341.3h512V512H0z"/>
+  <path fill="#000001" d="M0 0h512v170.7H0z"/>
+  <path fill="red" d="M0 170.7h512v170.6H0z"/>
 </svg>

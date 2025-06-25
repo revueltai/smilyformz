@@ -18,7 +18,11 @@ interface PowerUpEffects {
 }
 
 /**
- * Handles tile collision detection and scoring
+ * Handles tile collision detection and scoring for the game.
+ * It also handles the character update on match.
+ * It also handles the power up effects.
+ * It also handles the match evaluation.
+ * It also handles the collision evaluation.
  */
 export function useTileCollision() {
   const gameStore = useGameStore()
