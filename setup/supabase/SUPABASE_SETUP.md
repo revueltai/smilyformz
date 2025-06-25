@@ -56,7 +56,7 @@ The `rls_policies.sql` file contains the necessary Row Level Security policies f
 - **UPDATE**: Users can update their own game sessions
 - **DELETE**: Users can delete their own game sessions
 
-### global_ranking table
+### leagues_ranking table
 
 - **SELECT**: Anyone can view global rankings
 - **INSERT**: Users can insert their own ranking entries

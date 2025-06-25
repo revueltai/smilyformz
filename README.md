@@ -131,7 +131,7 @@ The application requires a Supabase database with the following setup:
 
 1. **Database Functions**: Run `setup/supabase/supabase_functions.sql`
 2. **RLS Policies**: Run `setup/supabase/rls_policies.sql`
-3. **Tables**: `game_sessions`, `global_ranking`
+3. **Tables**: `game_sessions`, `leagues_ranking`
 
 See [setup/README.md](setup/README.md) for detailed database setup instructions.
 

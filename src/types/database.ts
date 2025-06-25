@@ -8,6 +8,7 @@ export interface Database {
           user_id: string | null
           score: string | null
           duration: string | null
+          league_level: string
         }
         Insert: {
           id?: string
@@ -15,6 +16,7 @@ export interface Database {
           user_id?: string | null
           score?: string | null
           duration?: string | null
+          league_level?: string
         }
         Update: {
           id?: string
@@ -22,26 +24,33 @@ export interface Database {
           user_id?: string | null
           score?: string | null
           duration?: string | null
+          league_level?: string
         }
       }
-      global_ranking: {
+      leagues_ranking: {
         Row: {
           id: number
           created_at: string
           user_id: string | null
           position: number | null
+          score?: string | null
+          league_level: string
         }
         Insert: {
           id?: number
           created_at?: string
           user_id?: string | null
           position?: number | null
+          score?: string | null
+          league_level?: string
         }
         Update: {
           id?: number
           created_at?: string
           user_id?: string | null
           position?: number | null
+          score?: string | null
+          league_level?: string
         }
       }
     }
