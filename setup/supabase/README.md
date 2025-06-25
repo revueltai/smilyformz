@@ -10,6 +10,11 @@ This folder contains all Supabase-related setup files and documentation for the 
 - **[rls_policies.sql](./rls_policies.sql)**: Row Level Security policies for database tables (refactored to use "leagues" terminology)
 - **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)**: Complete setup and deployment guide
 
+### Functions (Organized)
+
+- **[functions/](./functions/)**: Folder containing individual function files
+  - **[README.md](./functions/README.md)**: Documentation for all functions
+
 ### Mock Data (Development Only)
 
 - **[mocks/](./mocks/)**: Folder containing dummy data scripts for development/testing
@@ -24,3 +29,4 @@ This folder contains all Supabase-related setup files and documentation for the 
 - `is_account_deleted(p_user_id)`: Checks if a user account has been deleted
 - `validate_account_status(p_email)`: Validates account status before login
 - `cleanup_deleted_users(p_retention_days)`: Cron job function to permanently delete old deleted accounts
+- `update_league_rankings(p_top_players_per_league)`: Cron job function to update league rankings
