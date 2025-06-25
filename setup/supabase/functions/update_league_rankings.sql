@@ -48,7 +48,7 @@ AS $$
 DECLARE
   league_record RECORD;
   total_rankings INTEGER := 0;
-  league_stats JSON := '{}'::json;
+  league_stats JSONB := '{}'::jsonb;
   league_count INTEGER;
   result JSON;
 BEGIN
@@ -61,13 +61,6 @@ BEGIN
     FROM game_sessions 
     WHERE league_level IS NOT NULL 
     AND league_level IN ('easy', 'medium', 'hard', 'legend')
-    ORDER BY 
-      CASE league_level 
-        WHEN 'easy' THEN 1 
-        WHEN 'medium' THEN 2 
-        WHEN 'hard' THEN 3 
-        WHEN 'legend' THEN 4 
-      END
   LOOP
     -- Insert top players for this league
     WITH top_players AS (
@@ -108,7 +101,7 @@ BEGIN
     WHERE league_level = league_record.league_level;
     
     -- Update league_stats with the count for this league
-    league_stats := league_stats || json_build_object(league_record.league_level, league_count);
+    league_stats := league_stats || jsonb_build_object(league_record.league_level, league_count);
     
     total_rankings := total_rankings + league_count;
   END LOOP;
