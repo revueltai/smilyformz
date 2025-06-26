@@ -14,6 +14,7 @@
 --   This function fetches league rankings with user display names and countries
 --   in a single query by joining leagues_ranking with auth.users table.
 --   This is the production-ready approach for fetching ranking data.
+--   Results are ordered by score (descending) within each league group.
 -- 
 -- Returns table structure:
 --   position: INTEGER - Player's position in the league
@@ -59,7 +60,7 @@ BEGIN
   LEFT JOIN auth.users u ON lr.user_id = u.id
   WHERE lr.league_level = p_league_level
     AND (u.raw_user_meta_data->>'account_deleted' IS NULL OR u.raw_user_meta_data->>'account_deleted' != 'true')
-  ORDER BY lr.position ASC
+  ORDER BY CAST(lr.score AS INTEGER) DESC
   LIMIT p_limit;
 END;
 $$;

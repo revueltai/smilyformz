@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { getRandomNumber } from '@/utils'
+  import { useUserStore } from '@/stores/user.store'
 
   const props = defineProps<{
     position: number
@@ -8,6 +9,8 @@
     score: number | string
     country?: string
   }>()
+
+  const userStore = useUserStore()
 
   const cssClassesPosition = computed(() => {
     switch (props.position) {
@@ -27,7 +30,14 @@
 </script>
 
 <template>
-  <div class="flex items-center justify-between gap-3 uppercase text-xs text-slate-400 px-3 py-2">
+  <div
+    class="flex items-center justify-between gap-3 uppercase text-xs px-3 py-2"
+    :class="
+      username === userStore.displayName
+        ? 'bg-blue-200 text-blue-800 font-bold rounded-lg shadow-xs'
+        : 'bg-transparent text-slate-400'
+    "
+  >
     <div class="flex items-center gap-2">
       <span
         :class="cssClassesPosition"
@@ -53,6 +63,6 @@
       <div class="truncate max-w-[150px]">{{ username }}</div>
     </div>
 
-    <span class="font-bold">{{ getRandomNumber(Number(score)) }} pts</span>
+    <span class="font-bold">{{ score }} {{ $t('points') }}</span>
   </div>
 </template>

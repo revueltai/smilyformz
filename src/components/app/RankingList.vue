@@ -110,11 +110,11 @@
             class="flex flex-col"
           >
             <li
-              v-for="item in activeLeagueData"
-              :key="item.position"
+              v-for="(item, index) in activeLeagueData"
+              :key="index"
             >
               <RankingItem
-                :position="item.position"
+                :position="index + 1"
                 :username="item.username"
                 :score="item.score"
                 :country="item.country"

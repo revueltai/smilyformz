@@ -82,6 +82,7 @@
     evaluateCollision({
       id: props.id,
       type: 'Tile',
+      size: props.size,
       expression: props.expression,
       shape: sanitizedShape.value,
       shapeColor: sanitizedShapeColor.value,
