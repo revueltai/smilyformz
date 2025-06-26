@@ -17,9 +17,11 @@
   import { useFormValidation } from '@/composables/useFormValidation'
   import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
   import type { ValidationState } from '@/composables/useFormValidation'
+  import { useGameStore } from '@/stores/game.store'
 
   const router = useRouter()
   const { t } = useI18n()
+  const gameStore = useGameStore()
   const { validatePassword, validateEmail } = useFormValidation()
 
   const userStore = useUserStore()
@@ -270,6 +272,7 @@
 
   async function handleLogout() {
     try {
+      gameStore.setLeagueLevel()
       modalStore.closeModal()
       await userStore.signOut()
       ToastService.emitToast(t('logoutSuccess'), 'success')

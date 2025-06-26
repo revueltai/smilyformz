@@ -62,7 +62,7 @@ export const TILE_DEFAULTS = {
   backgroundColor: TILE_COLORS.COLOR1.backgroundColor,
 }
 
-export const DEFAULT_LEAGUE_LEVEL = 'easy'
+export const DEFAULT_LEAGUE_LEVEL_NAME = 'easy'
 
 export const LEAGUE_RANKING_LIST_LIMIT = 100
 

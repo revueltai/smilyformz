@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
   import Page from '@/components/app/Page.vue'
   import { useModalStore } from '@/stores/modal.store'
   import ModalLogin from '@/components/app/ModalLogin.vue'

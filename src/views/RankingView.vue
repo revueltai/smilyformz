@@ -5,12 +5,12 @@
   import RankingCta from '@/components/app/RankingCta.vue'
   import Icon from '@/components/shared/Icon/index.vue'
   import { useRankingStore } from '@/stores/ranking.store'
-  import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS } from '@/configs/constants'
+  import { DEFAULT_LEAGUE_LEVEL_NAME, GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import type { GameLeagueLevelKey } from '@/types/game'
 
   const rankingStore = useRankingStore()
 
-  const activeLeague = ref<GameLeagueLevelKey>(DEFAULT_LEAGUE_LEVEL)
+  const activeLeague = ref<GameLeagueLevelKey>(DEFAULT_LEAGUE_LEVEL_NAME)
 
   const rankingData = computed(() => rankingStore.getRankings(activeLeague.value))
   const loading = computed(() => rankingStore.isLoading(activeLeague.value))

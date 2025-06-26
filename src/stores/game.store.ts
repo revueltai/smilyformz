@@ -5,7 +5,7 @@ import {
   TILE_COLORS,
   TILE_SHAPES,
   GAME_LEAGUE_LEVELS,
-  DEFAULT_LEAGUE_LEVEL,
+  DEFAULT_LEAGUE_LEVEL_NAME,
 } from '@/configs/constants'
 import type { TileShape, TileExpression, TileSize } from '@/components/app/tile/types'
 import type { GameLeagueLevelKey } from '@/types/game'
@@ -24,7 +24,7 @@ interface GameTime {
 export const useGameStore = defineStore('game', () => {
   const userStore = useUserStore()
 
-  const initialLeagueLevel = userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL
+  const initialLeagueLevel = userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL_NAME
   const initialLeagueSettings = GAME_LEAGUE_LEVELS[initialLeagueLevel]
 
   // Speed milestones for increasing the game speed
@@ -288,9 +288,10 @@ export const useGameStore = defineStore('game', () => {
   /**
    * Sets the league level for the current game session
    *
-   * @param leagueLevelInput - The league level to set
+   * @param leagueLevelInput - The league level to set (Default: DEFAULT_LEAGUE_LEVEL_NAME)
    */
-  function setLeagueLevel(leagueLevelInput: GameLeagueLevelKey) {
+  function setLeagueLevel(leagueLevelInput: GameLeagueLevelKey = DEFAULT_LEAGUE_LEVEL_NAME) {
+    console.log('setLeagueLevel', leagueLevelInput)
     const leagueSettings = GAME_LEAGUE_LEVELS[leagueLevelInput]
 
     leagueLevel.value = leagueLevelInput

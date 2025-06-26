@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase, DATABASE_FUNCTIONS } from '@/services/Supabase.service'
-import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
+import { DEFAULT_LEAGUE_LEVEL_NAME, GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
 import type { GameLeagueLevelKey } from '@/types/game'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
@@ -45,7 +45,7 @@ export const useUserStore = defineStore('user', () => {
     () => profile.value?.display_name || user.value?.user_metadata?.display_name || '',
   )
 
-  const leagueLevelKey = computed(() => profile.value?.league_level || DEFAULT_LEAGUE_LEVEL)
+  const leagueLevelKey = computed(() => profile.value?.league_level || DEFAULT_LEAGUE_LEVEL_NAME)
 
   const leagueLevel = computed(() => GAME_LEAGUE_LEVELS[leagueLevelKey.value])
 
@@ -168,7 +168,7 @@ export const useUserStore = defineStore('user', () => {
           shape_color: avatar_shape_color || TILE_DEFAULTS.shapeColor,
           background_color: avatar_background_color || TILE_DEFAULTS.backgroundColor,
         },
-        league_level: league_level || GAME_LEAGUE_LEVELS.easy,
+        league_level: league_level || GAME_LEAGUE_LEVELS[DEFAULT_LEAGUE_LEVEL_NAME],
         music: music.value,
         sound: sound.value,
         language: language.value,

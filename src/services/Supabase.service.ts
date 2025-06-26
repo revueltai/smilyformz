@@ -1,7 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
-import { DEFAULT_LEAGUE_LEVEL, LEAGUE_RANKING_LIST_LIMIT, TILE_DEFAULTS } from '@/configs/constants'
+import {
+  DEFAULT_LEAGUE_LEVEL_NAME,
+  LEAGUE_RANKING_LIST_LIMIT,
+  TILE_DEFAULTS,
+} from '@/configs/constants'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 import type { LeagueRankingItem } from '@/types/game'
 
@@ -176,7 +180,7 @@ export class SupabaseService {
           display_name,
           country,
           language: DEFAULT_LANGUAGE_CODE,
-          league_level: DEFAULT_LEAGUE_LEVEL,
+          league_level: DEFAULT_LEAGUE_LEVEL_NAME,
           music: false,
           sound: false,
           avatar_shape: TILE_DEFAULTS.shape,

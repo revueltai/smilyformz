@@ -127,7 +127,6 @@ export function useTileCollision() {
       disableCollidedRow(tile.id)
       updateRowTilesToMatchCharacter(getTileRowId(tile.id))
 
-      // Show character message when tile is matched
       Bus.emit('characterMessage', {})
 
       return
