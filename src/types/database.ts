@@ -32,7 +32,6 @@ export interface Database {
           id: number
           created_at: string
           user_id: string | null
-          position: number | null
           score?: string | null
           league_level: string
         }
@@ -40,7 +39,6 @@ export interface Database {
           id?: number
           created_at?: string
           user_id?: string | null
-          position?: number | null
           score?: string | null
           league_level?: string
         }
@@ -48,7 +46,6 @@ export interface Database {
           id?: number
           created_at?: string
           user_id?: string | null
-          position?: number | null
           score?: string | null
           league_level?: string
         }

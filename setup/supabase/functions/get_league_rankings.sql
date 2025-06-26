@@ -13,11 +13,9 @@
 -- Description:
 --   This function fetches league rankings with user display names and countries
 --   in a single query by joining leagues_ranking with auth.users table.
---   This is the production-ready approach for fetching ranking data.
 --   Results are ordered by score (descending) within each league group.
 -- 
 -- Returns table structure:
---   position: INTEGER - Player's position in the league
 --   username: TEXT - Player's display name
 --   score: TEXT - Player's score
 --   country: TEXT - Player's country code
@@ -39,7 +37,6 @@ CREATE OR REPLACE FUNCTION get_league_rankings(
   p_limit INTEGER DEFAULT 100
 )
 RETURNS TABLE (
-  "position" INTEGER,
   username TEXT,
   score TEXT,
   country TEXT,
@@ -51,7 +48,6 @@ AS $$
 BEGIN
   RETURN QUERY
   SELECT 
-    lr.position::INTEGER,
     COALESCE(u.raw_user_meta_data->>'display_name', 'Unknown Player')::TEXT as username,
     COALESCE(lr.score, '0')::TEXT as score,
     COALESCE(u.raw_user_meta_data->>'country', 'unknown')::TEXT as country,

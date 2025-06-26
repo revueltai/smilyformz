@@ -83,15 +83,13 @@ BEGIN
         user_id,
         username,
         country,
-        highest_score,
-        ROW_NUMBER() OVER (ORDER BY highest_score DESC) as position
+        highest_score
       FROM top_players
     )
-    INSERT INTO leagues_ranking (user_id, league_level, position, score)
+    INSERT INTO leagues_ranking (user_id, league_level, score)
     SELECT 
       user_id,
       league_record.league_level,
-      position,
       highest_score::text
     FROM ranked_players;
     
