@@ -1,14 +1,7 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import { useUserStore } from '@/stores/user.store'
 
   const userStore = useUserStore()
-
-  const currentLeague = computed(() => {
-    const leagueLevel = userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL
-    return GAME_LEAGUE_LEVELS[leagueLevel]
-  })
 </script>
 
 <template>
@@ -21,12 +14,12 @@
       class="flex w-full justify-center items-center gap-3 rounded-md bg-white text-slate-900 py-3.5 px-4 h"
     >
       <img
-        :src="`/images/leagues/${currentLeague.id}.svg`"
+        :src="`/images/leagues/${userStore.leagueLevel.id}.svg`"
         alt="League badge"
         class="w-10 h-10"
       />
 
-      <p class="text-base font-bold text-blue-950">{{ $t(currentLeague.name) }}</p>
+      <p class="text-base font-bold text-blue-950">{{ $t(userStore.leagueLevel.name) }}</p>
     </div>
   </div>
 </template>

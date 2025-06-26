@@ -310,7 +310,7 @@ export const useGameStore = defineStore('game', () => {
       return { updated: false }
     }
 
-    const currentLeague = userStore.profile.league_level
+    const currentLeague = userStore.leagueLevelKey
     const leagueKeys = Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[]
 
     if (canAdvanceToNextLeague(currentLeague, GAME_LEAGUE_LEVELS)) {

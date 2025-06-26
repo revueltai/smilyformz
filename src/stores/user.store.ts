@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase, DATABASE_FUNCTIONS } from '@/services/Supabase.service'
-import { GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
+import { DEFAULT_LEAGUE_LEVEL, GAME_LEAGUE_LEVELS, TILE_DEFAULTS } from '@/configs/constants'
 import type { GameLeagueLevelKey } from '@/types/game'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
@@ -44,6 +44,10 @@ export const useUserStore = defineStore('user', () => {
   const displayName = computed(
     () => profile.value?.display_name || user.value?.user_metadata?.display_name || '',
   )
+
+  const leagueLevelKey = computed(() => profile.value?.league_level || DEFAULT_LEAGUE_LEVEL)
+
+  const leagueLevel = computed(() => GAME_LEAGUE_LEVELS[leagueLevelKey.value])
 
   const email = computed(() => profile.value?.email || user.value?.email || '')
 
@@ -529,6 +533,8 @@ export const useUserStore = defineStore('user', () => {
     sound,
     language,
     isEmailConfirmed,
+    leagueLevelKey,
+    leagueLevel,
 
     // Actions
     initialize,

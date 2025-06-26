@@ -3,7 +3,6 @@
   import Page from '@/components/app/Page.vue'
   import HeaderUser from '@/components/app/HeaderUser.vue'
   import StatBlockItem from '@/components/app/StatBlockItem.vue'
-  import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
   import ModalShare from '@/components/app/ModalShare.vue'
   import ModalLeagueSelection from '@/components/app/ModalLeagueSelection.vue'
   import LeagueBlock from '@/components/app/LeagueBlock.vue'
@@ -60,11 +59,6 @@
       :avatar-background-color="userStore.profile?.avatar.background_color"
       :avatar-expression="userStore.profile?.avatar.expression"
       class="animate-bounce-subtle"
-    />
-
-    <EmailConfirmationWarning
-      :is-confirmed="userStore.isEmailConfirmed"
-      class="animate-bounce-subtle-1"
     />
 
     <div class="flex flex-col gap-4">
