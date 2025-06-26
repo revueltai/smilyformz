@@ -14,9 +14,9 @@
 
   const cssClasses = computed(() => {
     return {
-      'bg-blue-300': type.value === 'info',
-      'bg-lime-300': type.value === 'success',
-      'bg-rose-300': type.value === 'error',
+      'bg-blue-50 border-blue-300': type.value === 'info',
+      'bg-lime-50 border-lime-300': type.value === 'success',
+      'bg-rose-50 border-rose-300': type.value === 'error',
     }
   })
 
@@ -57,10 +57,10 @@
   <div
     v-show="isVisible"
     ref="toastRef"
-    class="absolute top-0 left-0 w-full z-50 px-2"
+    class="absolute top-0 left-0 w-full z-50 p-4"
   >
     <div
-      class="min-w-40 text-center shadow-md top-0 px-8 py-4 rounded-b-3xl text-slate-700 text-sm sm:text-base"
+      class="min-w-40 text-center shadow-lg top-0 px-8 py-4 rounded-lg border text-slate-600 text-sm sm:text-base"
       :class="cssClasses"
     >
       {{ message }}
