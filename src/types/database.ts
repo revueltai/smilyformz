@@ -6,7 +6,7 @@ export interface Database {
           id: string
           created_at: string
           user_id: string | null
-          score: string | null
+          score: number | null
           duration: string | null
           league_level: string
         }
@@ -14,7 +14,7 @@ export interface Database {
           id?: string
           created_at?: string
           user_id?: string | null
-          score?: string | null
+          score?: number | null
           duration?: string | null
           league_level?: string
         }
@@ -22,7 +22,7 @@ export interface Database {
           id?: string
           created_at?: string
           user_id?: string | null
-          score?: string | null
+          score?: number | null
           duration?: string | null
           league_level?: string
         }
@@ -32,21 +32,21 @@ export interface Database {
           id: number
           created_at: string
           user_id: string | null
-          score?: string | null
+          score?: number | null
           league_level: string
         }
         Insert: {
           id?: number
           created_at?: string
           user_id?: string | null
-          score?: string | null
+          score?: number | null
           league_level?: string
         }
         Update: {
           id?: number
           created_at?: string
           user_id?: string | null
-          score?: string | null
+          score?: number | null
           league_level?: string
         }
       }
