@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import RankingItem from '@/components/app/RankingItem.vue'
   import Tabs from '@/components/shared/Tabs/index.vue'
   import Loader from '@/components/shared/Loader/index.vue'
@@ -23,6 +23,7 @@
   const { t } = useI18n()
 
   const activeTab = ref(0)
+  const tabChangeAnimationKey = ref(0)
 
   const tabItems = computed(() => {
     return Object.keys(GAME_LEAGUE_LEVELS).map((leagueKey) => ({
@@ -45,6 +46,8 @@
 
   function handleTabChange(index: number) {
     activeTab.value = index
+    tabChangeAnimationKey.value++
+
     emit('change', index)
   }
 
@@ -111,7 +114,12 @@
           >
             <li
               v-for="(item, index) in activeLeagueData"
-              :key="index"
+              :key="`${tabChangeAnimationKey}-${index}`"
+              class="ranking-item"
+              :style="{
+                animationDelay: `${index * 50}ms`,
+                animationFillMode: 'both',
+              }"
             >
               <RankingItem
                 :position="index + 1"
@@ -126,3 +134,22 @@
     </Tabs>
   </div>
 </template>
+
+<style scoped>
+  .ranking-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.4s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
