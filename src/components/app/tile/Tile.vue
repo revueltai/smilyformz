@@ -11,6 +11,7 @@
     TileExpression,
     TilePowerUpType,
     TileExpressionPowerDown,
+    TileSize,
   } from '@/components/app/tile/types'
   import type { RefElement } from '@/components/shared/types'
 
@@ -24,6 +25,7 @@
       checkForCollision?: boolean
       checkCollisionInterval?: number
       powerUpType?: TilePowerUpType
+      size?: TileSize
     }>(),
     {
       shapeColor: TILE_DEFAULTS.shapeColor,
@@ -120,6 +122,7 @@
     :style="cssStyles"
   >
     <Shape
+      :size="size"
       :shape="sanitizedShape"
       :color="sanitizedShapeColor"
       :power-up-type="powerUpType"
@@ -128,7 +131,10 @@
     />
 
     <div class="absolute inset-0 z-10 flex items-center justify-center">
-      <Expression :expression="expression" />
+      <Expression
+        :size="size"
+        :expression="expression"
+      />
     </div>
 
     <div

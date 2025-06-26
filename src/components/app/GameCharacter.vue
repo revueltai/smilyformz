@@ -84,6 +84,7 @@
   >
     <div class="relative w-full h-full">
       <Tile
+        :size="gameStore.tileSize"
         :id="gameStore.character.id"
         :shape="gameStore.character.shape"
         :expression="gameStore.character.expression"

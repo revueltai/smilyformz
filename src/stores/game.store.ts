@@ -7,7 +7,7 @@ import {
   GAME_LEAGUE_LEVELS,
   DEFAULT_LEAGUE_LEVEL,
 } from '@/configs/constants'
-import type { TileShape, TileExpression } from '@/components/app/tile/types'
+import type { TileShape, TileExpression, TileSize } from '@/components/app/tile/types'
 import type { GameLeagueLevelKey } from '@/types/game'
 import { getRandomItem, canAdvanceToNextLeague } from '@/utils'
 import { supabase } from '@/services/Supabase.service'
@@ -24,12 +24,33 @@ interface GameTime {
 export const useGameStore = defineStore('game', () => {
   const userStore = useUserStore()
 
-  const initialLeagueSettings =
-    GAME_LEAGUE_LEVELS[userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL]
+  const initialLeagueLevel = userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL
+  const initialLeagueSettings = GAME_LEAGUE_LEVELS[initialLeagueLevel]
+
+  // Speed milestones for increasing the game speed
+  const SPEED_MILESTONES = [
+    [15, 2.7],
+    [30, 2.9],
+    [60, 3.3],
+    [180, 3.5],
+    [360, 4],
+    [720, 5],
+    [1440, 6],
+    [2880, 7],
+  ]
+
+  // Tile size map based on the league level
+  const LEAGUE_TILE_SIZE_MAP: Record<GameLeagueLevelKey, TileSize> = {
+    easy: 'xl',
+    medium: 'lg',
+    hard: 'md',
+    legend: 'sm',
+  }
 
   let timeInterval: number | null = null
   const pointsPerMatch = ref(1)
   const score = ref(0)
+  const leagueLevel = ref(initialLeagueLevel)
   const totalRowsLength = ref(initialLeagueSettings.totalRowsLength)
   const initialRowSpacing = ref(initialLeagueSettings.initialRowSpacing)
   const gameSpeed = ref(initialLeagueSettings.initialSpeed)
@@ -42,18 +63,6 @@ export const useGameStore = defineStore('game', () => {
     minutes: 0,
   })
 
-  // Speed milestones for increasing the game speed
-  const speedMilestones = [
-    [15, 2.7],
-    [30, 2.9],
-    [60, 3.3],
-    [180, 3.5],
-    [360, 4],
-    [720, 5],
-    [1440, 6],
-    [2880, 7],
-  ]
-
   // Character state
   const character = ref({
     id: 'character',
@@ -63,6 +72,9 @@ export const useGameStore = defineStore('game', () => {
     backgroundColor: getRandomItem(Object.values(TILE_COLORS)).backgroundColor,
     expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
   })
+
+  // Tile size based on the league level, the smaller the league level, the bigger the tile size
+  const tileSize = computed(() => LEAGUE_TILE_SIZE_MAP[leagueLevel.value] as TileSize)
 
   // Formatted time for display
   const formattedTime = computed(() => {
@@ -76,7 +88,7 @@ export const useGameStore = defineStore('game', () => {
   function checkAndIncreaseSpeed() {
     const totalSeconds = time.value.minutes * 60 + time.value.seconds
 
-    for (const [milestoneSeconds, targetSpeed] of speedMilestones) {
+    for (const [milestoneSeconds, targetSpeed] of SPEED_MILESTONES) {
       if (totalSeconds === milestoneSeconds && gameSpeed.value < targetSpeed) {
         gameSpeed.value = targetSpeed
         showSpeedIncreaseNotification.value = true
@@ -276,10 +288,12 @@ export const useGameStore = defineStore('game', () => {
   /**
    * Sets the league level for the current game session
    *
-   * @param leagueLevel - The league level to set
+   * @param leagueLevelInput - The league level to set
    */
-  function setLeagueLevel(leagueLevel: GameLeagueLevelKey) {
-    const leagueSettings = GAME_LEAGUE_LEVELS[leagueLevel]
+  function setLeagueLevel(leagueLevelInput: GameLeagueLevelKey) {
+    const leagueSettings = GAME_LEAGUE_LEVELS[leagueLevelInput]
+
+    leagueLevel.value = leagueLevelInput
     totalRowsLength.value = leagueSettings.totalRowsLength
     initialRowSpacing.value = leagueSettings.initialRowSpacing
     gameSpeed.value = leagueSettings.initialSpeed
@@ -326,6 +340,7 @@ export const useGameStore = defineStore('game', () => {
 
   return {
     character,
+    tileSize,
     pointsPerMatch,
     score,
     gameSpeed,
@@ -337,6 +352,7 @@ export const useGameStore = defineStore('game', () => {
     formattedTime,
     totalRowsLength,
     initialRowSpacing,
+    leagueLevel,
     incrementScore,
     resetScore,
     setGameOver,

@@ -13,17 +13,17 @@
     }>(),
     {
       expression: TILE_DEFAULTS.expression as TileExpression,
-      size: 'xs',
+      size: 'xl',
     },
   )
 
   const SIZES = {
-    xs: 56,
-    sm: 72,
-    md: 88,
-    lg: 104,
-    xl: 120,
-    '2xl': 136,
+    xs: 12,
+    sm: 16,
+    md: 28,
+    lg: 40,
+    xl: 56,
+    '2xl': 88,
   }
 </script>
 

@@ -130,6 +130,7 @@ export function useTileGeneration() {
       id: `${rowId}-tile${tileIndex}-${resetKey}`,
       type: 'Tile',
       shape,
+      size: gameStore.tileSize,
       expression: getRandomItem(EXPRESSIONS),
       shapeColor: colorPair.shapeColor,
       backgroundColor: colorPair.backgroundColor,

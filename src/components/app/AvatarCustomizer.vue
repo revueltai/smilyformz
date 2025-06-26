@@ -52,7 +52,7 @@
             v-for="shape in shapes"
             :key="shape"
             :shape="shape"
-            size="sm"
+            size="xl"
             class="cursor-pointer active:scale-95 transition-transform"
             @click="$emit('update:shape', shape)"
           />

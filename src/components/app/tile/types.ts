@@ -23,6 +23,7 @@ export type TileRowItem = {
   id: string
   type: 'Tile'
   shape: TileShape
+  size: TileSize
   expression: TileExpression | TileExpressionPowerDown
   shapeColor: string
   backgroundColor: string

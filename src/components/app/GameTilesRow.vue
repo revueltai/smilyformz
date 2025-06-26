@@ -11,7 +11,7 @@
 <template>
   <div class="tile-row w-full absolute">
     <div
-      class="tile-row-grid grid gap-2 p-2 h-32 opacity-90"
+      class="tile-row-grid grid gap-2 p-2 opacity-90"
       :style="createCssVar('total-rows-length', tiles.length.toString())"
     >
       <Tile
@@ -21,6 +21,7 @@
         :id="tile.id"
         :data-id="tile.id"
         :shape="tile.shape"
+        :size="tile.size"
         :expression="tile.expression"
         :shape-color="tile.shapeColor"
         :background-color="tile.backgroundColor"

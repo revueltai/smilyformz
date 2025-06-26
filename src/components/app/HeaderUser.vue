@@ -48,7 +48,7 @@
           :shape-color="avatarShapeColor"
           :background-color="avatarBackgroundColor"
           :expression="avatarExpression"
-          size="2xl"
+          size="xl"
         />
       </div>
 

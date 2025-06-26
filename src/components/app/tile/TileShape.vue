@@ -17,7 +17,7 @@
       isDisabled?: boolean
     }>(),
     {
-      size: 'sm',
+      size: 'xl',
       color: TILE_DEFAULTS.shapeColor,
       powerUpType: 'none',
       isDisabled: false,
@@ -25,42 +25,56 @@
   )
 
   const SIZES = {
-    xs: 40,
-    sm: 80,
-    md: 120,
-    lg: 160,
-    xl: 200,
-    '2xl': 240,
+    xs: { viewbox: 16, css: 'w-4 h-4' },
+    sm: { viewbox: 24, css: 'w-6 h-6' },
+    md: { viewbox: 36, css: 'w-9 h-9' },
+    lg: { viewbox: 56, css: 'w-14 h-14' },
+    xl: { viewbox: 80, css: 'w-20 h-20' },
+    '2xl': { viewbox: 120, css: 'w-30 h-30' },
   }
 
   const PATHS = {
     circle:
-      'M0 40C0 17.9086 17.9086 0 40 0C62.0914 0 80 17.9086 80 40C80 62.0914 62.0914 80 40 80C17.9086 80 0 62.0914 0 40Z',
+      'M0 8C0 3.58172 3.58172 0 8 0V0C12.4183 0 16 3.58172 16 8V8C16 12.4183 12.4183 16 8 16V16C3.58172 16 0 12.4183 0 8V8Z',
     square:
-      'M0 16C0 7.16344 7.16344 0 16 0H64C72.8366 0 80 7.16344 80 16V64C80 72.8366 72.8366 80 64 80H16C7.16344 80 0 72.8366 0 64V16Z',
+      'M0 3.2C0 1.43269 1.43269 0 3.2 0H12.8C14.5673 0 16 1.43269 16 3.2V12.8C16 14.5673 14.5673 16 12.8 16H3.2C1.43269 16 0 14.5673 0 12.8V3.2Z',
     triangle:
-      'M31.5235 5.44682C35.2908 -1.81559 44.7092 -1.81561 48.4765 5.4468L78.6741 63.6596C82.4414 70.922 77.7322 80 70.1976 80H9.80245C2.26777 80 -2.44142 70.922 1.32592 63.6596L31.5235 5.44682Z',
+      'M6.3047 1.08936C7.05816 -0.363119 8.94183 -0.363122 9.6953 1.08936L15.7348 12.7319C16.4883 14.1844 15.5464 16 14.0395 16H1.96049C0.453555 16 -0.488284 14.1844 0.265184 12.7319L6.3047 1.08936Z',
     rhomb:
-      'M28.6912 4.68428C34.9369 -1.56142 45.0631 -1.56143 51.3088 4.68427L75.3157 28.6912C81.5614 34.9369 81.5614 45.0631 75.3157 51.3088L51.3088 75.3157C45.0631 81.5614 34.9369 81.5614 28.6912 75.3157L4.68428 51.3088C-1.56142 45.0631 -1.56143 34.9369 4.68427 28.6912L28.6912 4.68428Z',
-    star: 'M33.8388 3.68992C36.5892 -1.22998 43.4108 -1.22997 46.1612 3.68993L54.1696 18.0158C55.1771 19.8181 56.8653 21.096 58.8217 21.5375L74.3732 25.0462C79.7139 26.2512 81.822 33.0109 78.181 37.2566L67.579 49.6192C66.2453 51.1745 65.6004 53.2423 65.8021 55.3173L67.4049 71.8117C67.9554 77.4764 62.4365 81.6541 57.436 79.3582L42.8752 72.6728C41.0434 71.8318 38.9566 71.8318 37.1248 72.6728L22.564 79.3582C17.5635 81.6541 12.0446 77.4764 12.5951 71.8117L14.1979 55.3173C14.3996 53.2423 13.7547 51.1745 12.421 49.6192L1.81903 37.2566C-1.82196 33.0109 0.286059 26.2512 5.62684 25.0462L21.1783 21.5375C23.1347 21.096 24.8229 19.8181 25.8304 18.0158L33.8388 3.68992Z',
+      'M5.73823 0.936855C6.98737 -0.312284 9.01263 -0.312286 10.2618 0.936854L15.0631 5.73823C16.3123 6.98737 16.3123 9.01263 15.0631 10.2618L10.2618 15.0631C9.01263 16.3123 6.98737 16.3123 5.73823 15.0631L0.936855 10.2618C-0.312284 9.01263 -0.312286 6.98737 0.936854 5.73823L5.73823 0.936855Z',
+    star: 'M6.76777 0.737985C7.31783 -0.245995 8.68217 -0.245995 9.23223 0.737985L10.8339 3.60316C11.0354 3.96361 11.3731 4.21921 11.7643 4.30749L14.8746 5.00924C15.9428 5.25024 16.3644 6.60218 15.6362 7.45132L13.5158 9.92384C13.2491 10.2349 13.1201 10.6485 13.1604 11.0635L13.481 14.3623C13.5911 15.4953 12.4873 16.3308 11.4872 15.8716L8.57504 14.5346C8.20868 14.3664 7.79132 14.3664 7.42496 14.5346L4.51281 15.8716C3.51269 16.3308 2.40892 15.4953 2.51901 14.3623L2.83959 11.0635C2.87992 10.6485 2.75095 10.2349 2.48419 9.92384L0.363806 7.45132C-0.364392 6.60218 0.0572117 5.25024 1.12537 5.00924L4.23565 4.30749C4.62694 4.21921 4.96458 3.96361 5.16608 3.60316L6.76777 0.737985Z',
   }
 
   const currentShapeIndex = ref(0)
   const animationTimer = ref<number | null>(null)
   const availableShapes = Object.values(TILE_SHAPES) as TileShape[]
 
+  const currentSize = computed(() => SIZES[props.size].viewbox)
+
+  const clipPathId = computed(() => `tile-grad-${Math.random().toString(36).substring(2, 11)}`)
+
+  const scaledPaths = computed(() => {
+    const scale = currentSize.value / 16
+    const scaled: Record<string, string> = {}
+
+    Object.entries(PATHS).forEach(([shape, path]) => {
+      scaled[shape] = path.replace(/(-?\d+(?:\.\d+)?)/g, (match: string) => {
+        const num = parseFloat(match)
+        return (num * scale).toString()
+      })
+    })
+
+    return scaled
+  })
+
   const currentPath = computed(() => {
     if (props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE) {
       const animatedShape = availableShapes[currentShapeIndex.value]
-      return PATHS[animatedShape]
+      return scaledPaths.value[animatedShape]
     }
 
-    return PATHS[props.shape]
+    return scaledPaths.value[props.shape]
   })
-
-  const currentSize = computed(() => SIZES[props.size])
-
-  const clipPathId = computed(() => `tile-grad-${Math.random().toString(36).substr(2, 9)}`)
 
   function cycleThroughShapes() {
     currentShapeIndex.value = (currentShapeIndex.value + 1) % availableShapes.length
@@ -113,7 +127,7 @@
       :width="currentSize"
       :height="currentSize"
       :viewBox="`0 0 ${currentSize} ${currentSize}`"
-      class="object-contain"
+      :class="`object-contain ${SIZES[size].css}`"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -122,7 +136,7 @@
           :clip-path="`url(#${clipPathId})`"
           data-figma-skip-parse="true"
         >
-          <g transform="matrix(0.04 0 0 0.0388889 40 40)">
+          <g :transform="`matrix(0.04 0 0 0.0388889 ${currentSize / 2} ${currentSize / 2})`">
             <foreignObject
               x="-1054.29"
               y="-1054.29"
