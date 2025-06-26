@@ -65,7 +65,7 @@ export class SupabaseService {
   }
 
   /**
-   * Calls RPC (PostgreSQL) database functions with standardized error handling
+   * Calls RPC (Remote Procedure Call) (PostgreSQL) database functions with standardized error handling
    *
    * @param functionName - The name of the RPC (PostgreSQL) database function to call
    * @param params - The parameters to pass to the function
