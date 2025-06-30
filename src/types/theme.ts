@@ -16,6 +16,7 @@ export type TextSize =
   | '9xl'
 
 export type ColorWeights =
+  | '50'
   | '100'
   | '200'
   | '300'

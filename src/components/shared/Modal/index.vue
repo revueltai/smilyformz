@@ -5,12 +5,22 @@
   const props = withDefaults(defineProps<ModalProps>(), {
     containerEl: 'modal',
     hasCloseButton: true,
+    preventBackdropClose: false,
   })
 
-  const emit = defineEmits(['close'])
+  const emit = defineEmits(['close', 'backdrop'])
   const modalStore = useModalStore()
 
-  function handleClose() {
+  function handleBackdropClick() {
+    emit('backdrop')
+
+    if (!props.preventBackdropClose) {
+      modalStore.closeModal()
+      emit('close')
+    }
+  }
+
+  function handleCloseClick() {
     if (props.hasCloseButton) {
       modalStore.closeModal()
       emit('close')
@@ -26,7 +36,7 @@
     >
       <dialog
         class="absolute inset-0 w-full h-full p-4 flex items-center justify-center z-50"
-        @click.self="handleClose"
+        @click.self="handleBackdropClick"
       >
         <Transition
           name="modal-content"
@@ -43,7 +53,7 @@
                 border-color="rose-600"
                 border-color-hover="rose-800"
                 class="absolute -top-2 -right-2 z-30"
-                @click="handleClose"
+                @click="handleCloseClick"
               >
                 <Icon
                   name="cross"

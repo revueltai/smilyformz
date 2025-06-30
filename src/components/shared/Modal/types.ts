@@ -4,4 +4,5 @@ export interface ModalProps {
   heading?: string
   byline?: string
   hasCloseButton?: boolean
+  preventBackdropClose?: boolean
 }

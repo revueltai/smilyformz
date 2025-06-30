@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import StatBlock from '@/components/app/StatBlock.vue'
   import ModalControls from '@/components/app/ModalControls.vue'
+  import GameOverScoreSign from '@/components/app/GameOverScoreSign.vue'
   import { useRouter } from 'vue-router'
   import { useModalStore } from '@/stores/modal.store'
   import { useGameStore } from '@/stores/game.store'
@@ -8,10 +8,6 @@
   const router = useRouter()
   const modalStore = useModalStore()
   const gameStore = useGameStore()
-
-  function handleShareScore() {
-    console.log('share')
-  }
 
   function handleHome() {
     modalStore.closeModal()
@@ -25,17 +21,11 @@
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 h-[60vh]">
-    <StatBlock
-      :label="$t('youScored')"
-      :value="gameStore.score"
-      variant="score"
-      class="shrink-0"
-      @click="handleShareScore"
-    />
+  <div class="flex flex-col items-center gap-8 w-full">
+    <GameOverScoreSign />
 
     <ModalControls
-      class="shrink-0"
+      class="w-full"
       :cta-text="$t('playAgain')"
       @home="handleHome"
       @click="handlePlayAgain"

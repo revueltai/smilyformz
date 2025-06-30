@@ -20,9 +20,11 @@ Tailwind Safelist
 @source inline("{hover:,}bg-lime-{50,{100..900..100},950}");
 @source inline("{hover:,}bg-rose-{50,{100..900..100},950}");
 
+@source inline("{hover:,}border-blue-{50,{100..900..100},950}");
 @source inline("{hover:,}border-lime-{50,{100..900..100},950}");
 @source inline("{hover:,}border-rose-{50,{100..900..100},950}");
 
+@source inline("{hover:,}text-blue-{50,{100..900..100},950}");
 @source inline("{hover:,}text-lime-{50,{100..900..100},950}");
 @source inline("{hover:,}text-rose-{50,{100..900..100},950}");
 

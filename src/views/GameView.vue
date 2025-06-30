@@ -174,6 +174,7 @@
     <Modal
       :name="MODALS.GAME_OVER"
       :heading="$t('gameOver')"
+      :prevent-backdrop-close="true"
       :has-close-button="false"
     >
       <ModalGameOver />
@@ -182,6 +183,8 @@
     <Modal
       :name="MODALS.GAME_OVER_GUEST"
       :heading="$t('gameOverGuest')"
+      :prevent-backdrop-close="true"
+      :has-close-button="false"
       @close="handleGoHome"
     >
       <ModalGameOverGuest @create-account="handleCreateAccount" />

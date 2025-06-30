@@ -1,27 +1,24 @@
 <script setup lang="ts">
-  import StatBlock from '@/components/app/StatBlock.vue'
   import ModalControls from '@/components/app/ModalControls.vue'
-  import { useGameStore } from '@/stores/game.store'
+  import GameOverScoreSign from '@/components/app/GameOverScoreSign.vue'
 
-  const gameStore = useGameStore()
+  const emit = defineEmits<{
+    (e: 'createAccount'): void
+  }>()
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
-    <StatBlock
-      :label="$t('youScored')"
-      :value="gameStore.score"
-      class="shrink-0"
-    />
+    <GameOverScoreSign :hide-share-button="true" />
 
     <div
-      class="flex-1 flex flex-col items-center justify-center text-center gap-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100"
+      class="flex flex-col gap-2 items-center p-6 w-full text-lg rounded-lg bg-sky-50 border border-sky-200 text-center"
     >
-      <div class="text-lg font-semibold text-blue-800">
+      <h2 class="text-base font-semibold text-blue-800 leading-tight">
         {{ $t('guestCreateAccountHeader') }}
-      </div>
+      </h2>
 
-      <div class="text-sm text-blue-600 max-w-xs">
+      <div class="text-xs text-blue-600 max-w-xs">
         {{ $t('guestCreateAccountDescription') }}
       </div>
     </div>
