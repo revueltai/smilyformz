@@ -66,6 +66,8 @@ export const DEFAULT_LEAGUE_LEVEL_NAME = 'easy'
 
 export const LEAGUE_RANKING_LIST_LIMIT = 100
 
+export const CONFETTI_SCORE = 1
+
 export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   easy: {
     id: 'easy',

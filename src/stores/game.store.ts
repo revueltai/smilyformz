@@ -6,6 +6,7 @@ import {
   TILE_SHAPES,
   GAME_LEAGUE_LEVELS,
   DEFAULT_LEAGUE_LEVEL_NAME,
+  CONFETTI_SCORE,
 } from '@/configs/constants'
 import type { TileShape, TileExpression, TileSize } from '@/components/app/tile/types'
 import type { GameLeagueLevelKey } from '@/types/game'
@@ -58,6 +59,7 @@ export const useGameStore = defineStore('game', () => {
   const isPaused = ref(false)
   const isGameStarted = ref(false)
   const showSpeedIncreaseNotification = ref(false)
+  const showConfetti = ref(false)
   const time = ref<GameTime>({
     seconds: 0,
     minutes: 0,
@@ -231,6 +233,7 @@ export const useGameStore = defineStore('game', () => {
     setGameOver(false)
     isPaused.value = false
     isGameStarted.value = false
+    showConfetti.value = false
 
     // Reset character to a new random state
     character.value = {
@@ -349,6 +352,7 @@ export const useGameStore = defineStore('game', () => {
     isPaused,
     isGameStarted,
     showSpeedIncreaseNotification,
+    showConfetti,
     time,
     formattedTime,
     totalRowsLength,

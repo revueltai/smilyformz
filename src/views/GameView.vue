@@ -7,6 +7,7 @@
   import { useUserStore } from '@/stores/user.store'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { MODALS } from '@/configs/constants'
+  import { CONFETTI_SCORE } from '@/configs/constants'
   import { ToastService } from '@/components/shared/Toast/service'
   import ModalPause from '@/components/app/ModalPause.vue'
   import ModalGameOver from '@/components/app/ModalGameOver.vue'
@@ -20,6 +21,7 @@
   import SpeedIncreaseNotification from '@/components/app/SpeedIncreaseNotification.vue'
   import CharacterMessageContainer from '@/components/app/CharacterMessage/Container.vue'
   import ModalCreateAccount from '@/components/app/ModalCreateAccount.vue'
+  import Confetti from '@/components/shared/Confetti/index.vue'
 
   const { t } = useI18n()
   const gameStore = useGameStore()
@@ -45,11 +47,19 @@
   }
 
   function handleGameEndCountdownComplete() {
+    if (gameStore.score >= CONFETTI_SCORE) {
+      gameStore.showConfetti = true
+    }
+
     if (userStore.isAuthenticated) {
       modalStore.openModal(MODALS.GAME_OVER)
     } else {
       modalStore.openModal(MODALS.GAME_OVER_GUEST)
     }
+  }
+
+  function handleConfettiComplete() {
+    gameStore.showConfetti = false
   }
 
   function handleGoHome() {
@@ -205,5 +215,10 @@
     >
       <ModalCreateAccount />
     </Modal>
+
+    <Confetti
+      :is-active="gameStore.showConfetti"
+      @animation-complete="handleConfettiComplete"
+    />
   </div>
 </template>
