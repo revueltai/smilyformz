@@ -6,7 +6,6 @@ import {
   TILE_SHAPES,
   GAME_LEAGUE_LEVELS,
   DEFAULT_LEAGUE_LEVEL_NAME,
-  CONFETTI_SCORE,
 } from '@/configs/constants'
 import type { TileShape, TileExpression, TileSize } from '@/components/app/tile/types'
 import type { GameLeagueLevelKey } from '@/types/game'
