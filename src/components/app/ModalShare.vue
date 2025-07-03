@@ -9,6 +9,7 @@
 
   const props = defineProps<{
     mode: ShareType
+    score: number
   }>()
 
   const { t } = useI18n()
@@ -34,11 +35,11 @@
 
   const message = computed(() => {
     if (props.mode === 'latestScore') {
-      return t('shareLatestScoreText')
+      return t('shareLatestScoreText', { score: props.score })
     }
 
     if (props.mode === 'highestScore') {
-      return t('shareHighestScoreText')
+      return t('shareHighestScoreText', { score: props.score })
     }
 
     return t('shareRankingText')

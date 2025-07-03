@@ -127,7 +127,10 @@
       :name="MODALS.SHARE"
       :heading="isActiveShareLatestScore() ? $t('shareLatestScore') : $t('shareHighestScore')"
     >
-      <ModalShare :mode="activeShare" />
+      <ModalShare
+        :mode="activeShare"
+        :score="isActiveShareLatestScore() ? latestScore : highestScore"
+      />
     </Modal>
 
     <Modal
