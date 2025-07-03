@@ -1,67 +1,81 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import {
-    shareToTwitter,
-    shareToFacebook,
-    shareToWhatsApp,
-    shareToTelegram,
-    shareToLinkedIn,
-    copyToClipboard,
-  } from '@/utils/share'
+  import { computed, ref } from 'vue'
+  import { useSocialShare } from '@/composables/useSocialShare'
+  import type { SocialMedia } from '@/composables/useSocialShare'
+  import { ToastService } from '../shared/Toast/service'
+  import { useI18n } from 'vue-i18n'
 
-  type SocialMedia = 'twitter' | 'facebook' | 'whatsapp' | 'telegram' | 'linkedin' | 'copy'
+  export type ShareType = 'latestScore' | 'highestScore' | 'ranking'
 
-  const props = withDefaults(
-    defineProps<{
-      text?: string
-      url?: string
-    }>(),
-    {
-      title: '',
-      text: '',
-      url: window.location.href,
-    },
-  )
+  const props = defineProps<{
+    mode: ShareType
+  }>()
 
-  const socialMedias: SocialMedia[] = [
-    'twitter',
-    'facebook',
-    'whatsapp',
-    'telegram',
-    'linkedin',
-    'copy',
-  ]
+  const { t } = useI18n()
+
+  const { copyToClipboard, shareToX, shareToFacebook, shareToWhatsApp, shareToTelegram } =
+    useSocialShare()
+
+  const SOCIAL_MEDIAS: SocialMedia[] = ['x', 'facebook', 'whatsapp', 'telegram', 'copy']
 
   const isCopied = ref(false)
 
+  const themeColor = computed(() => {
+    if (props.mode === 'latestScore') {
+      return 'blue'
+    }
+
+    if (props.mode === 'highestScore') {
+      return 'lime'
+    }
+
+    return 'purple'
+  })
+
+  const message = computed(() => {
+    if (props.mode === 'latestScore') {
+      return t('shareLatestScoreText')
+    }
+
+    if (props.mode === 'highestScore') {
+      return t('shareHighestScoreText')
+    }
+
+    return t('shareRankingText')
+  })
+
+  const description = computed(() => {
+    if (props.mode === 'latestScore') {
+      return t('shareLatestScoreDescription')
+    }
+
+    if (props.mode === 'highestScore') {
+      return t('shareHighestScoreDescription')
+    }
+
+    return t('shareRankingDescription')
+  })
+
   async function handleCopy() {
-    await copyToClipboard(props.url)
+    copyToClipboard()
     isCopied.value = true
+    ToastService.emitToast(t('linkCopiedToClipboard'), 'success')
     setTimeout(() => (isCopied.value = false), 2000)
   }
 
   function handleShare(type: SocialMedia) {
-    const shareOptions = {
-      title: props.title,
-      text: props.text,
-      url: props.url,
-    }
-
     switch (type) {
-      case 'twitter':
-        return shareToTwitter(shareOptions)
+      case 'x':
+        return shareToX(message.value)
 
       case 'facebook':
-        return shareToFacebook(shareOptions)
+        return shareToFacebook()
 
       case 'whatsapp':
-        return shareToWhatsApp(shareOptions)
+        return shareToWhatsApp(message.value)
 
       case 'telegram':
-        return shareToTelegram(shareOptions)
-
-      case 'linkedin':
-        return shareToLinkedIn(shareOptions)
+        return shareToTelegram(message.value)
 
       case 'copy':
         return handleCopy()
@@ -70,14 +84,24 @@
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <div class="flex gap-4 overflow-x-auto bg-slate-100 rounded-xl p-2">
+  <div
+    class="flex flex-col gap-3 rounded-xl px-2 py-3"
+    :class="`bg-${themeColor}-50`"
+  >
+    <p :class="`text-${themeColor}-600`">
+      {{ description }}
+    </p>
+
+    <div class="flex gap-3 justify-center">
       <Button
-        v-for="socialMedia in socialMedias"
+        v-for="socialMedia in SOCIAL_MEDIAS"
         :key="socialMedia"
+        background-color="white"
+        :border-color="`${themeColor}-700`"
         @click="handleShare(socialMedia)"
       >
         <Icon
+          :color="`${themeColor}-700`"
           :name="socialMedia"
           size="sm"
         />

@@ -47,6 +47,11 @@ export type IconName =
   | 'user-round'
   | 'user-search'
   | 'github'
+  | 'instagram'
+  | 'x'
+  | 'telegram'
+  | 'whatsapp'
+  | 'facebook'
 
 export interface IconProps {
   name: IconName

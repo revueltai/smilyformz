@@ -194,7 +194,7 @@
       :name="MODALS.GAME_OVER_GUEST"
       :heading="$t('gameOverGuest')"
       :prevent-backdrop-close="true"
-      :has-close-button="false"
+      :has-close-button="true"
       @close="handleGoHome"
     >
       <ModalGameOverGuest @create-account="handleCreateAccount" />

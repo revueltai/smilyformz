@@ -12,8 +12,7 @@
   import { MODALS } from '@/configs/constants'
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
-
-  type ShareType = 'latestScore' | 'highestScore'
+  import type { ShareType } from '@/components/app/ModalShare.vue'
 
   const userStore = useUserStore()
   const modalStore = useModalStore()
@@ -128,13 +127,7 @@
       :name="MODALS.SHARE"
       :heading="isActiveShareLatestScore() ? $t('shareLatestScore') : $t('shareHighestScore')"
     >
-      <ModalShare
-        :text="
-          isActiveShareLatestScore()
-            ? $t('shareLatestScoreText', { score: latestScore })
-            : $t('shareHighestScoreText', { score: highestScore })
-        "
-      />
+      <ModalShare :mode="activeShare" />
     </Modal>
 
     <Modal
