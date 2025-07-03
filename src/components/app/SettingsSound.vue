@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import { useSoundStore } from '@/stores/sounds'
+  import { useSoundStore } from '@/stores/sounds.store'
 
   const soundStore = useSoundStore()
 

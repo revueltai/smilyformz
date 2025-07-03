@@ -1,7 +1,34 @@
 import { defineStore } from 'pinia'
 import { soundsConfig, soundsEffectsConfig } from '@/configs/sounds.config'
-import type { SoundEffectName, SoundName, SoundsEffectsMap, SoundsMap } from './types'
 import { reactive, toRefs } from 'vue'
+
+interface Sound {
+  audio: HTMLAudioElement
+  volume: number
+}
+
+interface SoundsMap {
+  firstSessionBg: Sound
+  dashboardBg: Sound
+  gameBg: Sound
+}
+
+interface SoundsEffectsMap {
+  buttonClick: Sound
+  notificationSuccess: Sound
+  notificationError: Sound
+  gameTick: Sound
+  gameTilePop: Sound
+  gameTilePowerup: Sound
+  gameRoundOver: Sound
+  gameRoundLost: Sound
+  gameWon: Sound
+  gameLost: Sound
+}
+
+type SoundName = keyof SoundsMap
+
+type SoundEffectName = keyof SoundsEffectsMap
 
 interface SoundState {
   initialized: boolean
@@ -117,7 +144,7 @@ export const useSoundStore = defineStore('sound', () => {
    *
    * @param value - The value of the sound setting.
    */
-  async function updateSoundSetting(value: boolean) {
+  function updateSoundSetting(value: boolean) {
     state.soundsOn = value
   }
 
@@ -126,7 +153,7 @@ export const useSoundStore = defineStore('sound', () => {
    *
    * @param value - The value of the sound effects setting.
    */
-  async function updateSoundEffectsSetting(value: boolean) {
+  function updateSoundEffectsSetting(value: boolean) {
     state.soundEffectsOn = value
   }
 
@@ -136,10 +163,10 @@ export const useSoundStore = defineStore('sound', () => {
    * @param hasSound - The value of the sound setting.
    * @param hasEffects - The value of the sound effects setting.
    */
-  async function initializeSounds(hasSound: boolean, hasEffects: boolean) {
+  function initializeSounds(hasSound: boolean, hasEffects: boolean) {
     if (!state.initialized) {
-      await updateSoundSetting(hasSound)
-      await updateSoundEffectsSetting(hasEffects)
+      updateSoundSetting(hasSound)
+      updateSoundEffectsSetting(hasEffects)
 
       state.initialized = true
     }
