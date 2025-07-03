@@ -4,15 +4,15 @@
 
   const soundStore = useSoundStore()
 
-  const sounds = ref<boolean | undefined>(soundStore.soundsOn)
-  const soundEffects = ref<boolean | undefined>(soundStore.soundEffectsOn)
+  const sounds = ref<boolean>(soundStore.soundsOn)
+  const soundEffects = ref<boolean>(soundStore.soundEffectsOn)
 
   function handleSoundsChange() {
-    console.log('handleSoundsChange')
+    soundStore.updateSoundSetting(sounds.value)
   }
 
   function handleSoundEffectsChange() {
-    console.log('handleSoundEffectsChange')
+    soundStore.updateSoundEffectsSetting(soundEffects.value)
   }
 </script>
 

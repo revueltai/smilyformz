@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { soundsConfig, soundsEffectsConfig } from '@/configs/sounds.config'
 import type { SoundEffectName, SoundName, SoundsEffectsMap, SoundsMap } from './types'
+import { reactive, toRefs } from 'vue'
 
 interface SoundState {
   initialized: boolean
@@ -12,8 +13,12 @@ interface SoundState {
   soundsEffects: SoundsEffectsMap
 }
 
-export const useSoundStore = defineStore('sound', {
-  state: (): SoundState => ({
+/**
+ * This store is used to manage the sounds of the game.
+ * It is used to play the sounds and sound effects of the game.
+ */
+export const useSoundStore = defineStore('sound', () => {
+  const state = reactive<SoundState>({
     initialized: false,
     soundsOn: false,
     soundEffectsOn: false,
@@ -21,87 +26,135 @@ export const useSoundStore = defineStore('sound', {
     soundEffectActive: '',
     soundsEffects: soundsEffectsConfig,
     sounds: soundsConfig,
-  }),
+  })
 
-  actions: {
-    playAudio(audio: HTMLAudioElement) {
-      if (document.hasFocus()) {
-        audio.play().catch((err: any) => {
-          console.error('Audio Play failed:', err)
-        })
-      }
-    },
+  /**
+   * Plays an audio element.
+   *
+   * @param audio - The audio element to play.
+   */
+  function playAudio(audio: HTMLAudioElement) {
+    if (document.hasFocus()) {
+      audio.play().catch((err: any) => {
+        console.error('Audio Play failed:', err)
+      })
+    }
+  }
 
-    playSoundEffect(key: SoundEffectName) {
-      if (!this.soundEffectsOn) {
-        return
-      }
+  /**
+   * Plays a sound effect.
+   *
+   * @param key - The key of the sound effect to play.
+   */
+  function playSoundEffect(key: SoundEffectName) {
+    if (!state.soundEffectsOn) {
+      return
+    }
 
-      const audio = this.soundsEffects[key].audio
+    const audio = state.soundsEffects[key].audio
+    if (audio) {
+      state.soundEffectActive = key as SoundEffectName
+      audio.volume = state.soundsEffects[key].volume
+      audio.currentTime = 0
+      playAudio(audio)
+    }
+  }
+
+  /**
+   * Plays a sound in a loop.
+   *
+   * @param key - The key of the sound to play.
+   */
+  function playLoopSound(key: SoundName | '') {
+    if (!key) {
+      return
+    }
+
+    if (!state.soundsOn) {
+      stopLoopSound()
+      return
+    }
+
+    const audio = state.sounds[key].audio
+    if (audio) {
+      state.soundActive = key as SoundName
+      audio.volume = state.sounds[key].volume
+      audio.loop = true
+      playAudio(audio)
+    }
+  }
+
+  /**
+   * Stops a sound loop.
+   */
+  function stopLoopSound() {
+    if (state.soundActive) {
+      const audio = state.sounds[state.soundActive as SoundName].audio
+
       if (audio) {
-        this.soundEffectActive = key as SoundEffectName
-        audio.volume = this.soundsEffects[key].volume
+        audio.pause()
         audio.currentTime = 0
-        this.playAudio(audio)
       }
-    },
+    }
+  }
 
-    playLoopSound(key: SoundName | '') {
-      if (!key) {
-        return
-      }
+  /**
+   * Stops a sound effect.
+   */
+  function stopSoundEffect() {
+    if (state.soundEffectActive) {
+      const audio = state.soundsEffects[state.soundEffectActive as SoundEffectName].audio
 
-      if (!this.soundsOn) {
-        this.stopLoopSound()
-        return
-      }
-
-      const audio = this.sounds[key].audio
       if (audio) {
-        this.soundActive = key as SoundName
-        audio.volume = this.sounds[key].volume
-        audio.loop = true
-        this.playAudio(audio)
+        audio.pause()
+        audio.currentTime = 0
       }
-    },
+    }
+  }
 
-    stopLoopSound() {
-      if (this.soundActive) {
-        const audio = this.sounds[this.soundActive as SoundName].audio
+  /**
+   * Updates the sound setting.
+   *
+   * @param value - The value of the sound setting.
+   */
+  async function updateSoundSetting(value: boolean) {
+    state.soundsOn = value
+  }
 
-        if (audio) {
-          audio.pause()
-          audio.currentTime = 0
-        }
-      }
-    },
+  /**
+   * Updates the sound effects setting.
+   *
+   * @param value - The value of the sound effects setting.
+   */
+  async function updateSoundEffectsSetting(value: boolean) {
+    state.soundEffectsOn = value
+  }
 
-    stopSoundEffect() {
-      if (this.soundEffectActive) {
-        const audio = this.soundsEffects[this.soundEffectActive as SoundEffectName].audio
+  /**
+   * Initializes the sounds.
+   *
+   * @param hasSound - The value of the sound setting.
+   * @param hasEffects - The value of the sound effects setting.
+   */
+  async function initializeSounds(hasSound: boolean, hasEffects: boolean) {
+    if (!state.initialized) {
+      await updateSoundSetting(hasSound)
+      await updateSoundEffectsSetting(hasEffects)
 
-        if (audio) {
-          audio.pause()
-          audio.currentTime = 0
-        }
-      }
-    },
+      state.initialized = true
+    }
+  }
 
-    async updateSoundSetting(value: boolean) {
-      this.soundsOn = value
-    },
+  return {
+    ...toRefs(state),
 
-    async updateSoundEffectsSetting(value: boolean) {
-      this.soundEffectsOn = value
-    },
-
-    async initializeSounds(hasSound: boolean, hasEffects: boolean) {
-      if (!this.initialized) {
-        await this.updateSoundSetting(hasSound)
-        await this.updateSoundEffectsSetting(hasEffects)
-
-        this.initialized = true
-      }
-    },
-  },
+    playAudio,
+    playSoundEffect,
+    playLoopSound,
+    stopLoopSound,
+    stopSoundEffect,
+    updateSoundSetting,
+    updateSoundEffectsSetting,
+    initializeSounds,
+  }
 })
