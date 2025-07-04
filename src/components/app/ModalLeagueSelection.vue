@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, ref, onMounted, nextTick } from 'vue'
   import { useRouter } from 'vue-router'
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
@@ -13,13 +13,15 @@
   const userStore = useUserStore()
   const gameStore = useGameStore()
 
+  const leagueKeys = Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[]
+
+  const scrollContainerRef = ref<HTMLElement>()
+
   const currentUserLeague = computed(
     () => userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL_NAME,
   )
 
   const allLeagues = computed(() => {
-    const leagueKeys = Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[]
-
     return leagueKeys.map((leagueKey) => {
       const league = GAME_LEAGUE_LEVELS[leagueKey]
       const currentIndex = leagueKeys.indexOf(currentUserLeague.value)
@@ -50,6 +52,40 @@
       router.push('/game')
     }
   }
+
+  function scrollToCurrentLeague() {
+    if (!scrollContainerRef.value) {
+      return
+    }
+
+    const currentLeagueIndex = leagueKeys.indexOf(currentUserLeague.value)
+
+    if (currentLeagueIndex === -1) {
+      return
+    }
+
+    const container = scrollContainerRef.value
+    const leagueItems = container.querySelectorAll('[data-league-item]')
+
+    if (leagueItems.length === 0) {
+      return
+    }
+
+    const firstItem = leagueItems[0] as HTMLElement
+    const itemWidth = firstItem.offsetWidth + 16 // 16px gap between items
+    const scrollPosition =
+      currentLeagueIndex * itemWidth - container.clientWidth / 2 + itemWidth / 2
+
+    container.scrollTo({
+      left: Math.max(0, scrollPosition),
+      behavior: 'smooth',
+    })
+  }
+
+  onMounted(async () => {
+    await nextTick()
+    scrollToCurrentLeague()
+  })
 </script>
 
 <template>
@@ -59,13 +95,17 @@
     </p>
 
     <div class="relative">
-      <div class="flex items-center gap-4 overflow-x-auto overflow-y-visible scrollbar-hide">
+      <div
+        ref="scrollContainerRef"
+        class="flex items-center gap-4 overflow-x-auto overflow-y-visible scrollbar-hide"
+      >
         <LeagueItem
           v-for="(league, index) in allLeagues"
           :key="league.id"
           :league="league"
           :show-arrow="isNextLeagueAvailable(index)"
           :is-next-available="isNextLeagueAvailable(index)"
+          data-league-item
           @select="handleLeagueSelect"
         />
       </div>
