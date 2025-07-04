@@ -14,6 +14,7 @@
   import ModalAvatar from '@/components/app/ModalAvatar.vue'
   import ModalDeleteAccount from '@/components/app/ModalDeleteAccount.vue'
   import ModalReloginConfirm from '@/components/app/ModalReloginConfirm.vue'
+  import ModalCredits from '@/components/app/ModalCredits.vue'
   import { useFormValidation } from '@/composables/useFormValidation'
   import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
   import type { ValidationState } from '@/composables/useFormValidation'
@@ -86,6 +87,10 @@
     }
 
     forceUpdateHeaderUserComponent()
+  }
+
+  function handleClickButtonCredits() {
+    modalStore.openModal(MODALS.CREDITS)
   }
 
   function handleCancelDeleteAccount() {
@@ -404,6 +409,15 @@
       >
         {{ isDeletingAccount ? $t('deletingAccount') : $t('deleteAccount') }}
       </Button>
+
+      <Button
+        size="xs"
+        type="link"
+        text-color="slate-500 mx-auto"
+        @click="handleClickButtonCredits"
+      >
+        {{ $t('credits') }}
+      </Button>
     </div>
 
     <Modal
@@ -435,6 +449,13 @@
         @cancel="handleCancelRelogin"
         @confirm="handleConfirmRelogin"
       />
+    </Modal>
+
+    <Modal
+      :name="MODALS.CREDITS"
+      :heading="$t('designedAndDevelopedBy')"
+    >
+      <ModalCredits />
     </Modal>
   </Page>
 </template>
