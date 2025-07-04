@@ -7,7 +7,6 @@
   import GameControls from '@/components/app/GameControls.vue'
   import Tile from '@/components/app/tile/Tile.vue'
   import type { RefElement } from '@/components/shared/types'
-  import { useSoundStore } from '@/stores/sounds.store'
 
   const props = defineProps<{
     boardRef: RefElement
@@ -15,7 +14,6 @@
   }>()
 
   const gameStore = useGameStore()
-  const soundStore = useSoundStore()
   const { setCharacterHitArea } = useCollisionDetection()
 
   const characterRef = ref<RefElement>(null)
@@ -30,7 +28,6 @@
       return
     }
 
-    soundStore.playSound('gameCharacterMove')
     moveLeft()
   }
 
@@ -38,7 +35,7 @@
     if (!gameStore.isGameStarted) {
       return
     }
-    soundStore.playSound('gameCharacterMove')
+
     moveRight()
   }
 

@@ -2,6 +2,7 @@ import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
 import type { Ref } from 'vue'
 import { useGameStore } from '@/stores/game.store'
 import type { RefElement } from '@/components/shared/types'
+import { useSoundStore } from '@/stores/sounds.store'
 
 /**
  * Handles the movement of the character on the board
@@ -11,6 +12,7 @@ import type { RefElement } from '@/components/shared/types'
  */
 export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<RefElement>) {
   const gameStore = useGameStore()
+  const soundStore = useSoundStore()
 
   let boardObserver: ResizeObserver | null = null
   let charObserver: ResizeObserver | null = null
@@ -149,6 +151,8 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
     if (!gameStore.isGameStarted || gameStore.isPaused || event.repeat) {
       return
     }
+
+    soundStore.playSound('gameCharacterMove')
 
     if (['ArrowLeft', 'a', 'A'].includes(event.key)) {
       moveLeft()
