@@ -1,25 +1,33 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { useSoundStore } from '@/stores/sounds.store'
+  import { useUserStore } from '@/stores/user.store'
 
   const soundStore = useSoundStore()
+  const userStore = useUserStore()
 
-  const sounds = ref<boolean>(soundStore.soundsOn)
-  const soundEffects = ref<boolean>(soundStore.soundEffectsOn)
+  const music = ref<boolean>(userStore.music)
+  const sound = ref<boolean>(userStore.sound)
 
-  function handleSoundsChange() {
-    soundStore.updateSoundSetting(sounds.value)
+  async function handleSoundsChange() {
+    soundStore.updateSoundSetting(music.value)
+    await userStore.updateUserSettings({
+      music: music.value,
+    })
   }
 
-  function handleSoundEffectsChange() {
-    soundStore.updateSoundEffectsSetting(soundEffects.value)
+  async function handleSoundChange() {
+    soundStore.updateSoundEffectsSetting(sound.value)
+    await userStore.updateUserSettings({
+      sound: sound.value,
+    })
   }
 </script>
 
 <template>
   <div class="flex flex-col gap-4 rounded-lg bg-slate-50 p-4">
     <Switch
-      v-model="sounds"
+      v-model="music"
       :label="$t('music')"
       direction="row"
       name="music"
@@ -27,10 +35,11 @@
     />
 
     <Switch
-      v-model="soundEffects"
+      v-model="sound"
       :label="$t('soundEffects')"
       direction="row"
-      @change="handleSoundEffectsChange"
+      name="sound"
+      @change="handleSoundChange"
     />
   </div>
 </template>

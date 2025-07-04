@@ -47,7 +47,7 @@
     <div class="flex flex-col gap-1 border-t border-slate-300 pt-6 text-slate-500">
       <div class="grid grid-cols-2 gap-3">
         <h4 class="text-xs text-right">
-          {{ $t('Framework') }}
+          {{ $t('framework') }}
         </h4>
 
         <div class="flex flex-col items-start">

@@ -44,8 +44,8 @@
     backgroundColor.value = color
   }
 
-  function handleSave() {
-    userStore.updateUserSettings({
+  async function handleSave() {
+    await userStore.updateUserSettings({
       avatar_shape: avatarShape.value,
       avatar_expression: avatarExpression.value,
       avatar_shape_color: shapeColor.value,

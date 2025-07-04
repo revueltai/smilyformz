@@ -152,6 +152,9 @@ export const useUserStore = defineStore('user', () => {
       avatar_shape_color,
       avatar_background_color,
       league_level,
+      music,
+      sound,
+      language,
     } = user_metadata
 
     try {
@@ -169,9 +172,9 @@ export const useUserStore = defineStore('user', () => {
           background_color: avatar_background_color || TILE_DEFAULTS.backgroundColor,
         },
         league_level: league_level || GAME_LEAGUE_LEVELS[DEFAULT_LEAGUE_LEVEL_NAME],
-        music: music.value,
-        sound: sound.value,
-        language: language.value,
+        music: music ?? false,
+        sound: sound ?? false,
+        language: language || DEFAULT_LANGUAGE_CODE,
       }
     } catch (error) {
       console.error('Error loading user profile:', error)

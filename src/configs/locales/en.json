@@ -186,5 +186,6 @@
   "noConnection": "No Connection",
   "noConnectionDescription": "Please check your internet connection and try again.",
   "retry": "Retry",
-  "failedToLoadRankings": "Failed to load rankings"
+  "failedToLoadRankings": "Failed to load rankings",
+  "framework": "Framework"
 }
