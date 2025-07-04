@@ -5,8 +5,8 @@
 
   type CountdownMessage = 'ready' | 'go'
 
-  const props = defineProps<{
-    onComplete: () => void
+  const emit = defineEmits<{
+    (e: 'complete'): void
   }>()
 
   const soundStore = useSoundStore()
@@ -25,7 +25,7 @@
 
     setTimeout(() => {
       isVisible.value = false
-      props.onComplete()
+      emit('complete')
     }, 2500)
   })
 </script>

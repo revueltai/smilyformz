@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { watch, ref, onMounted } from 'vue'
+  import { watch, ref, onMounted, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { useModalStore } from '@/stores/modal.store'
@@ -30,8 +30,10 @@
   const userStore = useUserStore()
   const soundStore = useSoundStore()
 
-  const showGameEndCountdown = ref(false)
   const router = useRouter()
+
+  const showGameStartCountdown = ref(false)
+  const showGameEndCountdown = ref(false)
 
   function handlePause() {
     gameStore.pause()
@@ -44,6 +46,7 @@
   }
 
   function handleCountdownComplete() {
+    showGameStartCountdown.value = false
     gameStore.startGame()
   }
 
@@ -139,6 +142,8 @@
   onMounted(() => {
     gameStore.resetGame()
 
+    showGameStartCountdown.value = true
+
     soundStore.stopLoopMusic()
     soundStore.playLoopMusic('gameBgSound')
 
@@ -164,8 +169,8 @@
     />
 
     <GameStartCountdown
-      v-if="!gameStore.isGameStarted"
-      :on-complete="handleCountdownComplete"
+      v-if="showGameStartCountdown"
+      @complete="handleCountdownComplete"
     />
 
     <GameEndCountdown
