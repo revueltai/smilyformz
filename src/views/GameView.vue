@@ -14,13 +14,14 @@
   import ModalGameOverGuest from '@/components/app/ModalGameOverGuest.vue'
   import ModalQuitConfirm from '@/components/app/ModalQuitConfirm.vue'
   import ModalTutorial from '@/components/app/ModalTutorial.vue'
+  import ModalCreateAccount from '@/components/app/ModalCreateAccount.vue'
+  import ModalShare from '@/components/app/ModalShare.vue'
   import GameHeader from '@/components/app/GameHeader.vue'
   import GameBoard from '@/components/app/GameBoard.vue'
   import GameStartCountdown from '@/components/app/GameStartCountdown.vue'
   import GameEndCountdown from '@/components/app/GameEndCountdown.vue'
   import SpeedIncreaseNotification from '@/components/app/SpeedIncreaseNotification.vue'
   import CharacterMessageContainer from '@/components/app/CharacterMessage/Container.vue'
-  import ModalCreateAccount from '@/components/app/ModalCreateAccount.vue'
   import Confetti from '@/components/shared/Confetti/index.vue'
 
   const { t } = useI18n()
@@ -50,6 +51,12 @@
     if (gameStore.score >= CONFETTI_SCORE) {
       gameStore.showConfetti = true
     }
+
+    handleShowGameOverModal()
+  }
+
+  function handleShowGameOverModal() {
+    modalStore.closeModal()
 
     if (userStore.isAuthenticated) {
       modalStore.openModal(MODALS.GAME_OVER)
@@ -206,6 +213,18 @@
       @close="handleResume"
     >
       <ModalTutorial />
+    </Modal>
+
+    <Modal
+      :name="MODALS.SHARE"
+      :heading="$t('shareScore')"
+      :prevent-backdrop-close="true"
+      @close="handleShowGameOverModal"
+    >
+      <ModalShare
+        mode="gameOverScore"
+        :score="gameStore.score"
+      />
     </Modal>
 
     <Modal

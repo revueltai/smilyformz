@@ -157,7 +157,7 @@
       },
     }
 
-    const validator = validationMap[fieldName]
+    const validator = validationMap[fieldName as keyof typeof validationMap]
     if (validator) {
       await validator()
     }

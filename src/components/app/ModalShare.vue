@@ -5,7 +5,7 @@
   import { ToastService } from '../shared/Toast/service'
   import { useI18n } from 'vue-i18n'
 
-  export type ShareType = 'latestScore' | 'highestScore' | 'ranking'
+  export type ShareType = 'latestScore' | 'highestScore' | 'ranking' | 'gameOverScore'
 
   const props = defineProps<{
     mode: ShareType
@@ -22,7 +22,7 @@
   const isCopied = ref(false)
 
   const themeColor = computed(() => {
-    if (props.mode === 'latestScore') {
+    if (props.mode === 'latestScore' || props.mode === 'gameOverScore') {
       return 'blue'
     }
 
@@ -42,6 +42,10 @@
       return t('shareHighestScoreText', { score: props.score })
     }
 
+    if (props.mode === 'gameOverScore') {
+      return t('shareGameOverScoreText', { score: props.score })
+    }
+
     return t('shareRankingText')
   })
 
@@ -58,7 +62,7 @@
   })
 
   async function handleCopy() {
-    copyToClipboard()
+    copyToClipboard(message.value)
     isCopied.value = true
     ToastService.emitToast(t('linkCopiedToClipboard'), 'success')
     setTimeout(() => (isCopied.value = false), 2000)
