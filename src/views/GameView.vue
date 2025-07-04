@@ -28,7 +28,6 @@
   const gameStore = useGameStore()
   const modalStore = useModalStore()
   const userStore = useUserStore()
-  const { resetCollisionDetection } = useCollisionDetection()
 
   const showGameEndCountdown = ref(false)
   const router = useRouter()
@@ -135,7 +134,6 @@
 
   onMounted(() => {
     gameStore.resetGame()
-    resetCollisionDetection()
 
     if (userStore.isAuthenticated) {
       modalStore.closeModal()

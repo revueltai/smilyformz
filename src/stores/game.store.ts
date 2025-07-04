@@ -12,6 +12,7 @@ import type { GameLeagueLevelKey } from '@/types/game'
 import { getRandomItem, canAdvanceToNextLeague } from '@/utils'
 import { supabase } from '@/services/Supabase.service'
 import { useUserStore } from './user.store'
+import { useCollisionDetection } from '@/composables/useCollisionDetection'
 
 interface GameTime {
   seconds: number
@@ -23,6 +24,7 @@ interface GameTime {
  */
 export const useGameStore = defineStore('game', () => {
   const userStore = useUserStore()
+  const { resetCollisionDetection } = useCollisionDetection()
 
   const initialLeagueLevel = userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL_NAME
   const initialLeagueSettings = GAME_LEAGUE_LEVELS[initialLeagueLevel]
@@ -233,6 +235,9 @@ export const useGameStore = defineStore('game', () => {
     isPaused.value = false
     isGameStarted.value = false
     showConfetti.value = false
+
+    // Reset collision detection
+    resetCollisionDetection()
 
     // Reset character to a new random state
     character.value = {

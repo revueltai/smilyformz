@@ -19,13 +19,13 @@
     defineProps<{
       id: string
       shape: TileShape
+      size: TileSize
       expression: TileExpression | TileExpressionPowerDown
       shapeColor: string
       backgroundColor?: string
       checkForCollision?: boolean
       checkCollisionInterval?: number
       powerUpType?: TilePowerUpType
-      size?: TileSize
     }>(),
     {
       shapeColor: TILE_DEFAULTS.shapeColor,
@@ -54,7 +54,7 @@
 
   const cssStyles = computed(() => {
     return {
-      backgroundColor: isNoneToken(props.powerUpType) ? props.backgroundColor : null,
+      backgroundColor: isNoneToken(props.powerUpType) ? props.backgroundColor : undefined,
     }
   })
 
@@ -97,6 +97,9 @@
     if (collidedRows.includes(tileRowId)) {
       isDisabled.value = true
       onCheckCollisionEnd()
+    } else {
+      isDisabled.value = false
+      isCollided.value = false
     }
   }
 
