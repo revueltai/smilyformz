@@ -16,6 +16,8 @@ export interface SoundsMap {
   buttonClick: Sound
   notificationSuccess: Sound
   notificationError: Sound
+  gameCountdownStart: Sound
+  gameCountdownEnd: Sound
   gameOver: Sound
   gameCharacterMove: Sound
   gameTilePop: Sound

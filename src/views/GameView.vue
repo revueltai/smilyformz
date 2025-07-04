@@ -52,6 +52,7 @@
       gameStore.showConfetti = true
     }
 
+    soundStore.playSound('gameOver')
     handleShowGameOverModal()
   }
 
@@ -110,7 +111,7 @@
     async (isGameOver) => {
       if (isGameOver) {
         showGameEndCountdown.value = true
-        soundStore.playSound('gameOver')
+        soundStore.playSound('gameCountdownEnd')
 
         await handleGameSessionSave()
       }

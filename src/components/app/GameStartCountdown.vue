@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
   import GameCountdown from './GameCountdown.vue'
+  import { useSoundStore } from '@/stores/sounds.store'
 
   type CountdownMessage = 'ready' | 'go'
 
@@ -8,20 +9,24 @@
     onComplete: () => void
   }>()
 
+  const soundStore = useSoundStore()
+
   const message = ref<CountdownMessage>('ready')
   const isVisible = ref(true)
   const textColor = ref('text-white')
 
   onMounted(() => {
+    soundStore.playSound('gameCountdownStart')
+
     setTimeout(() => {
       message.value = 'go'
       textColor.value = 'text-lime-200'
-    }, 2000)
+    }, 1500)
 
     setTimeout(() => {
       isVisible.value = false
       props.onComplete()
-    }, 3000)
+    }, 2500)
   })
 </script>
 

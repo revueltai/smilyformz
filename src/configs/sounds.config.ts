@@ -13,6 +13,14 @@ export const soundsConfig: SoundsMap = {
     audio: new Audio('/sounds/uiNotificationError.mp3'),
     volume: 0.5,
   },
+  gameCountdownStart: {
+    audio: new Audio('/sounds/gameCountdownStart.mp3'),
+    volume: 0.2,
+  },
+  gameCountdownEnd: {
+    audio: new Audio('/sounds/gameCountdownEnd.mp3'),
+    volume: 0.2,
+  },
   gameOver: {
     audio: new Audio('/sounds/gameOver.mp3'),
     volume: 0.2,
