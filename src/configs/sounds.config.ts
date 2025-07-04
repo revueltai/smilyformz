@@ -1,4 +1,6 @@
-export const soundsEffectsConfig = {
+import type { MusicMap, SoundsMap } from '@/stores/sounds.store'
+
+export const soundsConfig: SoundsMap = {
   buttonClick: {
     audio: new Audio('/sounds/uiButtonClick.wav'),
     volume: 0.5,
@@ -11,47 +13,31 @@ export const soundsEffectsConfig = {
     audio: new Audio('/sounds/uiNotificationError.mp3'),
     volume: 0.5,
   },
-  gameTick: {
-    audio: new Audio('/sounds/gameTick.wav'),
-    volume: 0.5,
+  gameOver: {
+    audio: new Audio('/sounds/gameOver.mp3'),
+    volume: 0.2,
+  },
+  gameCharacterMove: {
+    audio: new Audio('/sounds/gameCharacterMove.wav'),
+    volume: 0.2,
   },
   gameTilePop: {
     audio: new Audio('/sounds/gameTilePop.mp3'),
-    volume: 0.5,
+    volume: 0.2,
   },
   gameTilePowerup: {
     audio: new Audio('/sounds/gameTilePowerup.mp3'),
-    volume: 0.5,
-  },
-  gameRoundOver: {
-    audio: new Audio('/sounds/gameRoundOver.wav'),
-    volume: 0.5,
-  },
-  gameRoundLost: {
-    audio: new Audio('/sounds/gameRoundLost.mp3'),
-    volume: 0.5,
-  },
-  gameWon: {
-    audio: new Audio('/sounds/gameWon.mp3'),
-    volume: 0.5,
-  },
-  gameLost: {
-    audio: new Audio('/sounds/gameLost.mp3'),
-    volume: 0.5,
+    volume: 0.2,
   },
 }
 
-export const soundsConfig = {
-  firstSessionBg: {
-    audio: new Audio('/sounds/dashboardBg.mp3'),
+export const musicConfig: MusicMap = {
+  appBgSound: {
+    audio: new Audio('/sounds/uiAppBackground.mp3'),
     volume: 0.2,
   },
-  dashboardBg: {
-    audio: new Audio('/sounds/dashboardBg.mp3'),
-    volume: 0.2,
-  },
-  gameBg: {
-    audio: new Audio('/sounds/gameBg.mp3'),
+  gameBgSound: {
+    audio: new Audio('/sounds/gameBackground.mp3'),
     volume: 0.2,
   },
 }

@@ -4,8 +4,10 @@
   import { useI18n } from 'vue-i18n'
   import type { ToastType, ToastPayload } from '@/components/shared/Toast/types'
   import type { RefElement } from '@/components/shared/types'
+  import { useSoundStore } from '@/stores/sounds.store'
 
   const { t } = useI18n()
+  const soundStore = useSoundStore()
 
   const toastRef = ref<RefElement>(null)
   const message = ref('')
@@ -38,6 +40,8 @@
       if (toastRef.value) {
         toastRef.value.addEventListener('animationend', handleAnimationEnd)
         toastRef.value.classList.add('slideInOutTop')
+
+        soundStore.playSound(type.value === 'error' ? 'notificationError' : 'notificationSuccess')
       }
     }
   }

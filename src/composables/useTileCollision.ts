@@ -4,6 +4,7 @@ import { useCollisionDetection } from './useCollisionDetection'
 import { useTileGeneration } from './useTileGeneration'
 import { getTileRowId, isNoneToken } from '@/utils'
 import { Bus } from '@/services/Bus.service'
+import { useSoundStore } from '@/stores/sounds.store'
 
 interface CharacterUpdateProps {
   shape: TileShape
@@ -26,6 +27,7 @@ interface PowerUpEffects {
  */
 export function useTileCollision() {
   const gameStore = useGameStore()
+  const soundStore = useSoundStore()
   const { disableCollidedRow } = useCollisionDetection()
   const { updateRowTilesToMatchCharacter } = useTileGeneration()
 
@@ -116,6 +118,7 @@ export function useTileCollision() {
     const { isMatch, shapeMatch, colorMatch } = evaluateMatch(tile, powerUpEffects)
 
     if (isMatch) {
+      soundStore.playSound(powerUpEffects ? 'gameTilePowerup' : 'gameTilePop')
       gameStore.incrementScore(shapeMatch, colorMatch, powerUpEffects?.doublePoints)
 
       updateCharacterOnMatch({

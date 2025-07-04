@@ -3,6 +3,7 @@
   import type { ButtonFormTypes, ButtonProps } from './types'
   import { isNoneToken } from '@/utils'
   import Icon from '../Icon/index.vue'
+  import { useSoundStore } from '@/stores/sounds.store'
 
   const props = withDefaults(defineProps<ButtonProps>(), {
     size: 'base',
@@ -49,7 +50,9 @@
     '2xl': 'text-xl sm:text-xl py-4 px-6',
   }
 
+  const soundStore = useSoundStore()
   const slots = useSlots()
+
   const emit = defineEmits(['click'])
 
   const isButton = computed(() => (props.type === 'button' || props.type === 'submit') && !props.to)
@@ -112,6 +115,7 @@
   })
 
   function handleClick(event: Event) {
+    soundStore.playSound('buttonClick')
     emit('click', event)
   }
 

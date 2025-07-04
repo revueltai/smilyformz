@@ -176,9 +176,23 @@ export const useUserStore = defineStore('user', () => {
         sound: sound ?? false,
         language: language || DEFAULT_LANGUAGE_CODE,
       }
+
+      initializeSoundStore(music ?? false, sound ?? false)
     } catch (error) {
       console.error('Error loading user profile:', error)
     }
+  }
+
+  /**
+   * Initializes the sound store with the user's music and sound settings.
+   *
+   * @param music - The user's music setting.
+   * @param sound - The user's sound setting.
+   */
+  async function initializeSoundStore(music: boolean, sound: boolean) {
+    const { useSoundStore } = await import('@/stores/sounds.store')
+    const soundStore = useSoundStore()
+    soundStore.initializeSounds(music, sound)
   }
 
   /**

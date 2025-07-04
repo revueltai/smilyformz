@@ -5,7 +5,7 @@
   import { useModalStore } from '@/stores/modal.store'
   import { useGameStore } from '@/stores/game.store'
   import { useUserStore } from '@/stores/user.store'
-  import { useCollisionDetection } from '@/composables/useCollisionDetection'
+  import { useSoundStore } from '@/stores/sounds.store'
   import { MODALS } from '@/configs/constants'
   import { CONFETTI_SCORE } from '@/configs/constants'
   import { ToastService } from '@/components/shared/Toast/service'
@@ -28,6 +28,7 @@
   const gameStore = useGameStore()
   const modalStore = useModalStore()
   const userStore = useUserStore()
+  const soundStore = useSoundStore()
 
   const showGameEndCountdown = ref(false)
   const router = useRouter()
@@ -109,6 +110,8 @@
     async (isGameOver) => {
       if (isGameOver) {
         showGameEndCountdown.value = true
+        soundStore.playSound('gameOver')
+
         await handleGameSessionSave()
       }
     },
@@ -134,6 +137,9 @@
 
   onMounted(() => {
     gameStore.resetGame()
+
+    soundStore.stopLoopMusic()
+    soundStore.playLoopMusic('gameBgSound')
 
     if (userStore.isAuthenticated) {
       modalStore.closeModal()

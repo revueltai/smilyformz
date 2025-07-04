@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { soundsConfig, soundsEffectsConfig } from '@/configs/sounds.config'
+import { musicConfig, soundsConfig } from '@/configs/sounds.config'
 import { reactive, toRefs } from 'vue'
 
 interface Sound {
@@ -7,37 +7,33 @@ interface Sound {
   volume: number
 }
 
-interface SoundsMap {
-  firstSessionBg: Sound
-  dashboardBg: Sound
-  gameBg: Sound
+export interface MusicMap {
+  appBgSound: Sound
+  gameBgSound: Sound
 }
 
-interface SoundsEffectsMap {
+export interface SoundsMap {
   buttonClick: Sound
   notificationSuccess: Sound
   notificationError: Sound
-  gameTick: Sound
+  gameOver: Sound
+  gameCharacterMove: Sound
   gameTilePop: Sound
   gameTilePowerup: Sound
-  gameRoundOver: Sound
-  gameRoundLost: Sound
-  gameWon: Sound
-  gameLost: Sound
 }
+
+type MusicName = keyof MusicMap
 
 type SoundName = keyof SoundsMap
 
-type SoundEffectName = keyof SoundsEffectsMap
-
 interface SoundState {
   initialized: boolean
-  soundsOn: boolean
-  soundEffectsOn: boolean
-  soundActive: SoundName | ''
-  soundEffectActive: SoundEffectName | ''
+  musicOn: boolean
+  soundOn: boolean
+  soundActive: MusicName | ''
+  soundEffectActive: SoundName | ''
+  music: MusicMap
   sounds: SoundsMap
-  soundsEffects: SoundsEffectsMap
 }
 
 /**
@@ -47,16 +43,16 @@ interface SoundState {
 export const useSoundStore = defineStore('sound', () => {
   const state = reactive<SoundState>({
     initialized: false,
-    soundsOn: false,
-    soundEffectsOn: false,
+    musicOn: false,
+    soundOn: false,
     soundActive: '',
     soundEffectActive: '',
-    soundsEffects: soundsEffectsConfig,
     sounds: soundsConfig,
+    music: musicConfig,
   })
 
   /**
-   * Plays an audio element.
+   * Plays an audio element (music or sound).
    *
    * @param audio - The audio element to play.
    */
@@ -73,50 +69,50 @@ export const useSoundStore = defineStore('sound', () => {
    *
    * @param key - The key of the sound effect to play.
    */
-  function playSoundEffect(key: SoundEffectName) {
-    if (!state.soundEffectsOn) {
+  function playSound(key: SoundName) {
+    if (!state.soundOn) {
       return
     }
 
-    const audio = state.soundsEffects[key].audio
+    const audio = state.sounds[key].audio
     if (audio) {
-      state.soundEffectActive = key as SoundEffectName
-      audio.volume = state.soundsEffects[key].volume
+      state.soundEffectActive = key as SoundName
+      audio.volume = state.sounds[key].volume
       audio.currentTime = 0
       playAudio(audio)
     }
   }
 
   /**
-   * Plays a sound in a loop.
+   * Plays a music loop.
    *
    * @param key - The key of the sound to play.
    */
-  function playLoopSound(key: SoundName | '') {
+  function playLoopMusic(key: MusicName | '') {
     if (!key) {
       return
     }
 
-    if (!state.soundsOn) {
-      stopLoopSound()
+    if (!state.musicOn) {
+      stopLoopMusic()
       return
     }
 
-    const audio = state.sounds[key].audio
+    const audio = state.music[key].audio
     if (audio) {
-      state.soundActive = key as SoundName
-      audio.volume = state.sounds[key].volume
+      state.soundActive = key as MusicName
+      audio.volume = state.music[key].volume
       audio.loop = true
       playAudio(audio)
     }
   }
 
   /**
-   * Stops a sound loop.
+   * Stops a music loop.
    */
-  function stopLoopSound() {
+  function stopLoopMusic() {
     if (state.soundActive) {
-      const audio = state.sounds[state.soundActive as SoundName].audio
+      const audio = state.music[state.soundActive as MusicName].audio
 
       if (audio) {
         audio.pause()
@@ -128,9 +124,9 @@ export const useSoundStore = defineStore('sound', () => {
   /**
    * Stops a sound effect.
    */
-  function stopSoundEffect() {
+  function stopSound() {
     if (state.soundEffectActive) {
-      const audio = state.soundsEffects[state.soundEffectActive as SoundEffectName].audio
+      const audio = state.sounds[state.soundEffectActive as SoundName].audio
 
       if (audio) {
         audio.pause()
@@ -145,7 +141,7 @@ export const useSoundStore = defineStore('sound', () => {
    * @param value - The value of the sound setting.
    */
   function updateSoundSetting(value: boolean) {
-    state.soundsOn = value
+    state.musicOn = value
   }
 
   /**
@@ -154,7 +150,7 @@ export const useSoundStore = defineStore('sound', () => {
    * @param value - The value of the sound effects setting.
    */
   function updateSoundEffectsSetting(value: boolean) {
-    state.soundEffectsOn = value
+    state.soundOn = value
   }
 
   /**
@@ -176,10 +172,10 @@ export const useSoundStore = defineStore('sound', () => {
     ...toRefs(state),
 
     playAudio,
-    playSoundEffect,
-    playLoopSound,
-    stopLoopSound,
-    stopSoundEffect,
+    playSound,
+    playLoopMusic,
+    stopLoopMusic,
+    stopSound,
     updateSoundSetting,
     updateSoundEffectsSetting,
     initializeSounds,
