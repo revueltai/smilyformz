@@ -1,17 +1,22 @@
 <script setup lang="ts">
   import { getRandomNumber } from '@/utils'
   import { ref, onMounted } from 'vue'
+  import { useSoundStore } from '@/stores/sounds.store'
 
   const props = defineProps<{
     message: string
     onComplete?: () => void
   }>()
 
+  const soundStore = useSoundStore()
+
   const totalMessages = 15
   const isVisible = ref(true)
   const randomMessage = ref(props.message || `motivationMessage${getRandomNumber(totalMessages)}`)
 
   onMounted(() => {
+    soundStore.playSound('gameMotivationMessage')
+
     setTimeout(() => {
       isVisible.value = false
 

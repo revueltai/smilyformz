@@ -20,6 +20,8 @@ export interface SoundsMap {
   gameCountdownStart: Sound
   gameCountdownEnd: Sound
   gameOver: Sound
+  gameMotivationMessage: Sound
+  gameSpeedIncrease: Sound
   gameCharacterMove: Sound
   gameTilePop: Sound
   gameTilePowerup: Sound

@@ -21,6 +21,14 @@ export const soundsConfig: SoundsMap = {
     audio: new Audio('/sounds/gameCountdownEnd.mp3'),
     volume: 0.2,
   },
+  gameMotivationMessage: {
+    audio: new Audio('/sounds/gameMotivationMessage.mp3'),
+    volume: 0.2,
+  },
+  gameSpeedIncrease: {
+    audio: new Audio('/sounds/gameSpeedIncrease.mp3'),
+    volume: 0.2,
+  },
   gameOver: {
     audio: new Audio('/sounds/gameOver.mp3'),
     volume: 0.2,
