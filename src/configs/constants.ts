@@ -70,8 +70,6 @@ export const DEFAULT_LEAGUE_LEVEL_NAME = 'easy'
 
 export const LEAGUE_RANKING_LIST_LIMIT = 100
 
-export const CONFETTI_SCORE = 10
-
 export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   easy: {
     id: 'easy',
@@ -80,29 +78,37 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
     initialRowSpacing: 400,
     initialSpeed: 2.5,
     nextLevelPoints: 50,
+    showConfettiScore: 25,
+    pointsMultiplier: 1,
   },
   medium: {
     id: 'medium',
     name: 'leagueName_medium',
     totalRowsLength: 5,
-    initialRowSpacing: 400,
+    initialRowSpacing: 300,
     initialSpeed: 2.5,
     nextLevelPoints: 120,
+    showConfettiScore: 50,
+    pointsMultiplier: 2,
   },
   hard: {
     id: 'hard',
     name: 'leagueName_hard',
     totalRowsLength: 7,
-    initialRowSpacing: 400,
+    initialRowSpacing: 300,
     initialSpeed: 2.5,
-    nextLevelPoints: 250,
+    nextLevelPoints: 200,
+    showConfettiScore: 120,
+    pointsMultiplier: 3,
   },
   legend: {
     id: 'legend',
     name: 'leagueName_legend',
     totalRowsLength: 9,
-    initialRowSpacing: 400,
+    initialRowSpacing: 300,
     initialSpeed: 2.5,
-    nextLevelPoints: 500,
+    nextLevelPoints: 400,
+    showConfettiScore: 200,
+    pointsMultiplier: 4,
   },
 }

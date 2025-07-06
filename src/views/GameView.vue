@@ -6,8 +6,7 @@
   import { useGameStore } from '@/stores/game.store'
   import { useUserStore } from '@/stores/user.store'
   import { useSoundStore } from '@/stores/sounds.store'
-  import { MODALS } from '@/configs/constants'
-  import { CONFETTI_SCORE } from '@/configs/constants'
+  import { MODALS, GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import { ToastService } from '@/components/shared/Toast/service'
   import ModalPause from '@/components/app/ModalPause.vue'
   import ModalGameOver from '@/components/app/ModalGameOver.vue'
@@ -51,7 +50,8 @@
   }
 
   function handleGameEndCountdownComplete() {
-    if (gameStore.score >= CONFETTI_SCORE) {
+    const currentLeagueSettings = GAME_LEAGUE_LEVELS[gameStore.leagueLevel]
+    if (gameStore.score >= currentLeagueSettings.showConfettiScore) {
       gameStore.showConfetti = true
     }
 

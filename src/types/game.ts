@@ -5,6 +5,8 @@ export interface GameLeagueLevel {
   initialRowSpacing: number
   initialSpeed: number
   nextLevelPoints: number
+  showConfettiScore: number
+  pointsMultiplier: number
 }
 
 export type GameLeagueLevelKey = 'easy' | 'medium' | 'hard' | 'legend'
