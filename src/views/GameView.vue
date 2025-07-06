@@ -149,9 +149,6 @@
 
     showGameStartCountdown.value = true
 
-    soundStore.stopLoopMusic()
-    soundStore.playLoopMusic('gameBgSound')
-
     if (userStore.isAuthenticated) {
       modalStore.closeModal()
     }

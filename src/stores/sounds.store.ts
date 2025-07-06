@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { musicConfig, soundsConfig } from '@/configs/sounds.config'
-import { reactive, toRefs } from 'vue'
+import { reactive, toRefs, watch } from 'vue'
+import { useUserStore } from '@/stores/user.store'
 
 interface Sound {
   audio: HTMLAudioElement
@@ -43,6 +44,8 @@ interface SoundState {
  * It is used to play the sounds and sound effects of the game.
  */
 export const useSoundStore = defineStore('sound', () => {
+  const userStore = useUserStore()
+
   const state = reactive<SoundState>({
     initialized: false,
     musicOn: false,
@@ -55,13 +58,16 @@ export const useSoundStore = defineStore('sound', () => {
 
   /**
    * Plays an audio element (music or sound).
+   * Catches errors and logs them, if they are not the "autoplay policy".
    *
    * @param audio - The audio element to play.
    */
   function playAudio(audio: HTMLAudioElement) {
     if (document.hasFocus()) {
       audio.play().catch((err: any) => {
-        console.error('Audio Play failed:', err)
+        if (err.name !== 'NotAllowedError') {
+          console.error('Audio Play failed:', err)
+        }
       })
     }
   }
@@ -88,15 +94,31 @@ export const useSoundStore = defineStore('sound', () => {
   /**
    * Plays a music loop.
    *
-   * @param key - The key of the sound to play.
+   * @param key - The key of the music to play.
    */
   function playLoopMusic(key: MusicName | '') {
     if (!key) {
       return
     }
 
-    if (!state.musicOn) {
+    if (state.soundActive === key && state.musicOn) {
+      const audio = state.music[key].audio
+
+      // Try-restart the audio if it is paused (due to autoplay policy).
+      if (audio && audio.paused) {
+        audio.volume = state.music[key].volume
+        audio.loop = true
+        playAudio(audio)
+      }
+      return
+    }
+
+    // Stop current music only if we're changing to a different track
+    if (state.soundActive && state.soundActive !== key) {
       stopLoopMusic()
+    }
+
+    if (!state.musicOn) {
       return
     }
 
@@ -140,10 +162,29 @@ export const useSoundStore = defineStore('sound', () => {
   /**
    * Updates the sound setting.
    *
-   * @param value - The value of the sound setting.
+   * @param newValue - The value of the sound setting.
    */
-  function updateSoundSetting(value: boolean) {
-    state.musicOn = value
+  function updateSoundSetting(newValue: boolean) {
+    const wasMusicOn = state.musicOn
+    state.musicOn = newValue
+
+    // If music is off, stop the currently playing music
+    if (!newValue) {
+      stopLoopMusic()
+      return
+    }
+
+    if (!wasMusicOn && newValue && state.soundActive) {
+      // If music is on and it wasn't on before, restart the music
+      // that was previously playing
+      const audio = state.music[state.soundActive as MusicName].audio
+
+      if (audio) {
+        audio.volume = state.music[state.soundActive as MusicName].volume
+        audio.loop = true
+        playAudio(audio)
+      }
+    }
   }
 
   /**
@@ -151,8 +192,12 @@ export const useSoundStore = defineStore('sound', () => {
    *
    * @param value - The value of the sound effects setting.
    */
-  function updateSoundEffectsSetting(value: boolean) {
-    state.soundOn = value
+  function updateSoundEffectsSetting(newValue: boolean) {
+    state.soundOn = newValue
+
+    if (!newValue) {
+      stopSound()
+    }
   }
 
   /**
@@ -165,10 +210,27 @@ export const useSoundStore = defineStore('sound', () => {
     if (!state.initialized) {
       updateSoundSetting(hasSound)
       updateSoundEffectsSetting(hasEffects)
-
       state.initialized = true
     }
   }
+
+  watch(
+    () => userStore.music,
+    (newValue) => {
+      if (state.initialized) {
+        updateSoundSetting(newValue)
+      }
+    },
+  )
+
+  watch(
+    () => userStore.sound,
+    (newValue) => {
+      if (state.initialized) {
+        updateSoundEffectsSetting(newValue)
+      }
+    },
+  )
 
   return {
     ...toRefs(state),

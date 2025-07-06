@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { useModalStore } from '@/stores/modal.store'
   import ModalLogin from '@/components/app/ModalLogin.vue'
@@ -7,11 +6,9 @@
   import ModalCredits from '@/components/app/ModalCredits.vue'
   import Page from '@/components/app/Page.vue'
   import { MODALS } from '@/configs/constants'
-  import { useSoundStore } from '@/stores/sounds.store'
 
   const router = useRouter()
   const modalStore = useModalStore()
-  const soundStore = useSoundStore()
 
   function handleClickButtonPlay() {
     router.push('/game')
@@ -28,11 +25,6 @@
   function handleClickButtonCredits() {
     modalStore.openModal(MODALS.CREDITS)
   }
-
-  onMounted(() => {
-    soundStore.stopLoopMusic()
-    soundStore.playLoopMusic('appBgSound')
-  })
 </script>
 
 <template>

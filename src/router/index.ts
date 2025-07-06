@@ -55,6 +55,48 @@ async function validateUser(to: RouteLocationNormalized): Promise<{ name: string
   return undefined
 }
 
+/**
+ * Manages music based on the route being navigated to
+ *
+ * @param to - The route being navigated to
+ */
+async function handleRouteMusic(to: RouteLocationNormalized) {
+  const { useSoundStore } = await import('@/stores/sounds.store')
+  const { useUserStore } = await import('@/stores/user.store')
+
+  const soundStore = useSoundStore()
+  const userStore = useUserStore()
+
+  if (!userStore.music) {
+    soundStore.stopLoopMusic()
+    return
+  }
+
+  let musicKey: 'appBgSound' | 'gameBgSound' | '' = ''
+
+  switch (to.name) {
+    case 'Game':
+      musicKey = 'gameBgSound'
+      break
+
+    case 'Home':
+    case 'Profile':
+    case 'Ranking':
+    case 'Splash':
+      musicKey = 'appBgSound'
+      break
+
+    default:
+      musicKey = ''
+  }
+
+  if (musicKey) {
+    soundStore.playLoopMusic(musicKey)
+  } else {
+    soundStore.stopLoopMusic()
+  }
+}
+
 export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
   const routes: RouteRecordRaw[] = [
     {
@@ -105,6 +147,7 @@ export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
     if (route) {
       next(route)
     } else {
+      await handleRouteMusic(to)
       next()
     }
   })

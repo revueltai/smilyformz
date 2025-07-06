@@ -12,12 +12,10 @@
   import { MODALS } from '@/configs/constants'
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
-  import { useSoundStore } from '@/stores/sounds.store'
   import type { ShareType } from '@/components/app/ModalShare.vue'
 
   const userStore = useUserStore()
   const modalStore = useModalStore()
-  const soundStore = useSoundStore()
 
   const latestScore = ref(0)
   const highestScore = ref(0)
@@ -43,9 +41,6 @@
   }
 
   onMounted(async () => {
-    soundStore.stopLoopMusic()
-    soundStore.playLoopMusic('appBgSound')
-
     latestScore.value = await userStore.getLatestScore()
     highestScore.value = await userStore.getHighestScore()
   })
