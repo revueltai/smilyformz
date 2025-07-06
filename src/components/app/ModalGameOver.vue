@@ -3,11 +3,13 @@
   import GameOverScoreSign from '@/components/app/GameOverScoreSign.vue'
   import { useRouter } from 'vue-router'
   import { useModalStore } from '@/stores/modal.store'
-  import { useGameStore } from '@/stores/game.store'
+
+  const emit = defineEmits<{
+    (e: 'playAgain'): void
+  }>()
 
   const router = useRouter()
   const modalStore = useModalStore()
-  const gameStore = useGameStore()
 
   function handleHome() {
     modalStore.closeModal()
@@ -16,7 +18,7 @@
 
   function handlePlayAgain() {
     modalStore.closeModal()
-    gameStore.resetGame()
+    emit('playAgain')
   }
 </script>
 

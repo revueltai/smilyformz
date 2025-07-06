@@ -19,7 +19,7 @@ export type TileRow = {
   tiles: TileRowItem[]
 }
 
-export type TileRowItem = {
+export interface TileRowItem {
   id: string
   type: 'Tile'
   shape: TileShape
@@ -30,10 +30,6 @@ export type TileRowItem = {
   powerUpType?: TilePowerUpType
 }
 
-export interface Character {
-  id: string
-  shape: TileShape
-  color: TileColor
-  x: number
-  y: number
+export interface CharacterItem extends Omit<TileRowItem, 'type'> {
+  type: 'character'
 }

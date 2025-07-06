@@ -4,6 +4,7 @@ import {
   TILE_COLORS,
   TILE_SHAPES,
   TILE_POWER_UP_TYPES,
+  GAME_ROWS_COUNT,
 } from '@/configs/constants'
 import type {
   TileShape,
@@ -20,6 +21,7 @@ const EXPRESSIONS = Object.values(TILE_EXPRESSIONS) as TileExpression[]
 const COLORS = Object.values(TILE_COLORS)
 
 const rows = ref<TileRow[]>([])
+const initializeCompleted = ref(false)
 const rowResetKeys = ref<Record<string, number>>({})
 
 /**
@@ -278,14 +280,14 @@ export function useTileGeneration() {
 
   /**
    * Initializes the rows of tiles.
-   * Delay is needed to ensure the character is initialized before the rows are generated.
    *
-   * @param count - The number of rows to initialize
+   * @param delay - A delay in milliseconds before initializing the rows. Default is 100ms.
    */
-  function initializeRows(count: number) {
+  function initializeRows(delay: number = 100) {
     setTimeout(() => {
-      rows.value = Array.from({ length: count }, (_, index) => generateNewRow(index))
-    }, 100)
+      rows.value = Array.from({ length: GAME_ROWS_COUNT }, (_, index) => generateNewRow(index))
+      initializeCompleted.value = true
+    }, delay)
   }
 
   /**
@@ -294,9 +296,11 @@ export function useTileGeneration() {
   function resetTileGeneration() {
     rows.value = []
     rowResetKeys.value = {}
+    initializeCompleted.value = false
   }
 
   return {
+    initializeCompleted,
     rows,
     updateRowTilesToMatchCharacter,
     updateTilesOnRowReset,

@@ -88,6 +88,11 @@
     modalStore.openModal(MODALS.CREATE_ACCOUNT)
   }
 
+  function handlePlayAgain() {
+    gameStore.restartGame()
+    showGameStartCountdown.value = true
+  }
+
   async function handleGameSessionSave() {
     if (userStore.isAuthenticated && gameStore.score > 0) {
       try {
@@ -204,7 +209,7 @@
       :prevent-backdrop-close="true"
       :has-close-button="false"
     >
-      <ModalGameOver />
+      <ModalGameOver @play-again="handlePlayAgain" />
     </Modal>
 
     <Modal

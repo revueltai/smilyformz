@@ -7,7 +7,12 @@ import {
   GAME_LEAGUE_LEVELS,
   DEFAULT_LEAGUE_LEVEL_NAME,
 } from '@/configs/constants'
-import type { TileShape, TileExpression, TileSize } from '@/components/app/tile/types'
+import type {
+  CharacterItem,
+  TileShape,
+  TileExpression,
+  TileSize,
+} from '@/components/app/tile/types'
 import type { GameLeagueLevelKey } from '@/types/game'
 import { getRandomItem, canAdvanceToNextLeague } from '@/utils'
 import { supabase } from '@/services/Supabase.service'
@@ -66,25 +71,36 @@ export const useGameStore = defineStore('game', () => {
     minutes: 0,
   })
 
-  // Character state
-  const initialCharacterColor = getRandomItem(Object.values(TILE_COLORS))
-  const character = ref({
-    id: 'character',
-    type: 'character',
-    shape: getRandomItem(Object.values(TILE_SHAPES) as TileShape[]),
-    shapeColor: initialCharacterColor.shapeColor,
-    backgroundColor: initialCharacterColor.backgroundColor,
-    expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
-  })
-
   // Tile size based on the league level, the smaller the league level, the bigger the tile size
   const tileSize = computed(() => LEAGUE_TILE_SIZE_MAP[leagueLevel.value] as TileSize)
+
+  // Character state
+  const character = ref(createCharacter())
 
   // Formatted time for display
   const formattedTime = computed(() => {
     const pad = (num: number) => num.toString().padStart(2, '0')
     return `${pad(time.value.minutes)}:${pad(time.value.seconds)}`
   })
+
+  /**
+   * Creates a character object with a random color and shape.
+   *
+   * @returns The character object.
+   */
+  function createCharacter(): CharacterItem {
+    const color = getRandomItem(Object.values(TILE_COLORS))
+
+    return {
+      id: 'character',
+      type: 'character',
+      size: tileSize.value,
+      shape: getRandomItem(Object.values(TILE_SHAPES) as TileShape[]),
+      shapeColor: color.shapeColor,
+      backgroundColor: color.backgroundColor,
+      expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
+    }
+  }
 
   /**
    * Checks if the game speed should be increased based on the time elapsed
@@ -241,14 +257,14 @@ export const useGameStore = defineStore('game', () => {
     resetCollisionDetection()
 
     // Reset character to a new random state
-    character.value = {
-      id: 'character',
-      type: 'character',
-      shape: getRandomItem(Object.values(TILE_SHAPES) as TileShape[]),
-      shapeColor: getRandomItem(Object.values(TILE_COLORS)).shapeColor,
-      backgroundColor: getRandomItem(Object.values(TILE_COLORS)).backgroundColor,
-      expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
-    }
+    character.value = createCharacter()
+  }
+
+  /**
+   * Restarts the game (resets and prepares for new start)
+   */
+  function restartGame() {
+    resetGame()
   }
 
   /**
@@ -264,6 +280,7 @@ export const useGameStore = defineStore('game', () => {
     character.value = {
       id: 'character',
       type: 'character',
+      size: tileSize.value,
       shape: characterProps.shape,
       shapeColor: characterProps.shapeColor,
       backgroundColor: characterProps.backgroundColor,
@@ -375,5 +392,6 @@ export const useGameStore = defineStore('game', () => {
     saveGameSession,
     setLeagueLevel,
     checkAndUpdateLeagueLevel,
+    restartGame,
   }
 })

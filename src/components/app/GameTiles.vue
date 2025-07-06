@@ -11,7 +11,7 @@
   const gameStore = useGameStore()
   const rowsAreAnimated = ref(false)
   const container = ref<RefElement>(null)
-  const { rows, initializeRows, resetTileGeneration } = useTileGeneration()
+  const { rows, initializeRows, resetTileGeneration, initializeCompleted } = useTileGeneration()
   const { startAnimation, resetRowAnimation, positionRows } = useRowAnimation()
 
   function animateRows() {
@@ -27,10 +27,8 @@
   }
 
   async function reinitializeGameTiles() {
-    if (container.value) {
-      initializeRows(GAME_ROWS_COUNT)
-      await updateRowPositioning()
-    }
+    initializeRows()
+    await updateRowPositioning()
   }
 
   async function updateRowPositioning() {
@@ -60,6 +58,19 @@
 
       if (rowsAreAnimated.value) {
         resetGameTiles()
+      }
+    },
+  )
+
+  watch(
+    () => initializeCompleted.value,
+    async (completed) => {
+      if (completed && gameStore.isGameStarted && !rowsAreAnimated.value) {
+        await nextTick()
+
+        if (!isEmptyArray(rows.value)) {
+          animateRows()
+        }
       }
     },
   )
