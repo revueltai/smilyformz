@@ -124,6 +124,7 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
     if (positionOnBoard.value > 0) {
       positionOnBoard.value--
       positionCharacter(positionOnBoard.value)
+      soundStore.playSound('gameCharacterMove')
     }
   }
 
@@ -139,6 +140,7 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
     if (positionOnBoard.value < maxPosition) {
       positionOnBoard.value++
       positionCharacter(positionOnBoard.value)
+      soundStore.playSound('gameCharacterMove')
     }
   }
 
@@ -151,8 +153,6 @@ export function useMovementCharacter(boardEl?: RefElement, characterRef?: Ref<Re
     if (!gameStore.isGameStarted || gameStore.isPaused || event.repeat) {
       return
     }
-
-    soundStore.playSound('gameCharacterMove')
 
     if (['ArrowLeft', 'a', 'A'].includes(event.key)) {
       moveLeft()
