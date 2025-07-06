@@ -50,7 +50,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   let timeInterval: number | null = null
-  const pointsPerMatch = ref(1)
+  const pointsPerMatch = ref(initialLeagueSettings.pointsPerMatch)
   const score = ref(0)
   const leagueLevel = ref(initialLeagueLevel)
   const totalRowsLength = ref(initialLeagueSettings.totalRowsLength)
@@ -67,12 +67,13 @@ export const useGameStore = defineStore('game', () => {
   })
 
   // Character state
+  const initialCharacterColor = getRandomItem(Object.values(TILE_COLORS))
   const character = ref({
     id: 'character',
     type: 'character',
     shape: getRandomItem(Object.values(TILE_SHAPES) as TileShape[]),
-    shapeColor: getRandomItem(Object.values(TILE_COLORS)).shapeColor,
-    backgroundColor: getRandomItem(Object.values(TILE_COLORS)).backgroundColor,
+    shapeColor: initialCharacterColor.shapeColor,
+    backgroundColor: initialCharacterColor.backgroundColor,
     expression: getRandomItem(Object.values(TILE_EXPRESSIONS) as TileExpression[]),
   })
 
@@ -175,14 +176,14 @@ export const useGameStore = defineStore('game', () => {
     let newPoints = 0
 
     if (doublePoints) {
-      newPoints = pointsPerMatch.value * 4
+      newPoints = pointsPerMatch.value * 2
     } else {
       if (shapeMatch || colorMatch) {
         newPoints += pointsPerMatch.value
       }
 
       if (shapeMatch && colorMatch) {
-        newPoints += pointsPerMatch.value
+        newPoints += pointsPerMatch.value * 2
       }
     }
 
@@ -298,13 +299,13 @@ export const useGameStore = defineStore('game', () => {
    * @param leagueLevelInput - The league level to set (Default: DEFAULT_LEAGUE_LEVEL_NAME)
    */
   function setLeagueLevel(leagueLevelInput: GameLeagueLevelKey = DEFAULT_LEAGUE_LEVEL_NAME) {
-    console.log('setLeagueLevel', leagueLevelInput)
     const leagueSettings = GAME_LEAGUE_LEVELS[leagueLevelInput]
 
     leagueLevel.value = leagueLevelInput
     totalRowsLength.value = leagueSettings.totalRowsLength
     initialRowSpacing.value = leagueSettings.initialRowSpacing
     gameSpeed.value = leagueSettings.initialSpeed
+    pointsPerMatch.value = leagueSettings.pointsPerMatch
   }
 
   /**

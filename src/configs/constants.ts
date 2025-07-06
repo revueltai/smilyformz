@@ -79,7 +79,7 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
     initialSpeed: 2.5,
     nextLevelPoints: 50,
     showConfettiScore: 25,
-    pointsMultiplier: 1,
+    pointsPerMatch: 1,
   },
   medium: {
     id: 'medium',
@@ -89,7 +89,7 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
     initialSpeed: 2.5,
     nextLevelPoints: 120,
     showConfettiScore: 50,
-    pointsMultiplier: 2,
+    pointsPerMatch: 2,
   },
   hard: {
     id: 'hard',
@@ -99,7 +99,7 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
     initialSpeed: 2.5,
     nextLevelPoints: 200,
     showConfettiScore: 120,
-    pointsMultiplier: 3,
+    pointsPerMatch: 3,
   },
   legend: {
     id: 'legend',
@@ -109,6 +109,6 @@ export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
     initialSpeed: 2.5,
     nextLevelPoints: 400,
     showConfettiScore: 200,
-    pointsMultiplier: 4,
+    pointsPerMatch: 4,
   },
 }
