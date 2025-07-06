@@ -6,6 +6,7 @@ import {
   TILE_SHAPES,
   GAME_LEAGUE_LEVELS,
   DEFAULT_LEAGUE_LEVEL_NAME,
+  GAME_SPEED_MILESTONES,
 } from '@/configs/constants'
 import type {
   CharacterItem,
@@ -34,18 +35,6 @@ export const useGameStore = defineStore('game', () => {
   const initialLeagueLevel = userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL_NAME
   const initialLeagueSettings = GAME_LEAGUE_LEVELS[initialLeagueLevel]
 
-  // Speed milestones for increasing the game speed
-  const SPEED_MILESTONES = [
-    [15, 2.7],
-    [30, 2.9],
-    [60, 3.3],
-    [180, 3.5],
-    [360, 4],
-    [720, 5],
-    [1440, 6],
-    [2880, 7],
-  ]
-
   // Tile size map based on the league level
   const LEAGUE_TILE_SIZE_MAP: Record<GameLeagueLevelKey, TileSize> = {
     easy: 'xl',
@@ -70,6 +59,9 @@ export const useGameStore = defineStore('game', () => {
     seconds: 0,
     minutes: 0,
   })
+
+  // Track which speed milestones have been reached to avoid duplicate increases
+  const reachedSpeedMilestones = ref<Set<number>>(new Set())
 
   // Tile size based on the league level, the smaller the league level, the bigger the tile size
   const tileSize = computed(() => LEAGUE_TILE_SIZE_MAP[leagueLevel.value] as TileSize)
@@ -107,12 +99,18 @@ export const useGameStore = defineStore('game', () => {
    */
   function checkAndIncreaseSpeed() {
     const totalSeconds = time.value.minutes * 60 + time.value.seconds
+    const currentLeagueSettings = GAME_LEAGUE_LEVELS[leagueLevel.value]
 
-    for (const [milestoneSeconds, targetSpeed] of SPEED_MILESTONES) {
-      if (totalSeconds === milestoneSeconds && gameSpeed.value < targetSpeed) {
-        gameSpeed.value = targetSpeed
+    for (const milestoneSeconds of GAME_SPEED_MILESTONES) {
+      if (
+        totalSeconds === milestoneSeconds &&
+        !reachedSpeedMilestones.value.has(milestoneSeconds)
+      ) {
+        reachedSpeedMilestones.value.add(milestoneSeconds)
+
+        gameSpeed.value += currentLeagueSettings.speedIncrement
+
         showSpeedIncreaseNotification.value = true
-
         setTimeout(() => (showSpeedIncreaseNotification.value = false), 1500)
 
         break
@@ -173,8 +171,10 @@ export const useGameStore = defineStore('game', () => {
    * Resets the game speed
    */
   function resetSpeed() {
-    gameSpeed.value = initialLeagueSettings.initialSpeed
+    const currentLeagueSettings = GAME_LEAGUE_LEVELS[leagueLevel.value]
+    gameSpeed.value = currentLeagueSettings.initialSpeed
     showSpeedIncreaseNotification.value = false
+    reachedSpeedMilestones.value.clear()
   }
 
   /**
@@ -323,6 +323,7 @@ export const useGameStore = defineStore('game', () => {
     initialRowSpacing.value = leagueSettings.initialRowSpacing
     gameSpeed.value = leagueSettings.initialSpeed
     pointsPerMatch.value = leagueSettings.pointsPerMatch
+    reachedSpeedMilestones.value.clear()
   }
 
   /**

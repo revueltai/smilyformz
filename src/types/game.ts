@@ -4,6 +4,7 @@ export interface GameLeagueLevel {
   totalRowsLength: number
   initialRowSpacing: number
   initialSpeed: number
+  speedIncrement: number
   nextLevelPoints: number
   showConfettiScore: number
   pointsPerMatch: number
