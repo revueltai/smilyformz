@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { useSoundStore } from '@/stores/sounds.store'
   import type { TabProps, TabItem } from './types'
 
   const props = withDefaults(defineProps<TabProps>(), {
@@ -16,6 +17,8 @@
     tabChange: [index: number, item: TabItem]
   }>()
 
+  const soundStore = useSoundStore()
+
   const tabSizeClasses = {
     xs: 'text-xs py-2 px-3',
     sm: 'text-sm py-2 px-3',
@@ -25,6 +28,7 @@
   }
 
   function handleTabClick(index: number) {
+    soundStore.playSound('buttonClick')
     emit('update:activeTab', index)
     emit('tabChange', index, props.items[index])
   }

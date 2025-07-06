@@ -3,15 +3,15 @@ import type { MusicMap, SoundsMap } from '@/stores/sounds.store'
 export const soundsConfig: SoundsMap = {
   buttonClick: {
     audio: new Audio('/sounds/uiButtonClick.wav'),
-    volume: 0.5,
+    volume: 0.1,
   },
   notificationSuccess: {
     audio: new Audio('/sounds/uiNotificationSuccess.mp3'),
-    volume: 0.5,
+    volume: 0.3,
   },
   notificationError: {
     audio: new Audio('/sounds/uiNotificationError.mp3'),
-    volume: 0.5,
+    volume: 0.3,
   },
   gameCountdownStart: {
     audio: new Audio('/sounds/gameCountdownStart.mp3'),

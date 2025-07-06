@@ -5,6 +5,7 @@
   import type { TileExpression } from '@/components/app/tile/types'
   import Shape from '@/components/app/tile/TileShape.vue'
   import Expression from '@/components/app/tile/TileExpression.vue'
+  import { useSoundStore } from '@/stores/sounds.store'
 
   type Tab = 'expression' | 'shape'
 
@@ -12,6 +13,10 @@
     shape?: TileShape
     expression?: TileExpression
   }
+
+  const soundStore = useSoundStore()
+
+  const emit = defineEmits(['update:expression', 'update:shape'])
 
   withDefaults(defineProps<Props>(), {
     shape: TILE_DEFAULTS.shape,
@@ -31,11 +36,21 @@
   function handleChangeTab(tab: Tab) {
     currentTab.value = tab
   }
+
+  function handleUpdateExpression(expression: TileExpression) {
+    soundStore.playSound('buttonClick')
+    emit('update:expression', expression)
+  }
+
+  function handleUpdateShape(shape: TileShape) {
+    soundStore.playSound('buttonClick')
+    emit('update:shape', shape)
+  }
 </script>
 
 <template>
   <div class="flex flex-col gap-3 rounded-lg p-2 bg-slate-100">
-    <div class="w-full overflow-x-auto bg-slate-200 rounded-sm p-3">
+    <div class="w-full overflow-y-hidden overflow-x-auto bg-slate-200 rounded-sm p-3 h-16">
       <div class="flex gap-6 min-w-fit">
         <template v-if="isDisabled('expression')">
           <Expression
@@ -43,7 +58,7 @@
             :key="exp"
             :expression="exp"
             class="cursor-pointer active:scale-95 transition-transform"
-            @click="$emit('update:expression', exp)"
+            @click="handleUpdateExpression(exp)"
           />
         </template>
 
@@ -52,9 +67,9 @@
             v-for="shape in shapes"
             :key="shape"
             :shape="shape"
-            size="xl"
+            size="md"
             class="cursor-pointer active:scale-95 transition-transform"
-            @click="$emit('update:shape', shape)"
+            @click="handleUpdateShape(shape)"
           />
         </template>
       </div>

@@ -42,6 +42,7 @@
 
     <Tile
       id="avatar-preview-tile"
+      size="xl"
       :shape="shape"
       :shape-color="shapeColor"
       :expression="expression"
