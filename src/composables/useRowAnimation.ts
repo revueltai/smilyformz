@@ -9,7 +9,6 @@ import { useCollisionDetection } from './useCollisionDetection'
  * It also handles the collision detection and the tile generation.
  * It also handles the row reset and the row spacing.
  * It also handles the row animation and the row spacing.
- * It also handles the row animation and the row spacing.
  */
 export function useRowAnimation() {
   const gameStore = useGameStore()
@@ -21,6 +20,7 @@ export function useRowAnimation() {
 
   let animationFrame: number
   let activeRows = new Map<string, number>()
+  let rowTimings = new Map<string, number>()
 
   /**
    * Gets a row element by ID with validation
@@ -67,10 +67,17 @@ export function useRowAnimation() {
   }
 
   /**
-   * Calculates the new Y position for a row based on current position and game speed
+   * Calculates the new Y position for a row based on current position,
+   * game speed, and delta time
    */
-  function calculateNewRowPosition(currentY: number): number {
-    return currentY + gameStore.gameSpeed
+  function calculateNewRowPosition(currentY: number, deltaTime: number): number {
+    // Convert game speed: from pixels per frame > to pixels per second
+    // (Assuming 60fps as baseline: gameSpeed * 60 = pixels per second)
+    const FPS = 60
+    const pixelsPerSecond = gameStore.gameSpeed * FPS
+    const pixelsPerFrame = (pixelsPerSecond * deltaTime) / 1000
+
+    return currentY + pixelsPerFrame
   }
 
   /**
@@ -149,19 +156,29 @@ export function useRowAnimation() {
       return
     }
 
-    animationFrame = requestAnimationFrame(() => updatePosition(row))
+    animationFrame = requestAnimationFrame((timestamp) => updatePosition(row, timestamp))
   }
 
   /**
    * Updates the position of a row
    *
    * @param row - The row element to update
+   * @param timestamp - The current timestamp from requestAnimationFrame
    */
-  function updatePosition(row: HTMLElement) {
+  function updatePosition(row: HTMLElement, timestamp: number) {
     if (!row) return
 
+    // Get the last frame time for this specific row
+    const lastFrameTime = rowTimings.get(row.id) || 0
+
+    // Calculate delta time in milliseconds
+    const deltaTime = lastFrameTime ? timestamp - lastFrameTime : 16.67 // Default to ~60fps for first frame
+
+    // Update the row's timing
+    rowTimings.set(row.id, timestamp)
+
     const currentY = getCurrentRowYPosition(row)
-    let newY = calculateNewRowPosition(currentY)
+    let newY = calculateNewRowPosition(currentY, deltaTime)
 
     if (hasRowReachedBottom(row, newY)) {
       newY = resetRowToTop(row)
@@ -186,6 +203,7 @@ export function useRowAnimation() {
     }
 
     activeRows.set(rowId, gameStore.gameSpeed)
+    rowTimings.set(rowId, 0)
     requestNextFrame(row)
   }
 
@@ -208,6 +226,7 @@ export function useRowAnimation() {
    */
   function startAnimation(rowIds: string[]) {
     activeRows.clear()
+    rowTimings.clear()
 
     rowIds.forEach((rowId, index) => {
       positionRow(rowId, index)
@@ -247,6 +266,7 @@ export function useRowAnimation() {
   function resetRowAnimation() {
     stopAnimation()
     activeRows.clear()
+    rowTimings.clear()
     isAnimating.value = false
   }
 
@@ -254,9 +274,12 @@ export function useRowAnimation() {
    * Resumes the animation of all rows with their current timing
    */
   function resumeRows() {
+    // Reset all row timings when resuming
+    rowTimings.clear()
     activeRows.forEach((_, rowId) => {
       const row = getRowElement(rowId)
       if (row) {
+        rowTimings.set(rowId, 0)
         requestNextFrame(row)
       }
     })
