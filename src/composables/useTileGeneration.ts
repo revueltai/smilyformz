@@ -277,12 +277,15 @@ export function useTileGeneration() {
   }
 
   /**
-   * Initializes the rows of tiles
+   * Initializes the rows of tiles.
+   * Delay is needed to ensure the character is initialized before the rows are generated.
    *
    * @param count - The number of rows to initialize
    */
   function initializeRows(count: number) {
-    rows.value = Array.from({ length: count }, (_, index) => generateNewRow(index))
+    setTimeout(() => {
+      rows.value = Array.from({ length: count }, (_, index) => generateNewRow(index))
+    }, 100)
   }
 
   /**

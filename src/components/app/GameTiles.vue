@@ -6,6 +6,7 @@
   import { useTileGeneration } from '@/composables/useTileGeneration'
   import { useRowAnimation } from '@/composables/useRowAnimation'
   import type { RefElement } from '@/components/shared/types'
+  import { GAME_ROWS_COUNT } from '@/configs/constants'
 
   const gameStore = useGameStore()
   const rowsAreAnimated = ref(false)
@@ -27,7 +28,7 @@
 
   async function reinitializeGameTiles() {
     if (container.value) {
-      initializeRows(5)
+      initializeRows(GAME_ROWS_COUNT)
       await updateRowPositioning()
     }
   }
@@ -78,6 +79,7 @@
         :ref="row.id"
         :id="row.id"
         :tiles="row.tiles"
+        :class="{ 'opacity-0': !rowsAreAnimated }"
       />
     </div>
   </div>

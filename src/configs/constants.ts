@@ -8,6 +8,8 @@ import type { GameLeagueLevel, GameLeagueLevelKey } from '@/types/game'
 
 export const APP_SHARE_URL = 'https://smilyformz.vercel.app/'
 
+export const GAME_ROWS_COUNT = 5
+
 export const MODALS = {
   CREDITS: 'credits',
   LOGIN: 'login',
