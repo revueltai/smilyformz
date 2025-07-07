@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { ref, onUnmounted, watch } from 'vue'
   import type { ConfettiPiece } from './types'
+  import { useSoundStore } from '@/stores/sounds.store'
 
   const props = withDefaults(
     defineProps<{
@@ -11,6 +12,8 @@
       duration: 3000,
     },
   )
+
+  const soundStore = useSoundStore()
 
   const emit = defineEmits<{
     animationComplete: []
@@ -75,6 +78,7 @@
       return
     }
 
+    soundStore.playSound('gameConfetti')
     isAnimating.value = true
     confettiPieces.value = []
 

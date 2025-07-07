@@ -70,15 +70,19 @@ export const DEFAULT_LEAGUE_LEVEL_NAME = 'easy'
 
 export const LEAGUE_RANKING_LIST_LIMIT = 100
 
-export const GAME_SPEED_MILESTONES = [15, 30, 60, 180, 260, 320, 450, 650, 720, 850, 1440, 2880]
+// Increase every 30 seconds after 30 seconds.
+export const GAME_SPEED_MILESTONES = [
+  15, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480, 510, 540, 570,
+  600, 630, 660, 690, 720, 750, 780, 810, 840, 870, 900, 930, 960, 990,
+]
 
 export const GAME_LEAGUE_LEVELS: Record<GameLeagueLevelKey, GameLeagueLevel> = {
   easy: {
     id: 'easy',
     name: 'leagueName_easy',
     totalRowsLength: 3,
-    initialRowSpacing: 600,
-    initialSpeed: 2.8,
+    initialRowSpacing: 500,
+    initialSpeed: 3,
     speedIncrement: 0.1,
     nextLevelPoints: 50,
     showConfettiScore: 25,

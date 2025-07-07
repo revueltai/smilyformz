@@ -25,6 +25,10 @@ export const soundsConfig: SoundsMap = {
     audio: new Audio('/sounds/gameMotivationMessage.mp3'),
     volume: 0.2,
   },
+  gameConfetti: {
+    audio: new Audio('/sounds/gameConfetti.wav'),
+    volume: 0.3,
+  },
   gameSpeedIncrease: {
     audio: new Audio('/sounds/gameSpeedIncrease.mp3'),
     volume: 0.2,
