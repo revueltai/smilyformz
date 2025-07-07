@@ -283,7 +283,10 @@ export function useTileGeneration() {
    *
    * @param delay - A delay in milliseconds before initializing the rows. Default is 100ms.
    */
-  function initializeRows(delay: number = 100) {
+  function initializeRows(delay: number = 0) {
+    // Reset completion flag first
+    initializeCompleted.value = false
+
     setTimeout(() => {
       rows.value = Array.from({ length: GAME_ROWS_COUNT }, (_, index) => generateNewRow(index))
       initializeCompleted.value = true

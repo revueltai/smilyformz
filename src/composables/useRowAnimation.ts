@@ -18,9 +18,9 @@ export function useRowAnimation() {
   const isAnimating = ref(false)
   const rowSpacing = ref(gameStore.initialRowSpacing)
 
-  let animationFrame: number
   let activeRows = new Map<string, number>()
   let rowTimings = new Map<string, number>()
+  let rowAnimationFrames = new Map<string, number>()
 
   /**
    * Gets a row element by ID with validation
@@ -156,7 +156,8 @@ export function useRowAnimation() {
       return
     }
 
-    animationFrame = requestAnimationFrame((timestamp) => updatePosition(row, timestamp))
+    const frameId = requestAnimationFrame((timestamp) => updatePosition(row, timestamp))
+    rowAnimationFrames.set(row.id, frameId)
   }
 
   /**
@@ -197,11 +198,13 @@ export function useRowAnimation() {
     const row = getRowElement(rowId)
     if (!row) return
 
+    // Ensure the row is positioned correctly
     if (!row.dataset.rowOffset) {
       const rowIndex = Number(row.dataset.rowIndex || 0)
       positionRow(rowId, rowIndex)
     }
 
+    // Add to active rows and start animation
     activeRows.set(rowId, gameStore.gameSpeed)
     rowTimings.set(rowId, 0)
     requestNextFrame(row)
@@ -225,9 +228,23 @@ export function useRowAnimation() {
    * @param rowIds - Array of row IDs to animate
    */
   function startAnimation(rowIds: string[]) {
+    // Stop any existing animation first
+    stopAnimation()
+
     activeRows.clear()
     rowTimings.clear()
+    rowAnimationFrames.clear()
 
+    // Reset all row transforms before starting animation
+    rowIds.forEach((rowId) => {
+      const row = getRowElement(rowId)
+      if (row) {
+        // Clear any existing transform
+        row.style.transform = ''
+      }
+    })
+
+    // Start animation for each row
     rowIds.forEach((rowId, index) => {
       positionRow(rowId, index)
       animateRow(rowId)
@@ -257,7 +274,10 @@ export function useRowAnimation() {
    * Stops the animation
    */
   function stopAnimation() {
-    cancelAnimationFrame(animationFrame)
+    rowAnimationFrames.forEach((frameId) => {
+      cancelAnimationFrame(frameId)
+    })
+    rowAnimationFrames.clear()
   }
 
   /**
@@ -265,8 +285,19 @@ export function useRowAnimation() {
    */
   function resetRowAnimation() {
     stopAnimation()
+
+    // Clear transform properties of all active rows
+    activeRows.forEach((_, rowId) => {
+      const row = getRowElement(rowId)
+      if (row) {
+        row.style.transform = ''
+        row.dataset.rowOffset = ''
+      }
+    })
+
     activeRows.clear()
     rowTimings.clear()
+    rowAnimationFrames.clear()
     isAnimating.value = false
   }
 
