@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { computed } from 'vue'
   import type { GameLeagueLevelKey } from '@/types/game'
 
   interface Props {
@@ -56,22 +57,30 @@
             {{ $t(league.name) }}
           </h4>
 
-          <div class="text-xs mt-1 mb-4"> {{ $t('smilies') }}: {{ league.totalRowsLength }} </div>
-
-          <div
-            v-if="league.isCurrent && league.isAvailable && league.nextLevelPoints"
-            class="text-xs mt-2 text-blue-600 font-medium"
-          >
-            {{ $t('nextLeagueRequirement', { points: league.nextLevelPoints }) }}
+          <div class="text-xs mt-1 mb-4">
+            {{ $t('smilies') }}: <strong>{{ league.totalRowsLength }}</strong>
           </div>
 
           <div
             v-if="!league.isAvailable"
-            class="text-xs mt-2 text-slate-500 text-center"
+            class="text-xs mt-2 text-center text-slate-500"
           >
             {{
               $t('unlockInstructions', { points: league.pointsToUnlock, league: $t(league.name) })
             }}
+          </div>
+
+          <div
+            v-else
+            class="flex gap-2 items-center justify-center text-xs mt-2 font-medium text-green-700"
+          >
+            <Icon
+              name="check"
+              color="green-500"
+              size="md"
+            />
+
+            {{ $t('unlocked') }}
           </div>
         </div>
       </div>

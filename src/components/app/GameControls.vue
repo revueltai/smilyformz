@@ -12,20 +12,27 @@
 </script>
 
 <template>
-  <div>
-    <Button
+  <div
+    class="absolute bottom-0 left-0 right-0 z-20 grid grid-cols-2 w-full gap-4"
+    :class="cssClasses"
+  >
+    <div
       v-for="direction in directions"
-      size="2xl"
-      class="absolute z-20"
-      :class="cssClasses + ` ${direction === 'left' ? 'left-2' : 'right-2'}`"
-      :disabled="disabled"
+      :key="direction"
+      :class="direction === 'left' ? 'text-left' : 'text-right'"
       @click="$emit(`move-${direction}`)"
     >
-      <Icon
-        size="lg"
-        :name="`arrow-${direction}`"
-        :color="disabled ? 'slate-400' : 'slate-700'"
-      />
-    </Button>
+      <Button
+        size="2xl"
+        class=""
+        :disabled="disabled"
+      >
+        <Icon
+          size="lg"
+          :name="`arrow-${direction}`"
+          :color="disabled ? 'slate-400' : 'slate-700'"
+        />
+      </Button>
+    </div>
   </div>
 </template>
