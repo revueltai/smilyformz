@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref } from 'vue'
 
-  const totalPages = 3
+  const TUTORIAL_TOTAL_STEPS = 6
 
   const page = ref(1)
 
@@ -11,7 +11,7 @@
         page.value--
       }
     } else {
-      if (page.value <= totalPages) {
+      if (page.value <= TUTORIAL_TOTAL_STEPS) {
         page.value++
       }
     }
@@ -25,9 +25,9 @@
         <p>{{ $t('tutorial' + page + '_1') }}<br />{{ $t('tutorial' + page + '_2') }} </p>
       </div>
 
-      <div class="bg-slate-50 rounded-lg p-3">
+      <div class="bg-slate-50 rounded-lg flex items-center justify-center">
         <img
-          :src="`/images/tutorial${page}.svg`"
+          :src="`/images/tutorial/tutorial${page}.svg`"
           alt="tutorial"
           width="256"
           height="160"
@@ -47,7 +47,7 @@
       </Button>
 
       <Button
-        :disabled="page === totalPages"
+        :disabled="page === TUTORIAL_TOTAL_STEPS"
         @click="handleClickPage('next')"
       >
         <Icon
