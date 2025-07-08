@@ -6,9 +6,11 @@
   import ModalCredits from '@/components/app/ModalCredits.vue'
   import Page from '@/components/app/Page.vue'
   import { MODALS } from '@/configs/constants'
+  import { usePWA } from '@/composables/usePwa'
 
   const router = useRouter()
   const modalStore = useModalStore()
+  const isPWA = usePWA()
 
   function handleClickButtonPlay() {
     router.push('/game')
@@ -86,7 +88,10 @@
       </div>
     </div>
 
-    <div class="absolute bottom-0 left-0 right-0 px-2 pb-4 text-center">
+    <div
+      class="absolute bottom-0 left-0 right-0 px-2 pb-4 text-center"
+      :class="isPWA ? 'pb-4' : 'pb-8'"
+    >
       <Button
         size="xs"
         type="link"

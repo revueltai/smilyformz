@@ -13,9 +13,11 @@
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
   import type { ShareType } from '@/components/app/ModalShare.vue'
+  import { usePWA } from '@/composables/usePwa'
 
   const userStore = useUserStore()
   const modalStore = useModalStore()
+  const isPWA = usePWA()
 
   const latestScore = ref(0)
   const highestScore = ref(0)
@@ -81,7 +83,10 @@
       </div>
     </div>
 
-    <div class="w-full flex gap-4 items-end justify-center pb-6">
+    <div
+      class="w-full flex gap-4 items-end justify-center pb-6"
+      :class="isPWA ? 'pb-6' : 'pb-8'"
+    >
       <Button
         to="/ranking"
         size="base"
