@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { watch, ref, onMounted, computed } from 'vue'
+  import { watch, ref, onMounted, onUnmounted, computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { useModalStore } from '@/stores/modal.store'
@@ -33,6 +33,7 @@
 
   const showGameStartCountdown = ref(false)
   const showGameEndCountdown = ref(false)
+  const wasGameRunningBeforeTabUnfocus = ref(false)
 
   function handlePause() {
     gameStore.pause()
@@ -114,6 +115,35 @@
     }
   }
 
+  function handleTabVisibilityChange() {
+    if (document.hidden) {
+      if (gameStore.isGameStarted && !gameStore.isPaused && !gameStore.isGameOver) {
+        wasGameRunningBeforeTabUnfocus.value = true
+        gameStore.pause()
+        modalStore.openModal(MODALS.PAUSE)
+      }
+    } else {
+      if (wasGameRunningBeforeTabUnfocus.value && gameStore.isPaused) {
+        wasGameRunningBeforeTabUnfocus.value = false
+      }
+    }
+  }
+
+  function handleWindowFocus() {
+    if (wasGameRunningBeforeTabUnfocus.value && gameStore.isPaused) {
+      wasGameRunningBeforeTabUnfocus.value = false
+    }
+  }
+
+  function handleWindowBlur() {
+    // Window lost focus
+    if (gameStore.isGameStarted && !gameStore.isPaused && !gameStore.isGameOver) {
+      wasGameRunningBeforeTabUnfocus.value = true
+      gameStore.pause()
+      modalStore.openModal(MODALS.PAUSE)
+    }
+  }
+
   watch(
     () => gameStore.isGameOver,
     async (isGameOver) => {
@@ -152,6 +182,16 @@
     if (userStore.isAuthenticated) {
       modalStore.closeModal()
     }
+
+    document.addEventListener('visibilitychange', handleTabVisibilityChange)
+    window.addEventListener('focus', handleWindowFocus)
+    window.addEventListener('blur', handleWindowBlur)
+  })
+
+  onUnmounted(() => {
+    document.removeEventListener('visibilitychange', handleTabVisibilityChange)
+    window.removeEventListener('focus', handleWindowFocus)
+    window.removeEventListener('blur', handleWindowBlur)
   })
 </script>
 
