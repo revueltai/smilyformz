@@ -17,7 +17,11 @@
   function animateRows() {
     rowsAreAnimated.value = true
     const rowIds = rows.value.map((row) => row.id)
-    startAnimation(rowIds)
+
+    // Ensure we have valid row IDs before starting animation
+    if (rowIds.length > 0) {
+      startAnimation(rowIds)
+    }
   }
 
   function resetGameTiles() {
@@ -28,6 +32,12 @@
 
   async function reinitializeGameTiles() {
     initializeRows()
+
+    // Wait for initialization to complete
+    while (!initializeCompleted.value) {
+      await new Promise((resolve) => setTimeout(resolve, 10))
+    }
+
     await updateRowPositioning()
   }
 
@@ -42,14 +52,11 @@
     () => gameStore.isGameStarted,
     async (isGameStarted) => {
       if (isGameStarted) {
-        if (isEmptyArray(rows.value)) {
-          await reinitializeGameTiles()
-          await nextTick()
+        // Always reinitialize when game starts to ensure clean state
+        await reinitializeGameTiles()
+        await nextTick()
 
-          if (!isEmptyArray(rows.value) && !rowsAreAnimated.value) {
-            animateRows()
-          }
-        } else if (!rowsAreAnimated.value) {
+        if (!isEmptyArray(rows.value) && !rowsAreAnimated.value) {
           animateRows()
         }
 
