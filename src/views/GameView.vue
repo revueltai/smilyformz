@@ -33,7 +33,7 @@
 
   const showGameStartCountdown = ref(false)
   const showGameEndCountdown = ref(false)
-  const wasGameRunningBeforeTabUnfocus = ref(false)
+  const wasGameRunningBeforeUnfocus = ref(false)
 
   function handlePause() {
     gameStore.pause()
@@ -118,27 +118,26 @@
   function handleTabVisibilityChange() {
     if (document.hidden) {
       if (gameStore.isGameStarted && !gameStore.isPaused && !gameStore.isGameOver) {
-        wasGameRunningBeforeTabUnfocus.value = true
+        wasGameRunningBeforeUnfocus.value = true
         gameStore.pause()
         modalStore.openModal(MODALS.PAUSE)
       }
     } else {
-      if (wasGameRunningBeforeTabUnfocus.value && gameStore.isPaused) {
-        wasGameRunningBeforeTabUnfocus.value = false
+      if (wasGameRunningBeforeUnfocus.value && gameStore.isPaused) {
+        wasGameRunningBeforeUnfocus.value = false
       }
     }
   }
 
   function handleWindowFocus() {
-    if (wasGameRunningBeforeTabUnfocus.value && gameStore.isPaused) {
-      wasGameRunningBeforeTabUnfocus.value = false
+    if (wasGameRunningBeforeUnfocus.value && gameStore.isPaused) {
+      wasGameRunningBeforeUnfocus.value = false
     }
   }
 
   function handleWindowBlur() {
-    // Window lost focus
     if (gameStore.isGameStarted && !gameStore.isPaused && !gameStore.isGameOver) {
-      wasGameRunningBeforeTabUnfocus.value = true
+      wasGameRunningBeforeUnfocus.value = true
       gameStore.pause()
       modalStore.openModal(MODALS.PAUSE)
     }
