@@ -89,8 +89,8 @@
     </div>
 
     <div
-      class="absolute bottom-0 left-0 right-0 px-2 pb-4 text-center"
-      :class="isPWA ? 'pb-4' : 'pb-8'"
+      class="absolute bottom-0 left-0 right-0 px-2 text-center"
+      :class="isPWA ? 'pb-4' : 'pb-16'"
     >
       <Button
         size="xs"

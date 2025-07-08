@@ -14,16 +14,18 @@
   import ModalAvatar from '@/components/app/ModalAvatar.vue'
   import ModalDeleteAccount from '@/components/app/ModalDeleteAccount.vue'
   import ModalReloginConfirm from '@/components/app/ModalReloginConfirm.vue'
+  import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
   import ModalCredits from '@/components/app/ModalCredits.vue'
   import { useFormValidation } from '@/composables/useFormValidation'
-  import EmailConfirmationWarning from '@/components/app/EmailConfirmationWarning.vue'
   import type { ValidationState } from '@/composables/useFormValidation'
+  import { usePWA } from '@/composables/usePwa'
   import { useGameStore } from '@/stores/game.store'
 
   const router = useRouter()
   const { t } = useI18n()
   const gameStore = useGameStore()
   const { validatePassword, validateEmail } = useFormValidation()
+  const isPWA = usePWA()
 
   const userStore = useUserStore()
   const modalStore = useModalStore()
@@ -411,6 +413,7 @@
       </Button>
 
       <Button
+        :class="isPWA ? 'pb-4' : 'pb-8'"
         size="xs"
         type="link"
         text-color="slate-500 mx-auto"
