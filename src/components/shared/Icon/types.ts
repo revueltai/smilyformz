@@ -27,6 +27,7 @@ export type IconName =
   | 'house'
   | 'list-ordered'
   | 'log-in'
+  | 'lock-keyhole'
   | 'minus'
   | 'paint-bucket'
   | 'paintbrush-vertical'

@@ -38,6 +38,13 @@
       :disabled="!league.isAvailable"
       @click="handleClick"
     >
+      <Icon
+        v-if="!league.isAvailable"
+        name="lock-keyhole"
+        size="md"
+        color="slate-400"
+        class="absolute right-2 top-2"
+      />
       <div class="flex flex-col items-center justify-start gap-3 h-full">
         <img
           :src="`/images/leagues/${league.id}.svg`"
@@ -56,13 +63,8 @@
             {{ $t(league.name) }}
           </h4>
 
-          <div class="text-xs mt-1 mb-4"> {{ $t('smilies') }}: {{ league.totalRowsLength }} </div>
-
-          <div
-            v-if="league.isCurrent && league.isAvailable && league.nextLevelPoints"
-            class="text-xs mt-2 text-blue-600 font-medium"
-          >
-            {{ $t('nextLeagueRequirement', { points: league.nextLevelPoints }) }}
+          <div class="text-xs mt-1 mb-4">
+            {{ $t('smilies') }}: <strong>{{ league.totalRowsLength }}</strong>
           </div>
 
           <div
@@ -72,6 +74,19 @@
             {{
               $t('unlockInstructions', { points: league.pointsToUnlock, league: $t(league.name) })
             }}
+          </div>
+
+          <div
+            v-else
+            class="text-xs mt-2 text-lime-600 text-center flex items-center justify-center gap-2 border border-lime-400 rounded-full px-3 py-1"
+          >
+            <Icon
+              name="check"
+              size="md"
+              color="lime-600"
+            />
+
+            {{ $t('unlocked') }}
           </div>
         </div>
       </div>
