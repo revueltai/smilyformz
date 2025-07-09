@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, nextTick, onMounted, watch } from 'vue'
+  import { ref, nextTick, onMounted, watch, computed } from 'vue'
   import { useGameStore } from '@/stores/game.store'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useMovementCharacter } from '@/composables/useCharacterAnimation'
@@ -22,6 +22,15 @@
 
   const { posX, moveLeft, moveRight, centerCharacter, resetCharacterAnimation } =
     useMovementCharacter(props.boardRef, characterRef)
+
+  const hitAreaSize = computed(() => {
+    const baseSize = 32
+
+    // league levels: easy: 3 cols, medium: 5 cols, hard: 7 cols, legend: 9 cols
+    const scaleFactor = 3 / gameStore.totalRowsLength
+    const scaledSize = Math.max(16, Math.round(baseSize * scaleFactor))
+    return scaledSize
+  })
 
   function handleMoveLeft() {
     if (!gameStore.isGameStarted) {
@@ -92,7 +101,8 @@
 
       <div
         ref="characterHitAreaRef"
-        class="w-8 h-8 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+        :style="{ width: `${hitAreaSize}px`, height: `${hitAreaSize}px` }"
       />
     </div>
   </div>
