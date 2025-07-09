@@ -105,7 +105,7 @@
         if (leagueUpdate.updated && leagueUpdate.newLeague) {
           ToastService.emitToast(
             t('leagueUpgrade', {
-              league: GAME_LEAGUE_LEVELS[leagueUpdate.newLeague].name,
+              league: t(GAME_LEAGUE_LEVELS[leagueUpdate.newLeague].name),
             }),
             'success',
             false,
