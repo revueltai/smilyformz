@@ -4,6 +4,7 @@
   import { isMobile, enterFullscreen, isFullscreen, isStandalone } from '@/utils'
   import { useUserStore } from '@/stores/user.store'
   import { useOfflineDetection } from '@/composables/useOfflineDetection'
+  import { useLocalStorage } from '@/composables/useLocalStorage'
   import ModalContainer from '@/components/shared/Modal/Container.vue'
   import ModalOffline from '@/components/app/ModalOffline.vue'
   import Toast from '@/components/shared/Toast/index.vue'
@@ -13,6 +14,7 @@
   const hasInteracted = ref(false)
   const userStore = useUserStore()
   const { handleRetry } = useOfflineDetection()
+  const localStorage = useLocalStorage()
 
   function handleFirstInteraction() {
     if (isMobile() && !hasInteracted.value && !isFullscreen()) {
@@ -25,9 +27,17 @@
     // TODO: Keep track of fullscreen state changes
   }
 
+  function initializeFirstTimeTutorial() {
+    if (!localStorage.has('firstTimeTutorialDone')) {
+      localStorage.setBoolean('firstTimeTutorialDone', false)
+    }
+  }
+
   onMounted(async () => {
     await userStore.initialize()
     userStore.setupAuthListener()
+
+    initializeFirstTimeTutorial()
 
     if (isMobile() && isStandalone() && !isFullscreen()) {
       enterFullscreen()

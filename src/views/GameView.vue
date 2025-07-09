@@ -6,6 +6,7 @@
   import { useGameStore } from '@/stores/game.store'
   import { useUserStore } from '@/stores/user.store'
   import { useSoundStore } from '@/stores/sounds.store'
+  import { useLocalStorage } from '@/composables/useLocalStorage'
   import { MODALS, GAME_LEAGUE_LEVELS } from '@/configs/constants'
   import { ToastService } from '@/components/shared/Toast/service'
   import ModalPause from '@/components/app/ModalPause.vue'
@@ -29,11 +30,17 @@
   const userStore = useUserStore()
   const soundStore = useSoundStore()
 
+  const localStorage = useLocalStorage()
+
   const router = useRouter()
 
   const showGameStartCountdown = ref(false)
   const showGameEndCountdown = ref(false)
   const wasGameRunningBeforeUnfocus = ref(false)
+
+  const showFirstTimeTutorial = computed(() => {
+    return !userStore.isAuthenticated && !localStorage.getBoolean('firstTimeTutorialDone')
+  })
 
   function handlePause() {
     gameStore.pause()
@@ -79,9 +86,30 @@
     router.push('/home')
   }
 
-  function handleTutorial() {
+  function handleTutorialOpen() {
     gameStore.pause()
     modalStore.openModal('tutorial')
+  }
+
+  function handleTutorialClose() {
+    if (showFirstTimeTutorial.value) {
+      if (!localStorage.getBoolean('firstTimeTutorialDone')) {
+        showGameStartCountdown.value = true
+        localStorage.setBoolean('firstTimeTutorialDone', true)
+      }
+    }
+
+    modalStore.closeModal()
+    gameStore.resume()
+  }
+
+  function handleShowFirstTimeTutorial() {
+    if (showFirstTimeTutorial.value) {
+      handleTutorialOpen()
+      return
+    }
+
+    showGameStartCountdown.value = true
   }
 
   function handleCreateAccount() {
@@ -177,12 +205,7 @@
 
   onMounted(() => {
     gameStore.resetGame()
-
-    showGameStartCountdown.value = true
-
-    if (userStore.isAuthenticated) {
-      modalStore.closeModal()
-    }
+    handleShowFirstTimeTutorial()
 
     document.addEventListener('visibilitychange', handleTabVisibilityChange)
     window.addEventListener('focus', handleWindowFocus)
@@ -203,7 +226,7 @@
       :score="gameStore.score"
       :is-paused="gameStore.isPaused"
       @pause="handlePause"
-      @tutorial="handleTutorial"
+      @tutorial="handleTutorialOpen"
     />
 
     <GameBoard
@@ -261,9 +284,11 @@
     </Modal>
 
     <Modal
-      name="tutorial"
+      :name="MODALS.TUTORIAL"
       :heading="$t('howToPlay')"
-      @close="handleResume"
+      :prevent-backdrop-close="true"
+      :has-close-button="showFirstTimeTutorial"
+      @close="handleTutorialClose"
     >
       <ModalTutorial />
     </Modal>

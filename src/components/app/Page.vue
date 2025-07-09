@@ -42,7 +42,7 @@
     >
       <Icon
         name="help"
-        color="slate-400"
+        color="slate-700"
       />
     </Button>
 
