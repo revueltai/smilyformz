@@ -1,9 +1,12 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
+  import { useUserStore } from '@/stores/user.store'
 
-  const TUTORIAL_TOTAL_STEPS = 6
+  const { isAuthenticated } = useUserStore()
 
   const page = ref(1)
+
+  const tutorialTotalSteps = computed(() => (isAuthenticated ? 4 : 6))
 
   function handleClickPage(direction: 'prev' | 'next') {
     if (direction === 'prev') {
@@ -11,7 +14,7 @@
         page.value--
       }
     } else {
-      if (page.value <= TUTORIAL_TOTAL_STEPS) {
+      if (page.value <= tutorialTotalSteps.value) {
         page.value++
       }
     }
@@ -47,7 +50,7 @@
       </Button>
 
       <Button
-        :disabled="page === TUTORIAL_TOTAL_STEPS"
+        :disabled="page === tutorialTotalSteps"
         @click="handleClickPage('next')"
       >
         <Icon
