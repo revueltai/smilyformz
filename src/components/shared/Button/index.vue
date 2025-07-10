@@ -38,7 +38,7 @@
     base: 'p-3',
     lg: 'p-3',
     xl: 'p-4',
-    '2xl': 'p-4',
+    '2xl': 'p-6',
   }
 
   const BUTTON_SIZE_CLASSES = {

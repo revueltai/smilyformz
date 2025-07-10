@@ -100,7 +100,7 @@
       </Button>
 
       <Button
-        size="2xl"
+        size="xl"
         border-color="lime-600"
         border-color-hover="lime-400"
         background-color="lime-100"

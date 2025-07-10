@@ -48,7 +48,8 @@
     return {
       'animate-collision': isCollided.value,
       'opacity-30 grayscale-100': isDisabled.value,
-      'bg-slate-200 border-4 border-white border-dashed': !isNoneToken(props.powerUpType),
+      'bg-slate-200 border border-white border-dashed': !isNoneToken(props.powerUpType),
+      'tile-gradient': props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE,
     }
   })
 

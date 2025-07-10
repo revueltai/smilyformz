@@ -17,7 +17,7 @@
     md: { w: 'w-6', h: 'h-6' },
     lg: { w: 'w-8', h: 'h-8' },
     xl: { w: 'w-10', h: 'h-10' },
-    '2xl': { w: 'w-12', h: 'h-12' },
+    '2xl': { w: 'w-14', h: 'h-14' },
   }
 
   const cssClasses = computed(() => {

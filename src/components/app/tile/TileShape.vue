@@ -145,19 +145,7 @@
             >
               <div
                 xmlns="http://www.w3.org/1999/xhtml"
-                style="
-                  background: conic-gradient(
-                    from 90deg,
-                    rgba(255, 125, 16, 1) 0deg,
-                    rgba(255, 32, 32, 1) 60.5769deg,
-                    rgba(51, 20, 255, 1) 135deg,
-                    rgba(24, 255, 204, 1) 266.538deg,
-                    rgba(255, 125, 16, 1) 360deg
-                  );
-                  height: 100%;
-                  width: 100%;
-                  opacity: 1;
-                "
+                class="tile-gradient w-full h-full opacity-100"
               />
             </foreignObject>
           </g>
