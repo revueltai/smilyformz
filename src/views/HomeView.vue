@@ -50,6 +50,7 @@
 
 <template>
   <Page
+    :floating-tiles="true"
     has-tutorial-button
     content-classes="flex flex-col justify-between"
   >

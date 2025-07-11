@@ -33,6 +33,7 @@
   <Page
     has-tutorial-button
     content-is-centered
+    :floating-tiles="true"
   >
     <div class="flex flex-col gap-16 items-center justify-center">
       <img

@@ -3,6 +3,7 @@ import type {
   TileShape,
   TileExpression,
   TilePowerUpType,
+  TileSize,
 } from '@/components/app/tile/types'
 import type { GameLeagueLevel, GameLeagueLevelKey } from '@/types/game'
 
@@ -58,6 +59,15 @@ export const TILE_SHAPES: Record<string, TileShape> = {
   RHOMB: 'rhomb',
   STAR: 'star',
 }
+
+export const TILE_SIZES: Record<TileSize, { viewbox: number; css: string }> = {
+  xs: { viewbox: 16, css: 'w-4 h-4' },
+  sm: { viewbox: 24, css: 'w-6 h-6' },
+  md: { viewbox: 36, css: 'w-9 h-9' },
+  lg: { viewbox: 56, css: 'w-14 h-14' },
+  xl: { viewbox: 80, css: 'w-20 h-20' },
+  '2xl': { viewbox: 120, css: 'w-30 h-30' },
+} as const
 
 export const TILE_DEFAULTS = {
   shape: TILE_SHAPES.CIRCLE,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
-  import { TILE_DEFAULTS, TILE_POWER_UP_TYPES, TILE_SHAPES } from '@/configs/constants'
+  import { TILE_DEFAULTS, TILE_POWER_UP_TYPES, TILE_SHAPES, TILE_SIZES } from '@/configs/constants'
   import type { TileShape, TileSize, TilePowerUpType } from '@/components/app/tile/types'
   import { getRandomNumber } from '@/utils'
 
@@ -24,15 +24,6 @@
     },
   )
 
-  const SIZES = {
-    xs: { viewbox: 16, css: 'w-4 h-4' },
-    sm: { viewbox: 24, css: 'w-6 h-6' },
-    md: { viewbox: 36, css: 'w-9 h-9' },
-    lg: { viewbox: 56, css: 'w-14 h-14' },
-    xl: { viewbox: 80, css: 'w-20 h-20' },
-    '2xl': { viewbox: 120, css: 'w-30 h-30' },
-  }
-
   const PATHS = {
     circle:
       'M0 8C0 3.58172 3.58172 0 8 0V0C12.4183 0 16 3.58172 16 8V8C16 12.4183 12.4183 16 8 16V16C3.58172 16 0 12.4183 0 8V8Z',
@@ -49,7 +40,7 @@
   const animationTimer = ref<number | null>(null)
   const availableShapes = Object.values(TILE_SHAPES) as TileShape[]
 
-  const currentSize = computed(() => SIZES[props.size].viewbox)
+  const currentSize = computed(() => TILE_SIZES[props.size].viewbox)
 
   const clipPathId = computed(() => `tile-grad-${Math.random().toString(36).substring(2, 11)}`)
 
@@ -127,7 +118,7 @@
       :width="currentSize"
       :height="currentSize"
       :viewBox="`0 0 ${currentSize} ${currentSize}`"
-      :class="`object-contain ${SIZES[size].css}`"
+      :class="`object-contain ${TILE_SIZES[size].css}`"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
