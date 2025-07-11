@@ -1,50 +1,62 @@
 -- =============================================================================
--- FUNCTION: update_league_rankings (Cron Job)
+-- FUNCTION: update_league_rankings
 -- =============================================================================
 
--- Function: update_league_rankings (Cron Job)
+-- Update league rankings for all leagues
 -- 
 -- Parameters:
---   p_top_players_per_league INTEGER - Number of top players to rank per league (default: 100)
+--   p_top_players_per_league INTEGER - The number of top players per league to update
 -- 
--- Returns: JSON - Object containing update statistics
+-- Returns: JSON - Object containing success status, message, and rankings details
 -- 
 -- Description:
---   This function updates the leagues_ranking table with the top players per league
---   based on their highest scores in game_sessions. It's designed to be run as a cron job.
--- 
---   The function:
---   1. Clears existing league rankings
---   2. Calculates top players per league based on highest scores
---   3. Inserts new ranking entries with proper positions
---   4. Excludes deleted accounts from rankings
+--   This function updates the league rankings for all leagues.
+--   It first clears the existing rankings, then inserts the top players for each league,
+--   and finally updates the league_stats with the count for each league.
 -- 
 -- Returns JSON structure:
 --   {
 --     "success": boolean,
 --     "message": string,
 --     "total_rankings_updated": integer,
---     "rankings_by_league": object,
---     "execution_time": string (ISO timestamp),
---     "error": string (only if success is false)
+--     "rankings_by_league": JSONB,
+--     "top_players_per_league": integer,
+--     "execution_time": string (ISO timestamp) 
 --   }
 -- 
--- Examples:
---   -- Update rankings with top 100 players per league (default)
+-- Example:
 --   SELECT update_league_rankings(100);
---   
---   -- Update rankings with top 50 players per league
---   SELECT update_league_rankings(50);
+-- 
+-- Returns:   
+--   {
+--     "success": true,
+--     "message": "League rankings updated successfully",
+--     "total_rankings_updated": 100,
+--     "rankings_by_league": {
+--       "easy": 100, 
+--       "medium": 100,
+--       "hard": 100,
+--       "legend": 100
+--     },
+--     "top_players_per_league": 100,
+--     "execution_time": "2025-01-01T00:00:00Z" 
+--   }
 -- 
 -- Error Conditions:
---   - Database errors if update fails
-CREATE OR REPLACE FUNCTION update_league_rankings(
-  p_top_players_per_league INTEGER DEFAULT 100
-)
-RETURNS JSON
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
+--   - "User not found" if the user_id doesn't exist
+--   - Database errors if insertion fails
+--   - "Invalid league level" if the league_level is not valid
+--   - "Invalid top_players_per_league" if the value is not an integer
+
+-- Uncomment if running as standalone SQL script
+-- CREATE OR REPLACE FUNCTION update_league_rankings(
+--   p_top_players_per_league INTEGER DEFAULT 100
+-- )
+-- RETURNS JSON
+-- LANGUAGE plpgsql
+-- SECURITY DEFINER
+-- AS $$
+
 DECLARE
   league_record RECORD;
   total_rankings INTEGER := 0;
@@ -90,7 +102,7 @@ BEGIN
     SELECT 
       user_id,
       league_record.league_level,
-      highest_score::text
+      highest_score
     FROM ranked_players;
     
     -- Get count for this league
@@ -124,8 +136,7 @@ EXCEPTION
       'total_rankings_updated', total_rankings,
       'execution_time', now()::text
     );
-END;
-$$; 
+END; 
 
--- Grant execute permission to service_role for update_league_rankings (cron job)
-GRANT EXECUTE ON FUNCTION update_league_rankings(INTEGER) TO service_role; 
+-- Uncomment if running as standalone SQL script
+--$$;

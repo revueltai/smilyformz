@@ -35,13 +35,16 @@
 -- Error Conditions:
 --   - "User not found" if the user_id doesn't exist
 --   - Database errors if deletion fails
-CREATE OR REPLACE FUNCTION delete_user_data(
-  p_user_id UUID
-)
-RETURNS JSON
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
+
+-- Uncomment if running as standalone SQL script
+-- CREATE OR REPLACE FUNCTION delete_user_data(
+--   p_user_id UUID
+-- )
+-- RETURNS JSON
+-- LANGUAGE plpgsql
+-- SECURITY DEFINER
+-- AS $$
+
 DECLARE
   deleted_count INTEGER := 0;
   result JSON;
@@ -87,7 +90,9 @@ EXCEPTION
       'error', SQLERRM
     );
 END;
-$$; 
+
+-- Uncomment if running as standalone SQL script
+-- $$; 
 
 -- Grant execute permission to authenticated users for delete_user_data
-GRANT EXECUTE ON FUNCTION delete_user_data(UUID) TO authenticated;
+-- GRANT EXECUTE ON FUNCTION delete_user_data(UUID) TO authenticated;

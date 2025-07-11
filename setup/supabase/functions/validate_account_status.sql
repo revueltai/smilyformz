@@ -3,13 +3,31 @@
 -- =============================================================================
 
 -- Function to validate account status before login (email only check)
-CREATE OR REPLACE FUNCTION validate_account_status(
-  p_email TEXT
-)
-RETURNS JSON
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
+-- Needed for login.
+
+-- Example:
+--   SELECT validate_account_status('user@example.com');
+-- 
+-- Returns:
+--   {
+--     "valid": true,
+--     "message": "Proceed with login"
+--   }
+-- 
+-- Error Conditions:
+--   - "Account has been deleted" if the account is deleted
+--   - "Account not found" if the account doesn't exist
+--   - Database errors if the query fails
+
+-- Uncomment if running as standalone SQL script
+-- CREATE OR REPLACE FUNCTION validate_account_status(
+--   p_email TEXT
+-- )
+-- RETURNS JSON
+-- LANGUAGE plpgsql
+-- SECURITY DEFINER
+-- AS $$
+
 DECLARE
   user_record RECORD;
 BEGIN
@@ -48,7 +66,9 @@ EXCEPTION
       'message', 'Proceed with login'
     );
 END;
-$$; 
+
+-- Uncomment if running as standalone SQL script
+-- $$; 
 
 -- Grant execute permission to anon users for validate_account_status (needed for login)
-GRANT EXECUTE ON FUNCTION validate_account_status(TEXT) TO anon;
+-- GRANT EXECUTE ON FUNCTION validate_account_status(TEXT) TO anon;

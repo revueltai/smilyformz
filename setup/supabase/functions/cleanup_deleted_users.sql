@@ -38,13 +38,16 @@
 -- Cron Job Setup:
 --   This function should be scheduled to run daily or weekly using Supabase's cron jobs.
 --   Example cron schedule: '0 2 * * *' (daily at 2 AM)
-CREATE OR REPLACE FUNCTION cleanup_deleted_users(
-  p_retention_days INTEGER DEFAULT 30
-)
-RETURNS JSON
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
+
+-- Uncomment if running as standalone SQL script
+-- CREATE OR REPLACE FUNCTION cleanup_deleted_users(
+--   p_retention_days INTEGER DEFAULT 30
+-- )
+-- RETURNS JSON
+-- LANGUAGE plpgsql
+-- SECURITY DEFINER
+-- AS $$
+
 DECLARE
   deleted_users_count INTEGER := 0;
   retention_date TIMESTAMP;
@@ -81,7 +84,9 @@ EXCEPTION
       'retention_days', p_retention_days
     );
 END;
-$$; 
+
+-- Uncomment if running as standalone SQL script
+-- $$; 
 
 -- Grant execute permission to service_role for cleanup_deleted_users (cron job)
-GRANT EXECUTE ON FUNCTION cleanup_deleted_users(INTEGER) TO service_role;
+-- GRANT EXECUTE ON FUNCTION cleanup_deleted_users(INTEGER) TO service_role;

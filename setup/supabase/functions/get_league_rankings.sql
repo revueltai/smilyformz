@@ -32,19 +32,21 @@
 --   - Returns empty result if league doesn't exist or no data found
 --   - Handles missing user data gracefully
 
-CREATE OR REPLACE FUNCTION get_league_rankings(
-  p_league_level TEXT,
-  p_limit INTEGER DEFAULT 100
-)
-RETURNS TABLE (
-  username TEXT,
-  score TEXT,
-  country TEXT,
-  league TEXT
-)
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
+-- Uncomment if running as standalone SQL script
+-- CREATE OR REPLACE FUNCTION get_league_rankings(
+--   p_league_level TEXT,
+--   p_limit INTEGER DEFAULT 100
+-- )
+-- RETURNS TABLE (
+--   username TEXT,
+--   score TEXT,
+--   country TEXT,
+--   league TEXT
+-- )
+-- LANGUAGE plpgsql
+-- SECURITY DEFINER
+-- AS $$
+
 BEGIN
   RETURN QUERY
   SELECT 
@@ -59,10 +61,12 @@ BEGIN
   ORDER BY CAST(lr.score AS INTEGER) DESC
   LIMIT p_limit;
 END;
-$$;
+
+-- Uncomment if running as standalone SQL script
+-- $$;
 
 -- Grant execute permission to authenticated users
-GRANT EXECUTE ON FUNCTION get_league_rankings(TEXT, INTEGER) TO authenticated;
+-- GRANT EXECUTE ON FUNCTION get_league_rankings(TEXT, INTEGER) TO authenticated;
 
 -- Grant execute permission to anon users (if you want public access)
 GRANT EXECUTE ON FUNCTION get_league_rankings(TEXT, INTEGER) TO anon; 
