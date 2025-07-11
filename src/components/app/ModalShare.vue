@@ -74,7 +74,7 @@
         return shareToX(message.value)
 
       case 'facebook':
-        return shareToFacebook()
+        return shareToFacebook(message.value)
 
       case 'whatsapp':
         return shareToWhatsApp(message.value)
