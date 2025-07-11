@@ -4,6 +4,7 @@
   import { TILE_DEFAULTS, TILE_POWER_UP_TYPES } from '@/configs/constants'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useTileCollision } from '@/composables/useTileCollision'
+  import { useGameStore } from '@/stores/game.store'
   import Shape from '@/components/app/tile/TileShape.vue'
   import Expression from '@/components/app/tile/TileExpression.vue'
   import type {
@@ -36,6 +37,26 @@
     },
   )
 
+  const POWERUP_INDICATOR_SIZE = {
+    easy: {
+      container: 'w-12 h-12 border-2 shadow-sm',
+      mainText: 'text-lg',
+    },
+    medium: {
+      container: 'w-10 h-10 border-2 shadow-sm',
+      mainText: 'text-base',
+    },
+    hard: {
+      container: 'w-7 h-7 border shadow-xs',
+      mainText: 'text-xs',
+    },
+    legend: {
+      container: 'w-7 h-7 border shadow-xs',
+      mainText: 'text-[8px]',
+    },
+  }
+
+  const gameStore = useGameStore()
   const { onCheckCollisionStart, onCheckCollisionEnd, collidedRows } = useCollisionDetection()
   const { evaluateCollision } = useTileCollision()
 
@@ -44,20 +65,26 @@
   const isDisabled = ref(false)
   const rotatingShape = ref<TileShape>(props.shape)
 
-  const cssClasses = computed(() => {
+  const powerUpIndicatorSize = computed(() => {
+    const leagueLevel = gameStore.leagueLevel
+    const size = POWERUP_INDICATOR_SIZE[leagueLevel]
+
     return {
-      'animate-collision': isCollided.value,
-      'opacity-30 grayscale-100': isDisabled.value,
-      'bg-slate-200 border border-white border-dashed': !isNoneToken(props.powerUpType),
-      'tile-gradient': props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE,
+      container: size.container,
+      mainText: size.mainText,
     }
   })
 
-  const cssStyles = computed(() => {
-    return {
-      backgroundColor: isNoneToken(props.powerUpType) ? props.backgroundColor : undefined,
-    }
-  })
+  const cssClasses = computed(() => ({
+    'animate-collision': isCollided.value,
+    'opacity-30 grayscale-100': isDisabled.value,
+    'bg-slate-200 border border-white': !isNoneToken(props.powerUpType),
+    'tile-gradient': props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE,
+  }))
+
+  const cssStyles = computed(() => ({
+    backgroundColor: isNoneToken(props.powerUpType) ? props.backgroundColor : undefined,
+  }))
 
   const sanitizedShape = computed(() => {
     if (props.powerUpType === 'anyShape') {
@@ -144,10 +171,9 @@
 
     <div
       v-if="powerUpType === 'doublePoints'"
-      class="absolute -top-2 -left-2 text-lg text-shadow-sm text-shadow-blue-600 w-12 h-12 flex items-center justify-center border-2 border-blue-950 shadow-sm rounded-full bg-blue-500 text-white z-20 animate-bounce"
+      :class="`absolute -top-2 -left-2 text-shadow-sm text-shadow-blue-600 ${powerUpIndicatorSize.container} flex items-center justify-center border-blue-950 rounded-full bg-blue-500 text-white z-20 animate-bounce`"
     >
-      <span class="font-extrabold">+4</span>
-      <span class="text-xs lowercase font-normal">{{ $t('points') }}</span>
+      <span :class="`font-extrabold ${powerUpIndicatorSize.mainText}`">x2</span>
     </div>
   </div>
 </template>
