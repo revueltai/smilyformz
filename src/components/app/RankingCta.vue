@@ -8,7 +8,7 @@
     </p>
 
     <Button
-      size="xs"
+      size="sm"
       to="game"
       border-color="lime-600"
       border-color-hover="lime-400"

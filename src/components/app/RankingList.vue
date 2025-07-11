@@ -131,6 +131,14 @@
           </ol>
         </div>
       </template>
+
+      <template #footer>
+        <div class="bg-blue-200 px-4 py-2">
+          <span class="text-xs text-slate-900 text-center block">
+            {{ $t('rankingsUpdatedDaily') }}
+          </span>
+        </div>
+      </template>
     </Tabs>
   </div>
 </template>

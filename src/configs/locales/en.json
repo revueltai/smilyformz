@@ -191,5 +191,6 @@
   "noConnectionDescription": "Please check your internet connection and try again.",
   "retry": "Retry",
   "failedToLoadRankings": "Failed to load rankings",
+  "rankingsUpdatedDaily": "Rankings are updated daily!",
   "framework": "Framework"
 }

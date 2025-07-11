@@ -70,6 +70,8 @@
         :items="items"
       />
     </div>
+
+    <slot name="footer" />
   </div>
 </template>
 
