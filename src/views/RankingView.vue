@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted, computed } from 'vue'
+  import { ref, onMounted, onUnmounted, computed } from 'vue'
   import Page from '@/components/app/Page.vue'
   import RankingList from '@/components/app/RankingList.vue'
   import RankingCta from '@/components/app/RankingCta.vue'
@@ -38,7 +38,12 @@
     rankingStore.refreshRankings(activeLeague.value)
   }
 
-  onMounted(() => fetchRankings(activeLeague.value))
+  onMounted(() => {
+    fetchRankings(activeLeague.value)
+    rankingStore.initializeRankingStore()
+  })
+
+  onUnmounted(() => rankingStore.cleanupRankingStore())
 </script>
 
 <template>

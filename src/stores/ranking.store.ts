@@ -8,6 +8,10 @@ type ErrorRecord = Record<GameLeagueLevelKey, string | null>
 type LoadingRecord = Record<GameLeagueLevelKey, boolean>
 type RankingsRecord = Record<GameLeagueLevelKey, LeagueRankingListRankItem[]>
 
+const POLLING_INTERVAL = 5 * 60 * 1000 // 5 minutes in milliseconds
+
+const VISIBILITY_POLLING_INTERVAL = 30 * 1000 // 30 seconds when tab is not visible
+
 /**
  * Handles the leagues ranking data for the app.
  */
@@ -16,12 +20,104 @@ export const useRankingStore = defineStore('leagueRanking', () => {
   const loading = ref<LoadingRecord>({} as LoadingRecord)
   const errors = ref<ErrorRecord>({} as ErrorRecord)
 
+  const isPollingActive = ref(false)
+  const pollingInterval = ref<number | null>(null)
   const loadedLeagues = ref<Set<GameLeagueLevelKey>>(new Set())
+  const lastFetchTime = ref<Record<GameLeagueLevelKey, number>>(
+    {} as Record<GameLeagueLevelKey, number>,
+  )
 
   const isLoading = computed(() => (league: GameLeagueLevelKey) => loading.value[league] || false)
   const hasError = computed(() => (league: GameLeagueLevelKey) => errors.value[league] || null)
   const getRankings = computed(() => (league: GameLeagueLevelKey) => rankings.value[league] || [])
   const availableLeagues = computed(() => Object.keys(GAME_LEAGUE_LEVELS) as GameLeagueLevelKey[])
+
+  /**
+   * Checks if the tab is currently visible
+   */
+  function isTabVisible(): boolean {
+    return !document.hidden
+  }
+
+  /**
+   * Gets the appropriate polling interval based on tab visibility
+   */
+  function getPollingInterval(): number {
+    return isTabVisible() ? POLLING_INTERVAL : VISIBILITY_POLLING_INTERVAL
+  }
+
+  /**
+   * Checks if it's time to refresh rankings for a specific league
+   */
+  function shouldRefreshRankings(leagueLevel: GameLeagueLevelKey): boolean {
+    const lastFetch = lastFetchTime.value[leagueLevel] || 0
+    const now = Date.now()
+    const interval = getPollingInterval()
+
+    return now - lastFetch >= interval
+  }
+
+  /**
+   * Performs a single polling cycle to refresh rankings
+   */
+  async function poll() {
+    if (!isPollingActive.value) {
+      return
+    }
+
+    const leaguesToRefresh = availableLeagues.value.filter(
+      (league) => loadedLeagues.value.has(league) && shouldRefreshRankings(league),
+    )
+
+    for (const league of leaguesToRefresh) {
+      try {
+        await fetchRankings(league, true)
+      } catch (error) {
+        console.error(`Failed to refresh rankings for ${league}:`, error)
+      }
+    }
+
+    if (isPollingActive.value) {
+      pollingInterval.value = window.setTimeout(poll, getPollingInterval())
+    }
+  }
+
+  /**
+   * Starts the polling mechanism for automatic ranking updates
+   */
+  function startPolling() {
+    if (isPollingActive.value) {
+      return
+    }
+
+    isPollingActive.value = true
+
+    // Start the first poll
+    poll()
+  }
+
+  /**
+   * Stops the polling mechanism
+   */
+  function stopPolling() {
+    isPollingActive.value = false
+
+    if (pollingInterval.value) {
+      clearTimeout(pollingInterval.value)
+      pollingInterval.value = null
+    }
+  }
+
+  /**
+   * Handles visibility change to adjust polling behavior
+   */
+  function handleVisibilityChange() {
+    if (isPollingActive.value) {
+      // Restart polling with new interval
+      stopPolling()
+      startPolling()
+    }
+  }
 
   /**
    * Fetches the rankings for a given league level.
@@ -48,6 +144,7 @@ export const useRankingStore = defineStore('leagueRanking', () => {
 
       rankings.value[leagueLevel] = processedData
       loadedLeagues.value.add(leagueLevel)
+      lastFetchTime.value[leagueLevel] = Date.now()
 
       return processedData
     } catch (err) {
@@ -73,11 +170,28 @@ export const useRankingStore = defineStore('leagueRanking', () => {
     return fetchRankings(leagueLevel, true)
   }
 
+  /**
+   * Initializes the ranking store with polling
+   */
+  function initializeRankingStore() {
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    startPolling()
+  }
+
+  /**
+   * Cleans up the ranking store
+   */
+  function cleanupRankingStore() {
+    stopPolling()
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
+
   return {
     rankings,
     loading,
     errors,
     loadedLeagues,
+    isPollingActive,
 
     isLoading,
     hasError,
@@ -86,5 +200,7 @@ export const useRankingStore = defineStore('leagueRanking', () => {
 
     fetchRankings,
     refreshRankings,
+    initializeRankingStore,
+    cleanupRankingStore,
   }
 })
