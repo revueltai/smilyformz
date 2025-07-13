@@ -48,18 +48,14 @@
 
 <template>
   <Page
+    :floating-tiles="true"
     back-button-to="home"
     content-classes="flex flex-col h-full"
   >
     <div class="flex flex-col gap-6 h-full">
       <header
-        class="flex flex-col items-center justify-center h-36 p-4 gap-3 bg-slate-200 rounded-3xl shrink-0"
+        class="flex flex-col items-center justify-center h-36 shrink-0 rounded-2xl bg-no-repeat bg-sky-100"
       >
-        <Icon
-          name="globe"
-          size="2xl"
-        />
-
         <h2 class="text-xl">{{ $t('smilyLeaguesRanking') }}</h2>
       </header>
 
@@ -79,3 +75,20 @@
     </div>
   </Page>
 </template>
+
+<style scoped>
+  header {
+    background-image:
+      url('/images/leagues/uiSparklesTL.svg'), url('/images/leagues/uiSparklesTR.svg'),
+      url('/images/leagues/uiSparklesBL.svg'), url('/images/leagues/uiSparklesBR.svg'),
+      url('/images/leagues/uiSparklesC.svg'), url('/images/leagues/uiHeaderSun.svg');
+    background-position:
+      top left,
+      top right,
+      bottom left,
+      bottom right,
+      center,
+      center;
+    background-size: auto, auto, auto, auto, 30%, cover;
+  }
+</style>
