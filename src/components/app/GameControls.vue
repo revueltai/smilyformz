@@ -20,12 +20,11 @@
       v-for="direction in directions"
       :key="direction"
       :class="direction === 'left' ? 'text-left' : 'text-right'"
-      @click="$emit(`move-${direction}`)"
     >
       <Button
         size="2xl"
-        class=""
         :disabled="disabled"
+        @touchstart="$emit(`move-${direction}`)"
       >
         <Icon
           size="lg"

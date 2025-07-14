@@ -22,7 +22,7 @@
       shape: TileShape
       size: TileSize
       expression: TileExpression | TileExpressionPowerDown
-      shapeColor: string
+      shapeColor?: string
       backgroundColor?: string
       checkForCollision?: boolean
       checkCollisionInterval?: number

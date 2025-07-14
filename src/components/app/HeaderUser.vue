@@ -70,7 +70,7 @@
         v-if="!hasEditOptions"
         class="text-sm text-slate-400"
       >
-        {{ $t('welcomeBack') }}
+        {{ $t('hiThere') }}
       </p>
 
       <Input
