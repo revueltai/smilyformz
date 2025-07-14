@@ -66,10 +66,8 @@ export const useGameStore = defineStore('game', () => {
   // Tile size based on the league level, the smaller the league level, the bigger the tile size
   const tileSize = computed(() => LEAGUE_TILE_SIZE_MAP[leagueLevel.value] as TileSize)
 
-  // Character state
   const character = ref(createCharacter())
 
-  // Formatted time for display
   const formattedTime = computed(() => {
     const pad = (num: number) => num.toString().padStart(2, '0')
     return `${pad(time.value.minutes)}:${pad(time.value.seconds)}`
@@ -189,21 +187,14 @@ export const useGameStore = defineStore('game', () => {
       return
     }
 
-    let newPoints = 0
-
-    if (doublePoints) {
-      newPoints = pointsPerMatch.value * 2
-    } else {
-      if (shapeMatch || colorMatch) {
-        newPoints += pointsPerMatch.value
-      }
-
-      if (shapeMatch && colorMatch) {
-        newPoints += pointsPerMatch.value * 2
-      }
+    if (doublePoints || (shapeMatch && colorMatch)) {
+      score.value += pointsPerMatch.value * 2
+      return
     }
 
-    score.value += newPoints
+    if (shapeMatch || colorMatch) {
+      score.value += pointsPerMatch.value
+    }
   }
 
   function resetScore() {
