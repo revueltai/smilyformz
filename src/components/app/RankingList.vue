@@ -44,6 +44,10 @@
     return props.list.filter((item) => item.league === activeLeague)
   })
 
+  function isActiveTab(index: number) {
+    return index === activeTab.value
+  }
+
   function handleTabChange(index: number) {
     activeTab.value = index
     tabChangeAnimationKey.value++
@@ -61,9 +65,9 @@
     <Tabs
       :items="tabItems"
       :active-tab="activeTab"
-      tabs-container-classes="bg-white gap-0.5 shrink-0"
-      tabs-content-classes="flex-1 min-h-0 h-full"
-      class="bg-slate-100 rounded-xl overflow-hidden h-full flex flex-col"
+      tabs-container-classes="gap-0.5 shrink-0"
+      tabs-content-classes="flex-1 min-h-0 h-full bg-slate-100"
+      class="rounded-xl overflow-hidden h-full flex flex-col"
       @tab-change="handleTabChange"
     >
       <template #tabs="{ items, activeTab, handleTabClick }">
@@ -71,8 +75,9 @@
           v-for="(item, index) in items"
           :key="index"
           :class="[
-            'text-sm py-3 px-4 font-medium transition-colors duration-300 ease-in-out cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-2 rounded-t-xl text-slate-600 bg-slate-100',
-            { 'opacity-50': index !== activeTab },
+            'text-sm py-3 px-4 font-medium transition-colors duration-300 ease-in-out cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-2 rounded-t-xl text-slate-600 ',
+            { 'bg-slate-50': !isActiveTab(index) },
+            { 'bg-slate-100': isActiveTab(index) },
           ]"
           @click="handleTabClick(index)"
         >
@@ -147,7 +152,7 @@
   .ranking-item {
     opacity: 0;
     transform: translateY(10px);
-    animation: fadeInUp 0.4s ease-out forwards;
+    animation: fadeInUp 400ms ease-out forwards;
   }
 
   @keyframes fadeInUp {
