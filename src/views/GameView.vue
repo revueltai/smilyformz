@@ -245,9 +245,13 @@
       :on-complete="handleGameEndCountdownComplete"
     />
 
-    <SpeedIncreaseNotification v-if="gameStore.showSpeedIncreaseNotification" />
+    <SpeedIncreaseNotification
+      v-if="!gameStore.isGameOver && gameStore.showSpeedIncreaseNotification"
+    />
 
-    <CharacterMessageContainer />
+    <CharacterMessageContainer
+      v-if="!gameStore.isGameOver && !gameStore.showSpeedIncreaseNotification"
+    />
 
     <GameTimer />
 

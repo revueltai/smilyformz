@@ -5,11 +5,13 @@
 
   const props = withDefaults(
     defineProps<{
+      maxPieces?: number
       isActive: boolean
       duration?: number
     }>(),
     {
       duration: 3000,
+      maxPieces: 60,
     },
   )
 
@@ -82,7 +84,7 @@
     isAnimating.value = true
     confettiPieces.value = []
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < props.maxPieces; i++) {
       confettiPieces.value.push(createConfettiPiece())
     }
 
