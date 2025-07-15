@@ -51,6 +51,7 @@ export const useGameStore = defineStore('game', () => {
   const totalRowsLength = ref(initialLeagueSettings.totalRowsLength)
   const initialRowSpacing = ref(initialLeagueSettings.initialRowSpacing)
   const gameSpeed = ref(initialLeagueSettings.initialSpeed)
+  const tempGameSpeed = ref(initialLeagueSettings.initialSpeed)
   const isGameOver = ref(false)
   const isPaused = ref(false)
   const isGameStarted = ref(false)
@@ -100,6 +101,10 @@ export const useGameStore = defineStore('game', () => {
    * Checks if the game speed should be increased based on the time elapsed
    */
   function checkAndIncreaseSpeed() {
+    if (isIndestructiblePowerupActive.value) {
+      return
+    }
+
     const totalSeconds = time.value.minutes * 60 + time.value.seconds
     const currentLeagueSettings = GAME_LEAGUE_LEVELS[leagueLevel.value]
 
@@ -111,6 +116,7 @@ export const useGameStore = defineStore('game', () => {
         reachedSpeedMilestones.value.add(milestoneSeconds)
 
         gameSpeed.value += currentLeagueSettings.speedIncrement
+        tempGameSpeed.value += currentLeagueSettings.speedIncrement
 
         showSpeedIncreaseNotification.value = true
         setTimeout(() => (showSpeedIncreaseNotification.value = false), 1500)
@@ -176,6 +182,7 @@ export const useGameStore = defineStore('game', () => {
   function resetSpeed() {
     const currentLeagueSettings = GAME_LEAGUE_LEVELS[leagueLevel.value]
     gameSpeed.value = currentLeagueSettings.initialSpeed
+    tempGameSpeed.value = currentLeagueSettings.initialSpeed
     showSpeedIncreaseNotification.value = false
     reachedSpeedMilestones.value.clear()
   }
@@ -186,12 +193,14 @@ export const useGameStore = defineStore('game', () => {
   function activateIndestructible() {
     isIndestructiblePowerupActive.value = true
     indestructibleTimeRemaining.value = INDESTRUCTIBLE_POWERUP_DURATION
+    gameSpeed.value = tempGameSpeed.value * 2
   }
 
   /**
    * Deactivates the indestructible powerup
    */
   function deactivateIndestructible() {
+    gameSpeed.value = tempGameSpeed.value
     isIndestructiblePowerupActive.value = false
     indestructibleTimeRemaining.value = 0
   }
@@ -346,6 +355,7 @@ export const useGameStore = defineStore('game', () => {
     totalRowsLength.value = leagueSettings.totalRowsLength
     initialRowSpacing.value = leagueSettings.initialRowSpacing
     gameSpeed.value = leagueSettings.initialSpeed
+    tempGameSpeed.value = leagueSettings.initialSpeed
     pointsPerMatch.value = leagueSettings.pointsPerMatch
     reachedSpeedMilestones.value.clear()
   }
