@@ -3,10 +3,16 @@
   import { ref, onMounted } from 'vue'
   import { useSoundStore } from '@/stores/sounds.store'
 
-  const props = defineProps<{
-    message: string
-    onComplete?: () => void
-  }>()
+  const props = withDefaults(
+    defineProps<{
+      message: string
+      showVisualEffects?: boolean
+      onComplete?: () => void
+    }>(),
+    {
+      showVisualEffects: false,
+    },
+  )
 
   const soundStore = useSoundStore()
 
@@ -49,7 +55,9 @@
         class="animate-bounce w-full"
       >
         <text
-          class="fill-blue-600 stroke-blue-600 font-sans text-[40px] tracking-[0px]"
+          :class="props.showVisualEffects ? 'fill-transparent' : 'fill-blue-600 stroke-blue-600'"
+          :style="props.showVisualEffects ? 'stroke: url(#rainbowGradient)' : ''"
+          class="font-sans text-[40px]"
           x="50"
           y="57.208"
           text-anchor="middle"
@@ -61,13 +69,40 @@
         </text>
 
         <text
-          class="fill-white font-sans text-[40px] tracking-[0px]"
+          class="fill-white font-sans text-[40px]"
           x="50"
           y="57.208"
           text-anchor="middle"
         >
           {{ $t(randomMessage) }}
         </text>
+
+        <defs v-if="props.showVisualEffects">
+          <linearGradient
+            id="rainbowGradient"
+            x1="0%"
+            y1="0%"
+            x2="0%"
+            y2="100%"
+          >
+            <stop
+              offset="16.66%"
+              style="stop-color: #ff8000; stop-opacity: 1"
+            />
+            <stop
+              offset="66.66%"
+              style="stop-color: #0080ff; stop-opacity: 1"
+            />
+            <stop
+              offset="83.33%"
+              style="stop-color: #8000ff; stop-opacity: 1"
+            />
+            <stop
+              offset="100%"
+              style="stop-color: #ff0080; stop-opacity: 1"
+            />
+          </linearGradient>
+        </defs>
       </svg>
     </div>
   </Transition>

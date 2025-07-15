@@ -2,6 +2,9 @@
   import { ref, onMounted, onUnmounted } from 'vue'
   import CharacterMessage from './index.vue'
   import { Bus } from '@/services/Bus.service'
+  import { useGameStore } from '@/stores/game.store'
+
+  const gameStore = useGameStore()
 
   const messages = ref<Array<{ id: number; message?: string }>>([])
   let messageId = 0
@@ -19,6 +22,18 @@
     }
   }
 
+  function getMessage(message: { id: number; message?: string }) {
+    if (gameStore.isIndestructibleActive) {
+      return 'smilyTime'
+    }
+
+    if (message.message) {
+      return message.message
+    }
+
+    return ''
+  }
+
   onMounted(() => Bus.on('characterMessage', showMessage))
 
   onUnmounted(() => Bus.off('characterMessage', showMessage))
@@ -29,15 +44,16 @@
     <CharacterMessage
       v-for="message in messages"
       :key="message.id"
-      :message="message.message || ''"
+      :message="getMessage(message)"
       :on-complete="() => removeMessage(message.id)"
+      :show-visual-effects="gameStore.isIndestructibleActive"
     />
   </div>
 </template>
 
 <style scoped>
   .character-messages-container {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
