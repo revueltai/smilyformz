@@ -30,7 +30,6 @@ export function usePwaInstall() {
   const isDevelopment = import.meta.env.DEV
 
   const deferredInstallPrompt = ref<any>(null)
-
   const canInstall = ref(false)
 
   /**
@@ -40,7 +39,7 @@ export function usePwaInstall() {
   function handleBeforeInstallPrompt(event: Event) {
     event.preventDefault()
     deferredInstallPrompt.value = event
-    canInstall.value = true
+    canInstall.value = !usePWA() // Only allow install if not already in PWA mode
   }
 
   /**
@@ -90,8 +89,8 @@ export function usePwaInstall() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     window.addEventListener('appinstalled', handleClearInstallPrompt)
 
-    // Enable install button in dev mode for testing
-    if (isDevelopment) {
+    // Enable install button in dev mode for testing (but still respect if already installed)
+    if (isDevelopment && !usePWA()) {
       canInstall.value = true
     }
   })
