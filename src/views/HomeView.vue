@@ -13,7 +13,7 @@
   import { useModalStore } from '@/stores/modal.store'
   import { useUserStore } from '@/stores/user.store'
   import type { ShareType } from '@/components/app/ModalShare.vue'
-  import { usePWA } from '@/composables/usePwa'
+  import { usePWA } from '@/composables/usePwaInstall'
 
   const userStore = useUserStore()
   const modalStore = useModalStore()

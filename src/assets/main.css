@@ -165,6 +165,7 @@ Animations & Keyframes
 .animate-bounce-1,
 .animate-bounce-2,
 .animate-bounce-3,
+.animate-bounce-4,
 .animate-bounce-subtle-1,
 .animate-bounce-subtle-2,
 .animate-bounce-subtle-3,
@@ -185,6 +186,10 @@ Animations & Keyframes
 
 .animate-bounce-3 {
   animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 900ms forwards;
+}
+
+.animate-bounce-4 {
+  animation: scaleInBounce 800ms cubic-bezier(0.68, -0.55, 0.265, 1.55) 1200ms forwards;
 }
 
 .animate-bounce-subtle {

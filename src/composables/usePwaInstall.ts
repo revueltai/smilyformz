@@ -1,12 +1,36 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 /**
+ * Handles PWA detection.
+ * Will return a boolean value if the app is running in a PWA environment.
+ *
+ * @returns {boolean} True if the app is running in a PWA environment, false otherwise.
+ */
+export function usePWA(): boolean {
+  let isPWA = false
+
+  if (window) {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches
+    const isMinimalUI = window.matchMedia('(display-mode: minimal-ui)').matches
+    const isIOSStandalone = (window.navigator as any).standalone === true
+
+    isPWA = isStandalone || isFullscreen || isMinimalUI || isIOSStandalone
+  }
+
+  return isPWA
+}
+
+/**
  * Handles PWA installation functionality.
  * Provides a button to trigger the browser's native install prompt
  * when the app can be installed.
  */
 export function usePwaInstall() {
+  const isDevelopment = import.meta.env.DEV
+
   const deferredInstallPrompt = ref<any>(null)
+
   const canInstall = ref(false)
 
   /**
@@ -50,9 +74,26 @@ export function usePwaInstall() {
     }
   }
 
+  /**
+   * Simulates the browser's native install prompt (for development testing).
+   */
+  function simulateInstallPrompt() {
+    if (isDevelopment) {
+      alert('🔧 Development mode: Mock of the browser\'s "Add to Home Screen" prompt')
+      return true
+    }
+
+    return false
+  }
+
   onMounted(() => {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     window.addEventListener('appinstalled', handleClearInstallPrompt)
+
+    // Enable install button in dev mode for testing
+    if (isDevelopment) {
+      canInstall.value = true
+    }
   })
 
   onUnmounted(() => {
@@ -63,5 +104,6 @@ export function usePwaInstall() {
   return {
     canInstall,
     installApp,
+    simulateInstallPrompt,
   }
 }

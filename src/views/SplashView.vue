@@ -6,7 +6,8 @@
   import ModalCredits from '@/components/app/ModalCredits.vue'
   import Page from '@/components/app/Page.vue'
   import { MODALS } from '@/configs/constants'
-  import { usePWA } from '@/composables/usePwa'
+  import { usePWA } from '@/composables/usePwaInstall'
+  import PwaInstallBadge from '@/components/app/PwaInstallBadge.vue'
 
   const router = useRouter()
   const modalStore = useModalStore()
@@ -102,6 +103,8 @@
         {{ $t('credits') }}
       </Button>
     </div>
+
+    <PwaInstallBadge />
 
     <Modal
       :name="MODALS.LOGIN"

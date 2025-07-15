@@ -18,7 +18,7 @@
   import ModalCredits from '@/components/app/ModalCredits.vue'
   import { useFormValidation } from '@/composables/useFormValidation'
   import type { ValidationState } from '@/composables/useFormValidation'
-  import { usePWA } from '@/composables/usePwa'
+  import { usePWA } from '@/composables/usePwaInstall'
   import { useGameStore } from '@/stores/game.store'
 
   const router = useRouter()
