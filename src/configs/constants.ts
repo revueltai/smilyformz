@@ -50,6 +50,7 @@ export const TILE_POWER_UP_TYPES: Record<string, TilePowerUpType> = {
   DOUBLE_POINTS: 'doublePoints',
   ANY_SHAPE: 'anyShape',
   ANY_COLOR: 'anyColor',
+  INDESTRUCTIBLE: 'indestructible',
 }
 
 export const TILE_SHAPES: Record<string, TileShape> = {
@@ -77,6 +78,8 @@ export const TILE_DEFAULTS = {
 }
 
 export const DEFAULT_LEAGUE_LEVEL_NAME = 'easy'
+
+export const INDESTRUCTIBLE_POWERUP_DURATION = 5
 
 export const LEAGUE_RANKING_LIST_LIMIT = 100
 

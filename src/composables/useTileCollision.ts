@@ -16,6 +16,7 @@ interface PowerUpEffects {
   doublePoints: boolean
   acceptAnyShape: boolean
   acceptAnyColor: boolean
+  indestructible: boolean
 }
 
 /**
@@ -43,16 +44,17 @@ export function useTileCollision() {
   }
 
   /**
-   * Applies power up effects to the tile
+   * Creates power up effects object without activating them
    *
-   * @param tilePowerUpType - The power up type to apply
+   * @param tilePowerUpType - The power up type to create effects for
    * @returns Object containing power up effects
    */
-  function doPowerUp(tilePowerUpType: TilePowerUpType) {
+  function createPowerUpEffects(tilePowerUpType: TilePowerUpType) {
     const powerUpEffects = {
       doublePoints: false,
       acceptAnyShape: false,
       acceptAnyColor: false,
+      indestructible: false,
     }
 
     switch (tilePowerUpType) {
@@ -67,9 +69,24 @@ export function useTileCollision() {
       case 'doublePoints':
         powerUpEffects.doublePoints = true
         break
+
+      case 'indestructible':
+        powerUpEffects.indestructible = true
+        break
     }
 
     return powerUpEffects
+  }
+
+  /**
+   * Applies power up effects to the game
+   *
+   * @param powerUpEffects - The power up effects to apply
+   */
+  function applyPowerUpEffects(powerUpEffects: PowerUpEffects) {
+    if (powerUpEffects.indestructible) {
+      gameStore.activateIndestructible()
+    }
   }
 
   /**
@@ -80,6 +97,14 @@ export function useTileCollision() {
    * @returns Object containing match information
    */
   function evaluateMatch(tile: TileRowItem, powerUpEffects: PowerUpEffects | null) {
+    if (gameStore.isIndestructibleActive) {
+      return {
+        isMatch: true,
+        shapeMatch: true,
+        colorMatch: true,
+      }
+    }
+
     let shapeMatch = tile.shape === gameStore.character.shape
     let colorMatch = tile.shapeColor === gameStore.character.shapeColor
 
@@ -109,15 +134,29 @@ export function useTileCollision() {
    * @returns Object containing match information
    */
   function evaluateCollision(tile: TileRowItem) {
-    let powerUpEffects = null
+    let matchPowerUpEffects = null
 
     if (tile.powerUpType && !isNoneToken(tile.powerUpType)) {
-      powerUpEffects = doPowerUp(tile.powerUpType)
+      const tempPowerUpEffects = createPowerUpEffects(tile.powerUpType)
+
+      matchPowerUpEffects = {
+        doublePoints: false,
+        indestructible: false,
+        acceptAnyShape: tempPowerUpEffects.acceptAnyShape,
+        acceptAnyColor: tempPowerUpEffects.acceptAnyColor,
+      }
     }
 
-    const { isMatch, shapeMatch, colorMatch } = evaluateMatch(tile, powerUpEffects)
+    const { isMatch, shapeMatch, colorMatch } = evaluateMatch(tile, matchPowerUpEffects)
 
     if (isMatch) {
+      let powerUpEffects = null
+
+      if (tile.powerUpType && !isNoneToken(tile.powerUpType)) {
+        powerUpEffects = createPowerUpEffects(tile.powerUpType)
+        applyPowerUpEffects(powerUpEffects)
+      }
+
       soundStore.playSound(powerUpEffects ? 'gameTilePowerup' : 'gameTilePop')
       gameStore.incrementScore(shapeMatch, colorMatch, powerUpEffects?.doublePoints)
 

@@ -154,6 +154,7 @@
     :style="cssStyles"
   >
     <Shape
+      :id="id"
       :size="size"
       :shape="sanitizedShape"
       :color="sanitizedShapeColor"
@@ -174,6 +175,13 @@
       :class="`absolute -top-2 -left-2 text-shadow-sm text-shadow-blue-600 ${powerUpIndicatorSize.container} flex items-center justify-center border-blue-950 rounded-full bg-blue-500 text-white z-20 animate-bounce`"
     >
       <span :class="`font-extrabold ${powerUpIndicatorSize.mainText}`">x2</span>
+    </div>
+
+    <div
+      v-if="powerUpType === 'indestructible'"
+      :class="`absolute -top-2 -left-2 text-shadow-sm text-shadow-lime-600 ${powerUpIndicatorSize.container} flex items-center justify-center border-lime-950 rounded-full bg-gradient-to-br from-lime-300 to-lime-500 text-white z-20 animate-bounce`"
+    >
+      <span :class="`font-extrabold ${powerUpIndicatorSize.mainText}`">★</span>
     </div>
   </div>
 </template>

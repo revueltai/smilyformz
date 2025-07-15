@@ -6,7 +6,7 @@ export type TileExpression = 'exp1' | 'exp2' | 'exp3' | 'exp4'
 
 export type TileExpressionPowerDown = 'exp5' | 'exp6'
 
-export type TilePowerUpType = 'none' | 'doublePoints' | 'anyShape' | 'anyColor'
+export type TilePowerUpType = 'none' | 'doublePoints' | 'anyShape' | 'anyColor' | 'indestructible'
 
 export type TileColor = {
   shapeColor: string

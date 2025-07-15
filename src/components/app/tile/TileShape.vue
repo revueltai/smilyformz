@@ -3,13 +3,11 @@
   import { TILE_DEFAULTS, TILE_POWER_UP_TYPES, TILE_SHAPES, TILE_SIZES } from '@/configs/constants'
   import type { TileShape, TileSize, TilePowerUpType } from '@/components/app/tile/types'
   import { getRandomNumber } from '@/utils'
-
-  const emit = defineEmits<{
-    (e: 'updateShapeStatus', newShapeName: TileShape): void
-  }>()
+  import { useGameStore } from '@/stores/game.store'
 
   const props = withDefaults(
     defineProps<{
+      id: string
       shape: TileShape
       size?: TileSize
       color?: string
@@ -23,6 +21,12 @@
       isDisabled: false,
     },
   )
+
+  const emit = defineEmits<{
+    (e: 'updateShapeStatus', newShapeName: TileShape): void
+  }>()
+
+  const gameStore = useGameStore()
 
   const PATHS = {
     circle:
@@ -122,7 +126,12 @@
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g v-if="powerUpType === TILE_POWER_UP_TYPES.ANY_COLOR">
+      <g
+        v-if="
+          powerUpType === TILE_POWER_UP_TYPES.ANY_COLOR ||
+          (gameStore.isIndestructibleActive && id === 'character')
+        "
+      >
         <g
           :clip-path="`url(#${clipPathId})`"
           data-figma-skip-parse="true"

@@ -23,6 +23,7 @@
   import SpeedIncreaseNotification from '@/components/app/SpeedIncreaseNotification.vue'
   import CharacterMessageContainer from '@/components/app/CharacterMessage/Container.vue'
   import Confetti from '@/components/shared/Confetti/index.vue'
+  import GameTimer from '@/components/app/GameTimer.vue'
 
   const { t } = useI18n()
   const gameStore = useGameStore()
@@ -247,6 +248,8 @@
     <SpeedIncreaseNotification v-if="gameStore.showSpeedIncreaseNotification" />
 
     <CharacterMessageContainer />
+
+    <GameTimer />
 
     <Modal
       :name="MODALS.PAUSE"

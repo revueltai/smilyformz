@@ -7,6 +7,7 @@ import {
   GAME_LEAGUE_LEVELS,
   DEFAULT_LEAGUE_LEVEL_NAME,
   GAME_SPEED_MILESTONES,
+  INDESTRUCTIBLE_POWERUP_DURATION,
 } from '@/configs/constants'
 import type {
   CharacterItem,
@@ -59,6 +60,9 @@ export const useGameStore = defineStore('game', () => {
     seconds: 0,
     minutes: 0,
   })
+
+  const isIndestructiblePowerupActive = ref(false)
+  const indestructibleTimeRemaining = ref(0)
 
   // Track which speed milestones have been reached to avoid duplicate increases
   const reachedSpeedMilestones = ref<Set<number>>(new Set())
@@ -153,6 +157,7 @@ export const useGameStore = defineStore('game', () => {
     }
 
     checkAndIncreaseSpeed()
+    updateIndestructibleTimer()
   }
 
   /**
@@ -173,6 +178,35 @@ export const useGameStore = defineStore('game', () => {
     gameSpeed.value = currentLeagueSettings.initialSpeed
     showSpeedIncreaseNotification.value = false
     reachedSpeedMilestones.value.clear()
+  }
+
+  /**
+   * Activates the indestructible powerup
+   */
+  function activateIndestructible() {
+    isIndestructiblePowerupActive.value = true
+    indestructibleTimeRemaining.value = INDESTRUCTIBLE_POWERUP_DURATION
+  }
+
+  /**
+   * Deactivates the indestructible powerup
+   */
+  function deactivateIndestructible() {
+    isIndestructiblePowerupActive.value = false
+    indestructibleTimeRemaining.value = 0
+  }
+
+  /**
+   * Updates the indestructible powerup timer
+   */
+  function updateIndestructibleTimer() {
+    if (isIndestructiblePowerupActive.value && indestructibleTimeRemaining.value > 0) {
+      indestructibleTimeRemaining.value--
+
+      if (indestructibleTimeRemaining.value <= 0) {
+        deactivateIndestructible()
+      }
+    }
   }
 
   /**
@@ -240,14 +274,13 @@ export const useGameStore = defineStore('game', () => {
     resetTime()
     resetSpeed()
     setGameOver(false)
+    deactivateIndestructible()
+
     isPaused.value = false
     isGameStarted.value = false
     showConfetti.value = false
 
-    // Reset collision detection
     resetCollisionDetection()
-
-    // Reset character to a new random state
     character.value = createCharacter()
   }
 
@@ -372,6 +405,8 @@ export const useGameStore = defineStore('game', () => {
     totalRowsLength,
     initialRowSpacing,
     leagueLevel,
+    isIndestructibleActive: isIndestructiblePowerupActive,
+    indestructibleTimeRemaining,
     incrementScore,
     resetScore,
     setGameOver,
@@ -385,5 +420,7 @@ export const useGameStore = defineStore('game', () => {
     setLeagueLevel,
     checkAndUpdateLeagueLevel,
     restartGame,
+    activateIndestructible,
+    deactivateIndestructible,
   }
 })
