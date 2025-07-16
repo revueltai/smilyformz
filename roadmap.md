@@ -11,11 +11,6 @@
 - add new expressions
 - animate expression svgs
 
-- make the character like Mario after a star... take any color or shape for say 5sec.
-
-  - add a timer component to the game UI that counts down from 5 to 0
-  - change character shape color, make it use the gradient while in "star" mode.
-
 - add "Achievements" list, but create cool ones that actually give some small weird reward and not just a badge.
 
 - add "challenges" or "game modes":
