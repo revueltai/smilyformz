@@ -47,6 +47,7 @@ export type IconName =
   | 'trophy'
   | 'user-round'
   | 'user-search'
+  | 'sparkle'
   | 'github'
   | 'instagram'
   | 'x'

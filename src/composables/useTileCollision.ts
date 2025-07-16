@@ -1,10 +1,12 @@
-import type { TilePowerUpType, TileRowItem, TileShape } from '@/components/app/tile/types'
+import { ref } from 'vue'
 import { useGameStore } from '@/stores/game.store'
+import { useSoundStore } from '@/stores/sounds.store'
 import { useCollisionDetection } from './useCollisionDetection'
 import { useTileGeneration } from './useTileGeneration'
-import { getTileRowId, isNoneToken } from '@/utils'
 import { Bus } from '@/services/Bus.service'
-import { useSoundStore } from '@/stores/sounds.store'
+import { getTileRowId, isNoneToken } from '@/utils'
+import { TILE_SHAPES } from '@/configs/constants'
+import type { TilePowerUpType, TileRowItem, TileShape } from '@/components/app/tile/types'
 
 interface CharacterUpdateProps {
   shape: TileShape
@@ -40,7 +42,21 @@ export function useTileCollision() {
    * @param characterUpdateProps - The properties to update the character with
    */
   function updateCharacterOnMatch(characterUpdateProps: CharacterUpdateProps) {
-    gameStore.updateCharacterOnMatch(characterUpdateProps)
+    if (gameStore.isIndestructibleActive) {
+      gameStore.updateCharacterOnMatch({
+        shape: TILE_SHAPES.STAR,
+        shapeColor: characterUpdateProps.shapeColor,
+        backgroundColor: characterUpdateProps.backgroundColor,
+      })
+
+      return
+    }
+
+    gameStore.updateCharacterOnMatch({
+      shape: characterUpdateProps.shape,
+      shapeColor: characterUpdateProps.shapeColor,
+      backgroundColor: characterUpdateProps.backgroundColor,
+    })
   }
 
   /**
@@ -85,6 +101,8 @@ export function useTileCollision() {
    */
   function applyPowerUpEffects(powerUpEffects: PowerUpEffects) {
     if (powerUpEffects.indestructible) {
+      gameStore.saveOriginalCharacterShape()
+      gameStore.character.shape = TILE_SHAPES.STAR
       gameStore.activateIndestructible()
     }
   }

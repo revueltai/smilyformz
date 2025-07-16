@@ -20,6 +20,7 @@ import { getRandomItem, canAdvanceToNextLeague } from '@/utils'
 import { supabase } from '@/services/Supabase.service'
 import { useUserStore } from './user.store'
 import { useCollisionDetection } from '@/composables/useCollisionDetection'
+import { useTileCollision } from '@/composables/useTileCollision'
 
 interface GameTime {
   seconds: number
@@ -64,6 +65,7 @@ export const useGameStore = defineStore('game', () => {
 
   const isIndestructiblePowerupActive = ref(false)
   const indestructibleTimeRemaining = ref(0)
+  const originalCharacterShape = ref<TileShape | null>(null)
 
   // Track which speed milestones have been reached to avoid duplicate increases
   const reachedSpeedMilestones = ref<Set<number>>(new Set())
@@ -197,16 +199,43 @@ export const useGameStore = defineStore('game', () => {
   }
 
   /**
+   * Saves the original character shape when indestructible powerup is activated
+   */
+  function saveOriginalCharacterShape() {
+    if (!originalCharacterShape.value) {
+      originalCharacterShape.value = character.value.shape
+    }
+  }
+
+  /**
+   * Restores the original character shape when indestructible powerup ends
+   */
+  function restoreOriginalCharacterShape() {
+    if (originalCharacterShape.value) {
+      character.value.shape = originalCharacterShape.value
+      originalCharacterShape.value = null
+    }
+  }
+
+  /**
+   * Resets the original character shape to null
+   */
+  function resetOriginalCharacterShape() {
+    originalCharacterShape.value = null
+  }
+
+  /**
    * Deactivates the indestructible powerup
    */
   function deactivateIndestructible() {
     gameSpeed.value = tempGameSpeed.value
     isIndestructiblePowerupActive.value = false
     indestructibleTimeRemaining.value = 0
+    restoreOriginalCharacterShape()
   }
 
   /**
-   * Updates the indestructible powerup timer
+   * Updates the game powerup timer countdown
    */
   function updateIndestructibleTimer() {
     if (isIndestructiblePowerupActive.value && indestructibleTimeRemaining.value > 0) {
@@ -283,7 +312,11 @@ export const useGameStore = defineStore('game', () => {
     resetTime()
     resetSpeed()
     setGameOver(false)
-    deactivateIndestructible()
+
+    if (isIndestructiblePowerupActive.value) {
+      deactivateIndestructible()
+    }
+    resetOriginalCharacterShape()
 
     isPaused.value = false
     isGameStarted.value = false
@@ -432,5 +465,8 @@ export const useGameStore = defineStore('game', () => {
     restartGame,
     activateIndestructible,
     deactivateIndestructible,
+    saveOriginalCharacterShape,
+    restoreOriginalCharacterShape,
+    resetOriginalCharacterShape,
   }
 })
