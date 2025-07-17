@@ -26,10 +26,10 @@ export type Particle = SparkleParticle | ConfettiParticle
 
 export interface ParticleConfig {
   type: 'sparkle' | 'confetti'
-  spawnRate?: number // Chance per frame (0-1)
+  spawnRate?: number
   maxParticles?: number
   duration?: number
-  colors?: string[] // For confetti
+  colors?: string[]
   spawnArea?: {
     width: number
     height: number

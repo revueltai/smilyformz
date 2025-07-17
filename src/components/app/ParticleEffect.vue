@@ -6,6 +6,7 @@
     type ConfettiParticle,
   } from '@/composables/useParticleSystem'
   import { useSoundStore } from '@/stores/sounds.store'
+  import { getRandomBoolean, getRandomNumber } from '@/utils'
 
   const props = withDefaults(
     defineProps<{
@@ -90,6 +91,33 @@
     particleSystem.stop()
   }
 
+  function getSparkleSize() {
+    const size = getRandomNumber(1, 3)
+    if (size === 1) {
+      return 'xs'
+    } else if (size === 2) {
+      return 'sm'
+    } else {
+      return 'md'
+    }
+  }
+
+  function getSparkleColor() {
+    const color = getRandomNumber(1, 3)
+
+    if (color === 1) {
+      return 'blue-400'
+    } else if (color === 2) {
+      return 'blue-300'
+    } else {
+      return 'blue-600'
+    }
+  }
+
+  function getSparkleType() {
+    return getRandomBoolean() ? 'stroke' : 'fill'
+  }
+
   watch(
     () => props.isActive,
     (isActive) => {
@@ -106,7 +134,7 @@
   <div
     v-if="isActive"
     class="absolute inset-0 pointer-events-none"
-    :class="type === 'confetti' ? 'fixed z-[51]' : ''"
+    :class="type === 'confetti' ? 'absolute z-[51]' : ''"
   >
     <template v-if="type === 'sparkle'">
       <div
@@ -123,8 +151,9 @@
       >
         <Icon
           name="sparkle"
-          size="sm"
-          color="yellow-400"
+          :size="getSparkleSize()"
+          :color="getSparkleColor()"
+          :type="getSparkleType()"
         />
       </div>
     </template>
