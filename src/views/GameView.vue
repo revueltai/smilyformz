@@ -22,7 +22,7 @@
   import GameEndCountdown from '@/components/app/GameEndCountdown.vue'
   import SpeedIncreaseNotification from '@/components/app/SpeedIncreaseNotification.vue'
   import CharacterMessageContainer from '@/components/app/CharacterMessage/Container.vue'
-  import Confetti from '@/components/shared/Confetti/index.vue'
+  import Confetti from '@/components/app/Confetti.vue'
   import GameTimer from '@/components/app/GameTimer.vue'
 
   const { t } = useI18n()

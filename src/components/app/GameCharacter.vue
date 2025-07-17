@@ -6,6 +6,7 @@
   import { isMobile } from '@/utils'
   import GameControls from '@/components/app/GameControls.vue'
   import Tile from '@/components/app/tile/Tile.vue'
+  import ParticleEffect from '@/components/app/ParticleEffect.vue'
   import type { RefElement } from '@/components/shared/types'
 
   const props = defineProps<{
@@ -103,6 +104,17 @@
         ref="characterHitAreaRef"
         class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
         :style="{ width: `${hitAreaSize}px`, height: `${hitAreaSize}px` }"
+      />
+
+      <ParticleEffect
+        type="sparkle"
+        :is-active="gameStore.isIndestructibleActive"
+        :spawn-rate="0.3"
+        :max-particles="50"
+        :spawn-area="{ width: 60, height: 60 }"
+        :velocity="{ minX: -1, maxX: 1, minY: -2, maxY: 0 }"
+        :gravity="0.05"
+        :fade-rate="0.02"
       />
     </div>
   </div>
