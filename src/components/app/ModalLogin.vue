@@ -86,6 +86,7 @@
     <Button
       :disabled="submitAttempted && !isFormValid"
       type="submit"
+      text-color="lime-800"
       border-color="lime-600"
       border-color-hover="lime-400"
       background-color="lime-50"

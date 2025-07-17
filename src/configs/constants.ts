@@ -7,6 +7,10 @@ import type {
 } from '@/components/app/tile/types'
 import type { GameLeagueLevel, GameLeagueLevelKey } from '@/types/game'
 
+export const APP_LOCALES = ['en', 'es', 'fr', 'de', 'it', 'pt']
+
+export const APP_DEFAULT_LOCALE = 'en'
+
 export const APP_SHARE_URL = 'https://smilyformz.vercel.app/'
 
 export const GAME_ROWS_COUNT = 5

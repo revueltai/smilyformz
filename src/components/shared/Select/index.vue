@@ -13,7 +13,7 @@
     labelColor: 'slate-400',
     footnote: '',
     footnoteColor: 'slate-400',
-    selectLabel: 'Select an option',
+    selectLabel: 'selectAnOption',
     showPlaceholderOption: true,
     required: false,
     disabled: false,
@@ -162,7 +162,7 @@
             value=""
             disabled
           >
-            {{ selectLabel }}
+            {{ $t(selectLabel) }}
           </option>
 
           <option

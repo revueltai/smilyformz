@@ -6,6 +6,8 @@ import type { GameLeagueLevelKey } from '@/types/game'
 import type { TileShape, TileExpression } from '@/components/app/tile/types'
 import { DEFAULT_LANGUAGE_CODE } from '@/configs/languages'
 import type { User } from '@supabase/supabase-js'
+import { changeAppLanguage, globalI18nInstance } from '@/services/i18n.service'
+import type { AppLocaleCode } from '@/services/i18n.service'
 
 interface UserProfile {
   id: string
@@ -178,6 +180,15 @@ export const useUserStore = defineStore('user', () => {
       }
 
       initializeSoundStore(music ?? false, sound ?? false)
+
+      // Set i18n language based on user preference
+      if (language && language !== DEFAULT_LANGUAGE_CODE && globalI18nInstance) {
+        try {
+          await changeAppLanguage(globalI18nInstance, language as AppLocaleCode, false) // Don't save preference as it's already saved in user profile
+        } catch (error) {
+          console.warn('Failed to set i18n language from user profile:', error)
+        }
+      }
     } catch (error) {
       console.error('Error loading user profile:', error)
     }
@@ -367,6 +378,14 @@ export const useUserStore = defineStore('user', () => {
 
           if (settings.language !== undefined) {
             profile.value.language = settings.language
+            // Update i18n language when user language changes
+            if (globalI18nInstance) {
+              try {
+                await changeAppLanguage(globalI18nInstance, settings.language as AppLocaleCode)
+              } catch (error) {
+                console.warn('Failed to update i18n language:', error)
+              }
+            }
           }
 
           if (settings.avatar_shape !== undefined) {

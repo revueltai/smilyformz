@@ -2,10 +2,9 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { detectBrowserLanguage, setupI18n } from '@/services/i18n.service'
+import { getSavedLanguage, setupI18n, loadLocaleMessages } from '@/services/i18n.service'
 import { setupRouter } from './router'
 import { useUserStore } from '@/stores/user.store'
-import type { AppLocaleCode } from '@/services/i18n.service'
 
 import Button from '@/components/shared/Button/index.vue'
 import Loader from '@/components/shared/Loader/index.vue'
@@ -18,8 +17,7 @@ import Modal from '@/components/shared/Modal/index.vue'
 import Icon from '@/components/shared/Icon/index.vue'
 import App from './App.vue'
 import en from '@/configs/locales/en.json'
-
-const initialLocale = detectBrowserLanguage() as AppLocaleCode
+import { APP_DEFAULT_LOCALE } from '@/configs/constants'
 
 /**
  * Initializes the user authentication system
@@ -31,6 +29,8 @@ function initializeUserAuthentication() {
   userStore.setupAuthListener()
 }
 
+const initialLocale = getSavedLanguage()
+
 const app = createApp(App)
 const pinia = createPinia()
 app.use(pinia)
@@ -39,11 +39,15 @@ const i18n = setupI18n({
   legacy: false,
   globalInjection: true,
   locale: initialLocale,
-  fallbackLocale: 'en',
+  fallbackLocale: APP_DEFAULT_LOCALE,
   messages: { en },
 })
 
-const router = setupRouter(i18n, initialLocale)
+if (initialLocale !== APP_DEFAULT_LOCALE) {
+  loadLocaleMessages(i18n, initialLocale)
+}
+
+const router = setupRouter(i18n)
 app.use(i18n)
 app.use(router)
 

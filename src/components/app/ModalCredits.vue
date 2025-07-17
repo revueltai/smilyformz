@@ -1,11 +1,11 @@
 <script setup lang="ts">
   const repositories = [
     {
-      name: 'App Repository',
+      name: 'repositoryApp',
       url: 'https://github.com/revueltai/smilyformz',
     },
     {
-      name: 'Personal Repository',
+      name: 'repositoryPersonal',
       url: 'https://github.com/revueltai',
     },
   ]
@@ -39,7 +39,7 @@
           size="xs"
           @click="handleOpenRepository(repository.url)"
         >
-          {{ repository.name }}
+          {{ $t(repository.name) }}
         </Button>
       </div>
     </div>

@@ -68,7 +68,7 @@ export function useTileGeneration() {
     }
 
     const spawnChance = getRandomNumber(100)
-    if (spawnChance < 90) {
+    if (spawnChance < 25) {
       const powerUpTypes = Object.values(TILE_POWER_UP_TYPES).filter(
         (type) => type !== TILE_POWER_UP_TYPES.NONE,
       )

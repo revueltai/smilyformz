@@ -6,25 +6,14 @@ import {
   type Router,
   type RouteRecordRaw,
 } from 'vue-router'
-import {
-  getLocale,
-  isI18nInitialized,
-  // loadLocaleMessages,
-  // setI18nLanguage,
-} from '@/services/i18n.service'
+import { getLocale, isI18nInitialized, globalI18nInstance } from '@/services/i18n.service'
 import type { AppLocaleCode } from '@/services/i18n.service'
 
 async function setI18nAppLanguage(i18n: I18n) {
-  // const settingsStore = useSettingsStore()
   const appCurrentLocale = getLocale(i18n) as AppLocaleCode
 
-  if (!isI18nInitialized) {
-    // if (settingsStore.appLocales.includes(appCurrentLocale)) {
-    //   if (!i18n.global.availableLocales.includes(appCurrentLocale)) {
-    //     await loadLocaleMessages(i18n, appCurrentLocale)
-    //   }
-    //   setI18nLanguage(i18n, appCurrentLocale)
-    // }
+  if (!isI18nInitialized && globalI18nInstance) {
+    globalI18nInstance.global.locale = appCurrentLocale
   }
 }
 
@@ -97,7 +86,7 @@ async function handleRouteMusic(to: RouteLocationNormalized) {
   }
 }
 
-export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
+export function setupRouter(i18n: I18n): Router {
   const routes: RouteRecordRaw[] = [
     {
       path: '/',
@@ -133,14 +122,7 @@ export function setupRouter(i18n: I18n, initialLocale: AppLocaleCode): Router {
   })
 
   router.beforeEach(async (to, from, next) => {
-    // const modalStore = useModalStore()
-    // modalStore.closeModal()
-
     setI18nAppLanguage(i18n)
-
-    // const settingsStore = useSettingsStore()
-
-    i18n.global.locale = 'en' //settingsStore.appLocales.includes(initialLocale) ? initialLocale : 'en'
 
     const route = await validateUser(to)
 

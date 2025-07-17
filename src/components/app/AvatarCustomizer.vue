@@ -65,6 +65,7 @@
         <template v-if="isDisabled('shape')">
           <Shape
             v-for="shape in shapes"
+            :id="shape"
             :key="shape"
             :shape="shape"
             size="md"
