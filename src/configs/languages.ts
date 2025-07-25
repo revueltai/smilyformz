@@ -14,6 +14,7 @@ export const LANGUAGES: Language[] = [
   { code: 'fr', i18nValue: 'lang_fr' },
   { code: 'de', i18nValue: 'lang_de' },
   { code: 'it', i18nValue: 'lang_it' },
+  { code: 'pt', i18nValue: 'lang_pt' },
 ]
 
 export const DEFAULT_LANGUAGE_CODE = 'en'

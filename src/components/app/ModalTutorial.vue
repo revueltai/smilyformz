@@ -6,7 +6,7 @@
 
   const page = ref(1)
 
-  const tutorialTotalSteps = computed(() => (isAuthenticated ? 4 : 6))
+  const tutorialTotalSteps = computed(() => (isAuthenticated ? 5 : 7))
 
   function handleClickPage(direction: 'prev' | 'next') {
     if (direction === 'prev') {
