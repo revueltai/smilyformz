@@ -18,7 +18,7 @@
       class="absolute inset-0 flex items-center justify-center bg-slate-900/50 z-50 pointer-events-none"
     >
       <div
-        class="text-6xl font-bold text-shadow-lg uppercase countdown-text"
+        class="text-5xl font-bold text-shadow-lg uppercase countdown-text"
         :class="textColor || 'text-white'"
       >
         {{ $t(message) }}

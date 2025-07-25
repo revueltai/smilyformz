@@ -4,8 +4,6 @@
 
 ## Metagame todos:
 
-- add language switch for UI and translations
-
 ## Ideas:
 
 - add new expressions
