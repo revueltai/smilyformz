@@ -294,7 +294,6 @@
       :name="MODALS.TUTORIAL"
       :heading="$t('howToPlay')"
       :prevent-backdrop-close="true"
-      :has-close-button="showFirstTimeTutorial"
       @close="handleTutorialClose"
     >
       <ModalTutorial />

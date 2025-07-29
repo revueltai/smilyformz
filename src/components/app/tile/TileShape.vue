@@ -107,6 +107,19 @@
     },
   )
 
+  watch(
+    () => gameStore.isPaused,
+    (isPaused) => {
+      if (props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE) {
+        if (isPaused) {
+          stopShapeAnimation()
+        } else {
+          startShapeAnimation()
+        }
+      }
+    },
+  )
+
   onMounted(() => {
     if (props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE) {
       startShapeAnimation()
