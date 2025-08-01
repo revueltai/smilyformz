@@ -108,10 +108,14 @@ export function useTileExplosion() {
    */
   function getExplosionDirection(tileId: string): { x: number; y: number; rotate: number } | null {
     const event = explosionEvents.value.find((event) => event.allTileIds.includes(tileId))
-    if (!event) return null
+    if (!event) {
+      return null
+    }
 
     const tileIndex = getTileIndexFromId(tileId)
-    if (tileIndex === -1) return null
+    if (tileIndex === -1) {
+      return null
+    }
 
     // Calculate the relative position from the collided tile
     const relativePosition = tileIndex - event.collidedTileIndex
