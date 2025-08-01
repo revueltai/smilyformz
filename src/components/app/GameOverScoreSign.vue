@@ -70,7 +70,7 @@
       <Button
         background-color="blue-500"
         border-color="blue-700"
-        background-color-hover="blue-200"
+        background-color-hover="blue-500"
         text-color="white"
         @click="handleShareScore"
       >

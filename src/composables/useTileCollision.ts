@@ -3,6 +3,7 @@ import { useGameStore } from '@/stores/game.store'
 import { useSoundStore } from '@/stores/sounds.store'
 import { useCollisionDetection } from './useCollisionDetection'
 import { useTileGeneration } from './useTileGeneration'
+import { useTileExplosion } from './useTileExplosion'
 import { Bus } from '@/services/Bus.service'
 import { getTileRowId, isNoneToken } from '@/utils'
 import { TILE_SHAPES } from '@/configs/constants'
@@ -33,6 +34,7 @@ export function useTileCollision() {
   const soundStore = useSoundStore()
   const { disableCollidedRow } = useCollisionDetection()
   const { updateRowTilesToMatchCharacter } = useTileGeneration()
+  const { triggerAdjacentExplosion } = useTileExplosion()
 
   /**
    * Updates the character properties on match
@@ -166,6 +168,10 @@ export function useTileCollision() {
     }
 
     const { isMatch, shapeMatch, colorMatch } = evaluateMatch(tile, matchPowerUpEffects)
+
+    if (gameStore.isIndestructibleActive) {
+      triggerAdjacentExplosion(tile)
+    }
 
     if (isMatch) {
       let powerUpEffects = null

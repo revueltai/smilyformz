@@ -49,6 +49,10 @@ export const soundsConfig: SoundsMap = {
     audio: new Audio('/sounds/gameTilePowerup.mp3'),
     volume: 0.2,
   },
+  gameTileRowExplosion: {
+    audio: new Audio('/sounds/gameTileRowExplosion.wav'),
+    volume: 0.2,
+  },
 }
 
 export const musicConfig: MusicMap = {

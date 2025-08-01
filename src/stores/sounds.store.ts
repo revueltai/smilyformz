@@ -26,6 +26,7 @@ export interface SoundsMap {
   gameTilePop: Sound
   gameTilePowerup: Sound
   gameConfetti: Sound
+  gameTileRowExplosion: Sound
 }
 
 type MusicName = keyof MusicMap

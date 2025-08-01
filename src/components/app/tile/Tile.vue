@@ -1,9 +1,10 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
-  import { getTileRowId, isNoneToken } from '@/utils'
+  import { getTileRowId, isNoneToken, createCssVar } from '@/utils'
   import { TILE_DEFAULTS, TILE_POWER_UP_TYPES } from '@/configs/constants'
   import { useCollisionDetection } from '@/composables/useCollisionDetection'
   import { useTileCollision } from '@/composables/useTileCollision'
+  import { useTileExplosion, EXPLOSION_ANIMATION_DURATION } from '@/composables/useTileExplosion'
   import { useGameStore } from '@/stores/game.store'
   import Shape from '@/components/app/tile/TileShape.vue'
   import Expression from '@/components/app/tile/TileExpression.vue'
@@ -59,10 +60,13 @@
   const gameStore = useGameStore()
   const { onCheckCollisionStart, onCheckCollisionEnd, collidedRows } = useCollisionDetection()
   const { evaluateCollision } = useTileCollision()
+  const { getExplosionDirection } = useTileExplosion()
 
   const tileRef = ref<RefElement>(null)
   const isCollided = ref(false)
   const isDisabled = ref(false)
+  const isExploding = ref(false)
+  const explosionDirection = ref({ x: 0, y: 0, rotate: 0 })
   const rotatingShape = ref<TileShape>(props.shape)
 
   const powerUpIndicatorSize = computed(() => {
@@ -77,14 +81,31 @@
 
   const cssClasses = computed(() => ({
     'animate-collision': isCollided.value,
+    'animate-explosion': isExploding.value,
     'opacity-30 grayscale-100': isDisabled.value,
     'bg-slate-200 border border-white': !isNoneToken(props.powerUpType),
     'tile-gradient': props.powerUpType === TILE_POWER_UP_TYPES.ANY_SHAPE,
   }))
 
-  const cssStyles = computed(() => ({
-    backgroundColor: isNoneToken(props.powerUpType) ? props.backgroundColor : undefined,
-  }))
+  const cssStyles = computed(() => {
+    const styles: Record<string, string> = {}
+
+    if (isNoneToken(props.powerUpType) && props.backgroundColor) {
+      styles.backgroundColor = props.backgroundColor
+    }
+
+    if (isExploding.value) {
+      const explosionVars = [
+        createCssVar('explosion-x', `${explosionDirection.value.x}px`),
+        createCssVar('explosion-y', `${explosionDirection.value.y}px`),
+        createCssVar('explosion-rotate', `${explosionDirection.value.rotate}deg`),
+      ]
+
+      return [styles, ...explosionVars]
+    }
+
+    return styles
+  })
 
   const sanitizedShape = computed(() => {
     if (props.powerUpType === 'anyShape') {
@@ -119,6 +140,18 @@
     })
   }
 
+  function handleExplosion() {
+    const direction = getExplosionDirection(props.id)
+
+    if (direction) {
+      explosionDirection.value = direction
+      isExploding.value = true
+
+      // Reset explosion state after animation
+      setTimeout(() => (isExploding.value = false), EXPLOSION_ANIMATION_DURATION)
+    }
+  }
+
   function handleCollidedRow(collidedRows: string[]) {
     const tileRowId = getTileRowId(props.id)
 
@@ -132,6 +165,15 @@
   }
 
   watch(() => collidedRows.value, handleCollidedRow, { deep: true })
+
+  watch(
+    () => getExplosionDirection(props.id),
+    (direction) => {
+      if (direction) {
+        handleExplosion()
+      }
+    },
+  )
 
   onMounted(() => {
     if (props.checkForCollision) {
@@ -214,7 +256,60 @@
     }
   }
 
+  @keyframes explosion {
+    0% {
+      transform: scale(1) translate(0, 0) rotate(0deg);
+      opacity: 1;
+      filter: brightness(1);
+    }
+    10% {
+      transform: scale(1.05)
+        translate(calc(var(--explosion-x, 0) * 0.3), calc(var(--explosion-y, 0) * 0.3))
+        rotate(calc(var(--explosion-rotate, 0deg) * 0.3));
+      opacity: 0.95;
+      filter: brightness(1.2);
+    }
+    25% {
+      transform: scale(1.1)
+        translate(calc(var(--explosion-x, 0) * 0.6), calc(var(--explosion-y, 0) * 0.6))
+        rotate(calc(var(--explosion-rotate, 0deg) * 0.6));
+      opacity: 0.8;
+      filter: brightness(1.4);
+    }
+    40% {
+      transform: scale(1.15)
+        translate(calc(var(--explosion-x, 0) * 0.8), calc(var(--explosion-y, 0) * 0.8))
+        rotate(calc(var(--explosion-rotate, 0deg) * 0.8));
+      opacity: 0.6;
+      filter: brightness(1.6);
+    }
+    60% {
+      transform: scale(1.2)
+        translate(calc(var(--explosion-x, 0) * 0.9), calc(var(--explosion-y, 0) * 0.9))
+        rotate(calc(var(--explosion-rotate, 0deg) * 0.9));
+      opacity: 0.4;
+      filter: brightness(1.8);
+    }
+    80% {
+      transform: scale(1.25)
+        translate(calc(var(--explosion-x, 0) * 0.95), calc(var(--explosion-y, 0) * 0.95))
+        rotate(calc(var(--explosion-rotate, 0deg) * 0.95));
+      opacity: 0.2;
+      filter: brightness(2);
+    }
+    100% {
+      transform: scale(1.3) translate(var(--explosion-x, 0), var(--explosion-y, 0))
+        rotate(var(--explosion-rotate, 0deg));
+      opacity: 0;
+      filter: brightness(2.5);
+    }
+  }
+
   .animate-collision {
     animation: collision 400ms cubic-bezier(0.17, 0.67, 0.83, 0.67) forwards;
+  }
+
+  .animate-explosion {
+    animation: explosion 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
 </style>

@@ -20,7 +20,7 @@ import { getRandomItem, canAdvanceToNextLeague } from '@/utils'
 import { supabase } from '@/services/Supabase.service'
 import { useUserStore } from './user.store'
 import { useCollisionDetection } from '@/composables/useCollisionDetection'
-import { useTileCollision } from '@/composables/useTileCollision'
+import { useTileExplosion } from '@/composables/useTileExplosion'
 
 interface GameTime {
   seconds: number
@@ -33,6 +33,7 @@ interface GameTime {
 export const useGameStore = defineStore('game', () => {
   const userStore = useUserStore()
   const { resetCollisionDetection } = useCollisionDetection()
+  const { clearExplosionEvents } = useTileExplosion()
 
   const initialLeagueLevel = userStore.profile?.league_level || DEFAULT_LEAGUE_LEVEL_NAME
   const initialLeagueSettings = GAME_LEAGUE_LEVELS[initialLeagueLevel]
@@ -323,6 +324,7 @@ export const useGameStore = defineStore('game', () => {
     showConfetti.value = false
 
     resetCollisionDetection()
+    clearExplosionEvents()
     character.value = createCharacter()
   }
 
